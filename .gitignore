@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+*.egg
+.venv/
+venv/
+ENV/
+
+# Environments
+.env
+
+# IDE
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# Runtime data (regeneratable)
+data/videos/
+data/output/
+
+# Model weights
+data/models/
+
+# Logs
+*.log

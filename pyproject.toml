@@ -1,0 +1,23 @@
+[project]
+name = "videolens"
+version = "0.1.0"
+description = "影视视频内容分析与检索系统 - 基于多模态 AI 的长视频场景分割、内容理解与语义检索平台"
+requires-python = ">=3.12.10,<3.13"
+
+[dependency-groups]
+dev = [
+    "poethepoet>=0.34",
+    "pytest>=8.3.0",
+]
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.poe.tasks]
+sync = { cmd = "uv pip install -r requirements.txt", help = "安装依赖" }
+index = { cmd = "uv run python -m vl_app index", help = "索引视频" }
+search = { cmd = "uv run python -m vl_app search", help = "搜索场景" }
+
+[tool.poe.executor]
+type = "uv"

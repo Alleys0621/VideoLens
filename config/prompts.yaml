@@ -1,0 +1,34 @@
+# VideoLens Prompt 模板
+
+scene_caption:
+  system: "你是一个专业的影视内容分析师，擅长{genre}类内容分析。"
+  user: |
+    分析这个视频场景，请提供以下信息：
+    1. 场景描述：环境、光影、氛围
+    2. 出现的角色：外貌、服饰、表情
+    3. 动作与互动
+    4. 情感基调
+    5. 可见文字或图形
+
+    上下文信息：
+    - 这是「{video_title}」的第 {scene_index}/{total_scenes} 个场景
+    - 前一场景摘要：{prev_summary}
+    - 本场景台词：{transcript}
+
+    请用中文简要描述，不超过150字。
+
+query_expand:
+  system: "你是一个视频内容检索的查询优化器。"
+  user: |
+    将以下搜索查询扩展为多个相关搜索词，用于查找相关视频场景。
+    查询：{query}
+    请直接输出扩展后的搜索词，用空格分隔。
+
+rerank:
+  system: "你是一个视频场景相关性评判专家。"
+  user: |
+    评估以下场景与查询的相关性，按 1-10 打分。
+    查询：{query}
+    场景描述：{scene_caption}
+    台词：{transcript}
+    只输出分数。

@@ -1,0 +1,34 @@
+# VideoLens 流水线配置
+
+models:
+  vlm: "qwen-vl-max"
+  text: "qwen-plus"
+  whisper: "large-v3"
+  clip: "sentence-transformers/clip-ViT-B-32"
+  diarization: "pyannote/speaker-diarization-3.1"
+
+scene_detection:
+  backend: "pyscenedetect"
+  content_threshold: 27.0
+  min_scene_len: 1.0   # 秒
+
+asr:
+  language: "zh"
+  beam_size: 5
+  vad_filter: true
+
+face:
+  detection_threshold: 0.5
+  clustering_threshold: 0.6
+
+clip:
+  embedding_dim: 512
+  batch_size: 32
+
+retrieval:
+  top_k: 10
+  use_llm_rerank: true
+
+paths:
+  data_root: "data"
+  output_root: "data/output"

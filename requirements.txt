@@ -1,0 +1,47 @@
+# ============================================================
+# VideoLens - Python Dependencies
+# ============================================================
+# Install:  uv pip install -r requirements.txt
+#           or: pip install -r requirements.txt
+# ============================================================
+
+# --- Core ---
+openai>=1.78.0
+dashscope>=1.23.2
+python-dotenv>=1.1.0
+pyyaml>=6.0.2
+numpy>=2.2.5
+opencv-python>=4.11.0.86
+pillow>=11.2.1
+regex>=2024.11.6
+tqdm>=4.67.1
+
+# --- Scene Detection ---
+scenedetect[opencv]>=0.6.4
+# transnetv2-pytorch>=0.1.3  # Phase 2: anime support
+
+# --- ASR + Diarization ---
+faster-whisper>=1.1.1
+pyannote-audio>=4.0.0
+
+# --- Vision ---
+# insightface>=0.7.3          # Phase 2: face detection
+# onnxruntime>=1.20.0         # Phase 2: insightface backend
+sentence-transformers>=3.4.0
+
+# --- Vector Store ---
+faiss-cpu>=1.9.0
+
+# --- Audio ---
+pydub>=0.25.1
+librosa>=0.11.0
+
+# --- CLI ---
+typer>=0.15.0
+
+# --- Logging ---
+coloredlogs>=15.0.1
+
+# --- Dev ---
+poethepoet>=0.34
+pytest>=8.3.0
