@@ -25,8 +25,8 @@ faster-whisper>=1.1.1
 pyannote-audio>=4.0.0
 
 # --- Vision ---
-# insightface>=0.7.3          # Phase 2: face detection
-# onnxruntime>=1.20.0         # Phase 2: insightface backend
+insightface>=0.7.3
+onnxruntime>=1.20.0
 sentence-transformers>=3.4.0
 
 # --- Vector Store ---

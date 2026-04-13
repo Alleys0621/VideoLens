@@ -16,8 +16,8 @@ build-backend = "pdm.backend"
 
 [tool.poe.tasks]
 sync = { cmd = "uv pip install -r requirements.txt", help = "安装依赖" }
-index = { cmd = "uv run python -m vl_app index", help = "索引视频" }
-search = { cmd = "uv run python -m vl_app search", help = "搜索场景" }
+index = { cmd = "uv run python -m vl.app.main index", help = "索引视频" }
+search = { cmd = "uv run python -m vl.app.main search", help = "搜索场景" }
 
 [tool.poe.executor]
 type = "uv"

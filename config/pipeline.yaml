@@ -3,7 +3,7 @@
 models:
   vlm: "qwen-vl-max"
   text: "qwen-plus"
-  whisper: "large-v3"
+  whisper: "medium"
   clip: "sentence-transformers/clip-ViT-B-32"
   diarization: "pyannote/speaker-diarization-3.1"
 

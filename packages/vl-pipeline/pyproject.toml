@@ -1,9 +1,0 @@
-[project]
-name = "vl-pipeline"
-version = "0.1.0"
-description = "VideoLens 流水线编排"
-requires-python = ">=3.12.10,<3.13"
-
-[build-system]
-requires = ["pdm-backend"]
-build-backend = "pdm.backend"

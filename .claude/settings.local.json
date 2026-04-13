@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(.venv/Scripts/python -c \"import openai, dashscope, dotenv, yaml, numpy, cv2, PIL, regex, tqdm, scenedetect, sentence_transformers, faiss, pydub, librosa, typer, coloredlogs; print\\('ALL OK'\\)\")",
+      "Bash(.venv/Scripts/python -c ':*)",
+      "Bash(.venv/Scripts/python -m vl.app.main index data/videos/xiyouji01.mp4)",
+      "Bash(rm:*)",
+      "Bash(uv pip:*)",
+      "Bash(.venv/Scripts/python -c \"import insightface; print\\('insightface OK:', insightface.__version__\\)\")",
+      "Bash(.venv/Scripts/python -m vl.app.main index \"data/videos/052 鸟蛋之争.mp4\" --genre tv)",
+      "Bash(tasklist)",
+      "Bash(.venv/Scripts/python -c \"import torchcodec; print\\(torchcodec.__version__\\)\")",
+      "Bash(.venv/Scripts/pip uninstall:*)",
+      "Bash(.venv/Scripts/python -m pip uninstall torchcodec -y)",
+      "Bash(.venv/Scripts/python -c \"import soundfile; print\\(soundfile.__version__\\)\")",
+      "Bash(.venv/Scripts/python -c \"import librosa; print\\(librosa.__version__\\)\")",
+      "Bash(.venv/Scripts/python tests/test_diarization.py)"
+    ]
+  }
+}
