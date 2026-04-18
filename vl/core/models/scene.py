@@ -18,6 +18,8 @@ class Scene:
     transition_type: str = "cut"  # "cut" | "dissolve" | "fade"
     clip_embedding: list[float] | None = None
     vlm_caption: str | None = None
+    structured_caption: dict | None = None  # Stage 3 结构化描述 JSON
+    content_type: str = "main"  # "opening" | "main" | "ending"
     confidence: float = 1.0
 
     def to_dict(self) -> dict[str, Any]:
@@ -33,6 +35,8 @@ class Scene:
             "transition_type": self.transition_type,
             "clip_embedding": self.clip_embedding,
             "vlm_caption": self.vlm_caption,
+            "structured_caption": self.structured_caption,
+            "content_type": self.content_type,
             "confidence": self.confidence,
         }
 

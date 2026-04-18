@@ -6,15 +6,25 @@
       "Bash(.venv/Scripts/python -m vl.app.main index data/videos/xiyouji01.mp4)",
       "Bash(rm:*)",
       "Bash(uv pip:*)",
-      "Bash(.venv/Scripts/python -c \"import insightface; print\\('insightface OK:', insightface.__version__\\)\")",
       "Bash(.venv/Scripts/python -m vl.app.main index \"data/videos/052 鸟蛋之争.mp4\" --genre tv)",
       "Bash(tasklist)",
-      "Bash(.venv/Scripts/python -c \"import torchcodec; print\\(torchcodec.__version__\\)\")",
-      "Bash(.venv/Scripts/pip uninstall:*)",
-      "Bash(.venv/Scripts/python -m pip uninstall torchcodec -y)",
-      "Bash(.venv/Scripts/python -c \"import soundfile; print\\(soundfile.__version__\\)\")",
       "Bash(.venv/Scripts/python -c \"import librosa; print\\(librosa.__version__\\)\")",
-      "Bash(.venv/Scripts/python tests/test_diarization.py)"
+      "Bash(python -c ':*)",
+      "Bash(ls *.mp4 *.mkv *.avi)",
+      "Bash(python -c \"from vl.core.config import get_config; c = get_config\\(\\); print\\('API key:', bool\\(c.dashscope_api_key\\)\\); print\\('HF:', c.model_whisper, c.model_clip\\)\")",
+      "Bash(.venv/Scripts/python.exe -c \"import yaml; print\\('yaml OK'\\)\")",
+      "Bash(.venv/Scripts/python.exe -c ':*)",
+      "Bash(.venv/Scripts/python.exe -m vl.app.main index data/videos/052.mp4 --no-resume)",
+      "mcp__web-search-prime__web_search_prime",
+      "mcp__web-reader__webReader",
+      "Bash(python:*)",
+      "Bash(pip install:*)",
+      "Bash(HF_HUB_OFFLINE=1 uv run python -m vl.app.main index data/videos/052.mp4 --no-resume)",
+      "Bash(pip show:*)",
+      "Bash(.venv/Scripts/python -c \"from vl.pipeline.stage2_analysis import run_stage2; print\\('stage2 import OK'\\)\")",
+      "Bash(.venv/Scripts/python -c \"from vl.core.config import get_config; c = get_config\\(\\); print\\('Config OK'\\); print\\('has hf_token:', hasattr\\(c, 'hf_token'\\)\\); print\\('has face_detection_threshold:', hasattr\\(c, 'face_detection_threshold'\\)\\)\")",
+      "Bash(.venv/Scripts/python -c \"from vl.core.models.character import Character; c = Character\\(character_id='c01', label='Test', appearance_scenes=['s1']\\); print\\(c.to_dict\\(\\)\\)\")",
+      "Bash(.venv/Scripts/python -m vl.app.main index \"data/videos/052.mp4\" --no-resume)"
     ]
   }
 }

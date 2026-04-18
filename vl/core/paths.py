@@ -20,6 +20,9 @@ class PathManager:
             self.characters_dir,
             self.embeddings_dir,
             self.index_dir,
+            self.captions_dir,
+            self.alignment_dir,
+            self.knowledge_dir,
             self.checkpoints_dir,
         ]:
             os.makedirs(d, exist_ok=True)
@@ -66,6 +69,18 @@ class PathManager:
     @property
     def index_dir(self) -> str:
         return os.path.join(self.output_root, "index")
+
+    @property
+    def captions_dir(self) -> str:
+        return os.path.join(self.output_root, "captions")
+
+    @property
+    def alignment_dir(self) -> str:
+        return os.path.join(self.output_root, "alignment")
+
+    @property
+    def knowledge_dir(self) -> str:
+        return os.path.join(self.output_root, "knowledge")
 
     @property
     def checkpoints_dir(self) -> str:
@@ -126,10 +141,6 @@ class PathManager:
     @property
     def checkpoint_path(self) -> str:
         return os.path.join(self.checkpoints_dir, f"{self.video_id}.json")
-
-    @property
-    def gallery_json_path(self) -> str:
-        return os.path.join(self.characters_dir, self.video_id, "gallery.json")
 
     def keyframe_path(self, scene_index: int) -> str:
         return os.path.join(

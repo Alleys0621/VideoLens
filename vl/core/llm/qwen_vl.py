@@ -22,15 +22,20 @@ class QwenVLClient:
         prompt: str,
     ) -> Optional[str]:
         """分析单张图片"""
-        messages = [
-            {
-                "role": "user",
-                "content": [
-                    {"image": f"file://{image_path}"},
-                    {"text": prompt},
-                ],
-            }
-        ]
+        return self.analyze_images([image_path], prompt)
+
+    def analyze_images(
+        self,
+        image_paths: list[str],
+        prompt: str,
+    ) -> Optional[str]:
+        """分析多张图片"""
+        content = []
+        for path in image_paths:
+            content.append({"image": f"file://{path}"})
+        content.append({"text": prompt})
+
+        messages = [{"role": "user", "content": content}]
 
         try:
             response = MultiModalConversation.call(
@@ -40,8 +45,10 @@ class QwenVLClient:
                 base_url=self.base_url,
             )
             choices = response["output"]["choices"]
-            content = [item["message"]["content"] for item in choices][0]
-            return content[0]["text"]
+            content = choices[0]["message"]["content"]
+            if isinstance(content, list):
+                return content[0]["text"]
+            return str(content)
         except Exception as e:
             print(f"Qwen VL 调用失败: {e}")
             return None

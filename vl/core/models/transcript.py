@@ -58,11 +58,3 @@ class TranscriptSegment:
             words=words,
             confidence=data.get("confidence", 1.0),
         )
-
-
-@dataclass
-class DiarizationSegment:
-    """说话人片段"""
-    speaker: str       # "SPEAKER_00"
-    start_time: float
-    end_time: float

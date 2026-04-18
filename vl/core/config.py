@@ -28,14 +28,13 @@ class AppConfig:
     """应用全局配置"""
     # API Keys
     dashscope_api_key: str = ""
-    hf_token: str = ""
 
     # Models
     model_vlm: str = "qwen-vl-max"
     model_text: str = "qwen-plus"
+    model_omni: str = "qwen3.5-omni-plus"
     model_whisper: str = "large-v3"
     model_clip: str = "sentence-transformers/clip-ViT-B-32"
-    model_diarization: str = "pyannote/speaker-diarization-3.1"
 
     # Scene Detection
     scene_backend: str = "pyscenedetect"
@@ -43,13 +42,14 @@ class AppConfig:
     min_scene_len: float = 1.0
 
     # ASR
+    asr_backend: str = "qwen-omni"  # "qwen-omni" / "qwen" / "whisper"
     asr_language: str = "zh"
     asr_beam_size: int = 5
     asr_vad_filter: bool = True
-
-    # Face
-    face_detection_threshold: float = 0.5
-    face_clustering_threshold: float = 0.6
+    asr_chunk_duration: int = 120
+    asr_silence_min_len: int = 500
+    asr_silence_thresh: int = -40
+    asr_max_keyframes_per_chunk: int = 5
 
     # CLIP
     clip_embedding_dim: int = 512
@@ -72,15 +72,9 @@ def load_config() -> AppConfig:
     """加载完整配置"""
     project_root = _find_project_root()
 
-    # Load .env (HF_ENDPOINT, DASHSCOPE_API_KEY, HF_TOKEN etc.)
+    # Load .env (DASHSCOPE_API_KEY etc.)
     env_path = os.path.join(project_root, ".env")
     load_dotenv(env_path, override=False)
-
-    # 确保 HuggingFace 镜像生效
-    if not os.getenv("HF_ENDPOINT"):
-        os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
-    if not os.getenv("HUGGINGFACE_HUB_URL"):
-        os.environ["HUGGINGFACE_HUB_URL"] = os.environ["HF_ENDPOINT"]
 
     # Load pipeline.yaml
     pipeline_path = os.path.join(project_root, "config", "pipeline.yaml")
@@ -99,7 +93,6 @@ def load_config() -> AppConfig:
     models = pipeline.get("models", {})
     scene_cfg = pipeline.get("scene_detection", {})
     asr_cfg = pipeline.get("asr", {})
-    face_cfg = pipeline.get("face", {})
     clip_cfg = pipeline.get("clip", {})
     retrieval_cfg = pipeline.get("retrieval", {})
     paths_cfg = pipeline.get("paths", {})
@@ -109,20 +102,22 @@ def load_config() -> AppConfig:
 
     return AppConfig(
         dashscope_api_key=os.getenv("DASHSCOPE_API_KEY", ""),
-        hf_token=os.getenv("HF_TOKEN", ""),
         model_vlm=models.get("vlm", "qwen-vl-max"),
         model_text=models.get("text", "qwen-plus"),
+        model_omni=models.get("omni", "qwen3.5-omni-plus"),
         model_whisper=models.get("whisper", "large-v3"),
         model_clip=models.get("clip", "sentence-transformers/clip-ViT-B-32"),
-        model_diarization=models.get("diarization", "pyannote/speaker-diarization-3.1"),
         scene_backend=scene_cfg.get("backend", "pyscenedetect"),
         content_threshold=scene_cfg.get("content_threshold", 27.0),
         min_scene_len=scene_cfg.get("min_scene_len", 1.0),
+        asr_backend=asr_cfg.get("backend", "whisper"),
         asr_language=asr_cfg.get("language", "zh"),
         asr_beam_size=asr_cfg.get("beam_size", 5),
         asr_vad_filter=asr_cfg.get("vad_filter", True),
-        face_detection_threshold=face_cfg.get("detection_threshold", 0.5),
-        face_clustering_threshold=face_cfg.get("clustering_threshold", 0.6),
+        asr_chunk_duration=asr_cfg.get("chunk_duration", 120),
+        asr_silence_min_len=asr_cfg.get("silence_min_len", 500),
+        asr_silence_thresh=asr_cfg.get("silence_thresh", -40),
+        asr_max_keyframes_per_chunk=asr_cfg.get("max_keyframes_per_chunk", 5),
         clip_embedding_dim=clip_cfg.get("embedding_dim", 512),
         clip_batch_size=clip_cfg.get("batch_size", 32),
         retrieval_top_k=retrieval_cfg.get("top_k", 10),

@@ -3,9 +3,9 @@
 models:
   vlm: "qwen-vl-max"
   text: "qwen-plus"
+  omni: "qwen3.5-omni-plus"    # Qwen3.5-Omni 全模态模型
   whisper: "medium"
   clip: "sentence-transformers/clip-ViT-B-32"
-  diarization: "pyannote/speaker-diarization-3.1"
 
 scene_detection:
   backend: "pyscenedetect"
@@ -13,13 +13,14 @@ scene_detection:
   min_scene_len: 1.0   # 秒
 
 asr:
+  backend: "qwen-omni"       # "qwen-omni" (全模态) / "qwen" (ASR) / "whisper" (本地)
   language: "zh"
   beam_size: 5
   vad_filter: true
-
-face:
-  detection_threshold: 0.5
-  clustering_threshold: 0.6
+  chunk_duration: 120         # 全模态理解每块最大秒数 (推荐 ≤120s)
+  silence_min_len: 500        # 静音检测最短时长 ms
+  silence_thresh: -40          # 静音检测阈值 dBFS
+  max_keyframes_per_chunk: 5  # 每块最多发送的关键帧数
 
 clip:
   embedding_dim: 512
