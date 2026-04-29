@@ -23,11 +23,8 @@ logger = get_logger()
 
 def run_stage3(
     video_id: str,
-    video_title: str,
-    genre: str,
     scenes: list[Scene],
     scene_transcripts: dict[str, list[str]],
-    characters_info: str,
     output_dir: str,
     config: AppConfig,
 ):
@@ -48,9 +45,6 @@ def run_stage3(
         _generate_structured_captions(
             scenes=scenes,
             scene_transcripts=scene_transcripts,
-            video_title=video_title,
-            genre=genre,
-            characters_info=characters_info,
             config=config,
         )
     else:
@@ -71,13 +65,13 @@ def run_stage3(
             entry["vlm_caption"] = scene.vlm_caption
         captions_data.append(entry)
 
-    captions_dir = os.path.join(output_dir, "captions", video_id)
+    captions_dir = os.path.join(output_dir, "stage3_captions", video_id)
     os.makedirs(captions_dir, exist_ok=True)
     save_json(captions_data, os.path.join(captions_dir, "captions.json"))
     logger.info(f"结构化描述已保存: {len(captions_data)} 个场景")
 
     # --- 3.3 构建 FAISS 索引 ---
-    embeddings_path = os.path.join(output_dir, "embeddings", video_id, "clip_vectors.npy")
+    embeddings_path = os.path.join(output_dir, "stage2_features", video_id, "clip_vectors.npy")
     if os.path.isfile(embeddings_path):
         _build_faiss_index(
             video_id=video_id,
@@ -96,7 +90,7 @@ def run_stage3(
         "scenes": [s.to_dict() for s in scenes],
         "transcripts": {sid: texts for sid, texts in scene_transcripts.items()},
     }
-    scenes_dir = os.path.join(output_dir, "scenes", video_id)
+    scenes_dir = os.path.join(output_dir, "stage1_scenes", video_id)
     save_json(metadata, os.path.join(scenes_dir, "metadata.json"))
 
     logger.info("[Stage 3] 完成")
@@ -105,9 +99,6 @@ def run_stage3(
 def _generate_structured_captions(
     scenes: list[Scene],
     scene_transcripts: dict[str, list[str]],
-    video_title: str,
-    genre: str,
-    characters_info: str,
     config: AppConfig,
 ):
     """使用 VLM 生成结构化场景描述 (仅在需要时调用)"""
@@ -120,7 +111,6 @@ def _generate_structured_captions(
     prompts = config.prompts.get("scene_caption", {})
     user_template = prompts.get("user", "")
 
-    prev_summary = ""
     prev_caption = "{}"
     total = len(scenes)
     captioned = 0
@@ -136,44 +126,44 @@ def _generate_structured_captions(
 
         audiotext = " ".join(scene_transcripts.get(scene.scene_id, [])) or "(无台词)"
 
-        if user_template:
-            prompt = user_template.format(
-                video_title=video_title,
-                genre=genre,
-                rolesText=characters_info or "未知",
-                summary=prev_summary or "(暂无)",
-                audiotext=audiotext,
-                caption=prev_caption,
-            )
-        else:
-            prompt = f"分析这个视频场景（第{i+1}/{total}个场景）。\n台词：{audiotext}"
+        if not user_template:
+            logger.warning("scene_caption prompt 未配置，跳过 VLM 补充")
+            return
 
-        raw_output = vl_client.analyze_images(scene.keyframe_paths, prompt)
+        prompt = user_template.format(
+            audiotext=audiotext,
+            caption=prev_caption,
+        )
+
+        raw_output = vl_client.analyze_images(
+            scene.keyframe_paths, prompt,
+            window_size=config.vlm_window_size,
+            stride=config.vlm_stride,
+        )
         if raw_output:
             extracted = json_extractor.extract_json(raw_output)
             if extracted:
                 try:
                     caption_dict = json.loads(extracted)
+                    # 归一化: actions(list) → main_actions(string)
+                    if "actions" in caption_dict and "main_actions" not in caption_dict:
+                        actions = caption_dict["actions"]
+                        if isinstance(actions, list):
+                            caption_dict["main_actions"] = "；".join(str(a) for a in actions)
+                    # 归一化: interaction → interactions
+                    if "interaction" in caption_dict and "interactions" not in caption_dict:
+                        caption_dict["interactions"] = caption_dict["interaction"]
                     scene.structured_caption = caption_dict
                     prev_caption = extracted
                     captioned += 1
                 except json.JSONDecodeError:
                     scene.vlm_caption = raw_output
-                    prev_summary = raw_output[:300]
+                    prev_caption = raw_output[:300]
                     captioned += 1
             else:
                 scene.vlm_caption = raw_output
-                prev_summary = raw_output[:300]
+                prev_caption = raw_output[:300]
                 captioned += 1
-
-            if scene.structured_caption:
-                parts = [
-                    scene.structured_caption.get("main_actions", ""),
-                    scene.structured_caption.get("interactions", ""),
-                ]
-                prev_summary = "；".join(p for p in parts if p) or raw_output[:200]
-            elif scene.vlm_caption:
-                prev_summary = scene.vlm_caption[:200]
 
     logger.info(f"VLM 补充描述完成: 共生成 {captioned} 个")
 
@@ -203,7 +193,7 @@ def _build_faiss_index(
     store.add_batch(scene_ids, embeddings)
     logger.info(f"索引向量总数: {store.size}")
 
-    index_dir = os.path.join(output_dir, "index", video_id)
+    index_dir = os.path.join(output_dir, "stage3_captions", video_id)
     os.makedirs(index_dir, exist_ok=True)
     store.save(os.path.join(index_dir, "index.faiss"))
 

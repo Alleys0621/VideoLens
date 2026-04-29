@@ -95,10 +95,15 @@ def _transcribe_qwen_omni(
     """
     from vl.asr.qwen_omni import QwenOmni
 
+    # 从 prompts.yaml 加载 stage2_omni prompt
+    omni_prompts = config.prompts.get("stage2_omni", {})
+    omni_prompt = omni_prompts.get("user", "")
+
     omni = QwenOmni(
         api_key=config.dashscope_api_key,
         model=config.model_omni,
         language=config.asr_language,
+        prompt=omni_prompt,
     )
 
     # 按时间分组
@@ -295,7 +300,7 @@ def run_stage2(
         scene_content_types = {s.scene_id: "main" for s in scenes}
 
     # 保存转录结果
-    transcript_dir = os.path.join(output_dir, "transcripts", video_id)
+    transcript_dir = os.path.join(output_dir, "stage2_features", video_id)
     os.makedirs(transcript_dir, exist_ok=True)
     save_json(
         [s.to_dict() for s in segments],
@@ -343,7 +348,7 @@ def run_stage2(
             if i < len(embeddings):
                 scene.clip_embedding = embeddings[i].tolist()
 
-        embeddings_dir = os.path.join(output_dir, "embeddings", video_id)
+        embeddings_dir = os.path.join(output_dir, "stage2_features", video_id)
         os.makedirs(embeddings_dir, exist_ok=True)
         np.save(os.path.join(embeddings_dir, "clip_vectors.npy"), embeddings)
         logger.info(f"CLIP 编码完成: {len(embeddings)} 个场景向量")
@@ -401,12 +406,21 @@ def _extract_characters_from_omni(
                     model=config.model_text, api_key=config.dashscope_api_key
                 )
                 existing_names = list(char_scenes.keys())
-                prompt = (
-                    f"以下是一部视频的台词片段：\n"
-                    f"{transcript_summary}\n\n"
-                    f"已识别的角色：{', '.join(existing_names) if existing_names else '无'}\n\n"
-                    f"请列出台词中出现的所有角色名，每行一个，只输出名字。"
-                )
+
+                char_prompts = config.prompts.get("stage2_character_extract", {})
+                user_tpl = char_prompts.get("user", "")
+                if user_tpl:
+                    prompt = user_tpl.format(
+                        transcript_summary=transcript_summary,
+                        existing_names=", ".join(existing_names) if existing_names else "无",
+                    )
+                else:
+                    prompt = (
+                        f"以下是一部视频的台词片段：\n"
+                        f"{transcript_summary}\n\n"
+                        f"已识别的角色：{', '.join(existing_names) if existing_names else '无'}\n\n"
+                        f"请列出台词中出现的所有角色名，每行一个，只输出名字。"
+                    )
                 raw = text_client.generate(prompt)
                 if raw:
                     extra_names = [
@@ -432,7 +446,7 @@ def _extract_characters_from_omni(
 
     # 4. 保存
     if characters:
-        characters_dir = os.path.join(output_dir, "characters", video_id)
+        characters_dir = os.path.join(output_dir, "stage2_features", video_id)
         os.makedirs(characters_dir, exist_ok=True)
         save_json(
             [c.to_dict() for c in characters],

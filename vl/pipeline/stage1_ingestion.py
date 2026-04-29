@@ -44,7 +44,7 @@ def run_stage1(
     # 2. 关键帧提取
     keyframes_dir = f"{output_dir}/keyframes"
     sampler = FrameSampler(keyframes_dir)
-    scenes = sampler.sample_keyframes(video_path, scenes, samples_per_scene=1)
+    scenes = sampler.sample_keyframes(video_path, scenes, samples_per_scene=config.samples_per_scene)
     keyframe_count = sum(len(s.keyframe_paths) for s in scenes if s.keyframe_paths)
     logger.info(f"关键帧提取完成: 共提取 {keyframe_count} 张关键帧，保存到 {keyframes_dir}")
 

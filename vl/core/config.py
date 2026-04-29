@@ -32,7 +32,7 @@ class AppConfig:
     # Models
     model_vlm: str = "qwen-vl-max"
     model_text: str = "qwen-plus"
-    model_omni: str = "qwen3.5-omni-plus"
+    model_omni: str = "qwen3.5-omni-flash"
     model_whisper: str = "large-v3"
     model_clip: str = "sentence-transformers/clip-ViT-B-32"
 
@@ -40,6 +40,11 @@ class AppConfig:
     scene_backend: str = "pyscenedetect"
     content_threshold: float = 27.0
     min_scene_len: float = 1.0
+    samples_per_scene: int = 2       # 每个场景提取的关键帧数
+
+    # VLM Sliding Window
+    vlm_window_size: int = 4         # 滑动窗口大小 (帧数)
+    vlm_stride: int = 2              # 滑动窗口步长
 
     # ASR
     asr_backend: str = "qwen-omni"  # "qwen-omni" / "qwen" / "whisper"
@@ -110,6 +115,9 @@ def load_config() -> AppConfig:
         scene_backend=scene_cfg.get("backend", "pyscenedetect"),
         content_threshold=scene_cfg.get("content_threshold", 27.0),
         min_scene_len=scene_cfg.get("min_scene_len", 1.0),
+        samples_per_scene=scene_cfg.get("samples_per_scene", 8),
+        vlm_window_size=scene_cfg.get("vlm_window_size", 4),
+        vlm_stride=scene_cfg.get("vlm_stride", 2),
         asr_backend=asr_cfg.get("backend", "whisper"),
         asr_language=asr_cfg.get("language", "zh"),
         asr_beam_size=asr_cfg.get("beam_size", 5),

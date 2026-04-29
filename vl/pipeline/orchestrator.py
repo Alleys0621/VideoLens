@@ -16,7 +16,7 @@ from vl.core.models.video_meta import VideoMeta
 from vl.pipeline.stage1_ingestion import run_stage1
 from vl.pipeline.stage2_analysis import run_stage2
 from vl.pipeline.stage3_understanding import run_stage3
-from vl.pipeline.stage4_alignment import run_stage4
+from vl.pipeline.stage4_event_builder import run_stage4
 from vl.pipeline.stage5_knowledge import run_stage5
 
 logger = get_logger()
@@ -100,8 +100,8 @@ class PipelineOrchestrator:
         stages = [
             ("stage1", "场景分割", self._stage1),
             ("stage2", "特征提取", self._stage2),
-            ("stage3", "视觉语义理解", self._stage3),
-            ("stage4", "多模态时序对齐", self._stage4),
+            ("stage3", "帧描述生成", self._stage3),
+            ("stage4", "事件提取", self._stage4),
             ("stage5", "结构化知识库", self._stage5),
         ]
 
@@ -149,12 +149,16 @@ class PipelineOrchestrator:
         scenes_data = load_json(self.paths.scenes_json_path)
         return [Scene.from_dict(s) for s in scenes_data]
 
+    def _load_enriched_scenes(self) -> list[Scene]:
+        """加载 enriched 场景 (优先 metadata.json)"""
+        if os.path.isfile(self.paths.metadata_json_path):
+            metadata = load_json(self.paths.metadata_json_path)
+            return [Scene.from_dict(s) for s in metadata.get("scenes", [])]
+        return self._load_scenes()
+
     def _load_stage2_outputs(self):
         """续跑时加载 stage2 的输出 (transcripts + characters)"""
-        # 加载 transcripts
-        transcript_path = os.path.join(
-            self.paths.output_root, "transcripts", self.video_id, "transcript.json"
-        )
+        transcript_path = self.paths.transcript_json_path
         if os.path.isfile(transcript_path):
             segments = load_json(transcript_path)
             self._scene_transcripts = {}
@@ -164,10 +168,7 @@ class PipelineOrchestrator:
                 if sid and text:
                     self._scene_transcripts.setdefault(sid, []).append(text)
 
-        # 加载 characters
-        characters_path = os.path.join(
-            self.paths.output_root, "characters", self.video_id, "characters.json"
-        )
+        characters_path = self.paths.characters_json_path
         if os.path.isfile(characters_path):
             characters = load_json(characters_path)
             names = [c.get("label", "") for c in characters if c.get("label")]
@@ -177,7 +178,7 @@ class PipelineOrchestrator:
         """Stage 1: 场景分割"""
         scenes = run_stage1(
             video_path=self.video_path,
-            output_dir=self.paths.video_scenes_dir,
+            output_dir=self.paths.video_stage1_dir,
             config=self.config,
         )
         save_json(
@@ -187,12 +188,13 @@ class PipelineOrchestrator:
         logger.info(f"场景分割完成: 共检测到 {len(scenes)} 个场景")
 
     def _stage2(self):
-        """Stage 2: 特征提取 (ASR + CLIP + 人脸)"""
+        """Stage 2: 特征提取 (ASR + CLIP + 角色)"""
         scenes = self._load_scenes()
         logger.info(f"加载了 {len(scenes)} 个场景，准备进行特征提取")
 
         # 提取音频
         logger.info("提取音频...")
+        os.makedirs(os.path.dirname(self.paths.audio_path), exist_ok=True)
         extract_audio(self.video_path, self.paths.audio_path)
 
         scene_transcripts = run_stage2(
@@ -214,52 +216,32 @@ class PipelineOrchestrator:
         self._scene_transcripts = scene_transcripts
 
         # 加载角色信息
-        characters_path = os.path.join(
-            self.paths.output_root, "characters", self.video_id, "characters.json"
-        )
+        characters_path = self.paths.characters_json_path
         if os.path.isfile(characters_path):
             characters = load_json(characters_path)
             names = [c.get("label", "") for c in characters if c.get("label")]
             self._characters_info = "、".join(names)
 
     def _stage3(self):
-        """Stage 3: 视觉语义理解 (VLM 结构化描述 + FAISS 索引)"""
-        # 优先从 metadata.json 加载 enriched scenes，否则从 scenes.json
-        metadata_path = os.path.join(self.paths.output_root, "scenes", self.video_id, "metadata.json")
-        if os.path.isfile(metadata_path):
-            metadata = load_json(metadata_path)
-            scenes = [Scene.from_dict(s) for s in metadata.get("scenes", [])]
-        else:
-            scenes = self._load_scenes()
-
-        logger.info(f"加载了 {len(scenes)} 个场景，准备视觉语义理解")
+        """Stage 3: 帧描述生成 (VLM 结构化描述 + FAISS 索引)"""
+        scenes = self._load_enriched_scenes()
+        logger.info(f"加载了 {len(scenes)} 个场景，准备帧描述生成")
 
         run_stage3(
             video_id=self.video_id,
-            video_title=self.video_title,
-            genre=self.genre,
             scenes=scenes,
             scene_transcripts=self._scene_transcripts,
-            characters_info=self._characters_info,
             output_dir=self.paths.output_root,
             config=self.config,
         )
 
     def _stage4(self):
-        """Stage 4: 多模态时序对齐"""
-        # 加载最新场景数据 (含 structured_caption)
-        metadata_path = os.path.join(self.paths.output_root, "scenes", self.video_id, "metadata.json")
-        if os.path.isfile(metadata_path):
-            metadata = load_json(metadata_path)
-            scenes = [Scene.from_dict(s) for s in metadata.get("scenes", [])]
-        else:
-            scenes = self._load_scenes()
+        """Stage 4: 事件提取 (Event Builder)"""
+        scenes = self._load_enriched_scenes()
+        logger.info(f"加载了 {len(scenes)} 个场景，准备事件提取")
 
-        logger.info(f"加载了 {len(scenes)} 个场景，准备多模态对齐")
-
-        self._aligned_timeline = run_stage4(
+        self._events = run_stage4(
             video_id=self.video_id,
-            video_title=self.video_title,
             scenes=scenes,
             scene_transcripts=self._scene_transcripts,
             output_dir=self.paths.output_root,
@@ -268,21 +250,14 @@ class PipelineOrchestrator:
 
     def _stage5(self):
         """Stage 5: 结构化知识库生成"""
-        # 加载对齐后的时间线
-        timeline_path = os.path.join(
-            self.paths.output_root, "alignment", self.video_id, "aligned_timeline.json"
-        )
-        if os.path.isfile(timeline_path):
-            aligned_timeline = load_json(timeline_path)
-        else:
-            logger.error("未找到对齐数据，请先运行 Stage 4")
-            raise FileNotFoundError(f"对齐数据不存在: {timeline_path}")
+        scenes = self._load_enriched_scenes()
+        logger.info(f"加载了 {len(scenes)} 个场景，准备生成知识库")
 
         run_stage5(
             video_id=self.video_id,
             video_title=self.video_title,
-            genre=self.genre,
-            aligned_timeline=aligned_timeline,
+            scenes=scenes,
+            scene_transcripts=self._scene_transcripts,
             output_dir=self.paths.output_root,
             config=self.config,
         )

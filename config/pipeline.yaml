@@ -11,6 +11,9 @@ scene_detection:
   backend: "pyscenedetect"
   content_threshold: 27.0
   min_scene_len: 1.0   # 秒
+  samples_per_scene: 8  # 每个场景提取的关键帧数
+  vlm_window_size: 4    # VLM 滑动窗口大小
+  vlm_stride: 2         # VLM 滑动窗口步长
 
 asr:
   backend: "qwen-omni"       # "qwen-omni" (全模态) / "qwen" (ASR) / "whisper" (本地)

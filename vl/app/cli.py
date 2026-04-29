@@ -62,7 +62,7 @@ def _retrieve_scenes(query: str, video: str, top_k: int = 10):
     query_vec = query_vec / np.linalg.norm(query_vec)
 
     # 查找索引
-    index_root = os.path.join(config.output_root, "index")
+    index_root = os.path.join(config.output_root, "stage3_captions")
     if not os.path.isdir(index_root):
         return None, config
 
@@ -149,27 +149,27 @@ def _load_stage_prerequisites(video_id: str, stage: int):
         _check(video_path, "视频文件")
         return {"video_path": video_path}
 
-    scenes_json = os.path.join(output_dir, "scenes", video_id, "scenes.json")
+    scenes_json = os.path.join(output_dir, "stage1_scenes", video_id, "scenes.json")
     _check(scenes_json, "场景数据")
 
     if stage == 2:
-        audio_path = os.path.join(output_dir, "preprocessing", f"{video_id}.wav")
+        audio_path = os.path.join(output_dir, "stage2_features", "preprocessing", f"{video_id}.wav")
         if not os.path.isfile(audio_path):
             typer.echo(f"音频文件不存在，将从视频提取: {audio_path}")
         return {"scenes_json": scenes_json, "audio_path": audio_path}
 
-    # Stage 3/4: 需要 scenes + transcripts + characters
+    # Stage 3/4/5: 需要 scenes + transcripts + characters
     scenes_data = load_json(scenes_json)
     scenes = [Scene.from_dict(s) for s in scenes_data]
 
     # 尝试加载 metadata (enriched scenes)
-    metadata_path = os.path.join(output_dir, "scenes", video_id, "metadata.json")
+    metadata_path = os.path.join(output_dir, "stage1_scenes", video_id, "metadata.json")
     if os.path.isfile(metadata_path):
         metadata = load_json(metadata_path)
         scenes = [Scene.from_dict(s) for s in metadata.get("scenes", [])]
 
     # 构建 scene_transcripts
-    transcript_path = os.path.join(output_dir, "transcripts", video_id, "transcript.json")
+    transcript_path = os.path.join(output_dir, "stage2_features", video_id, "transcript.json")
     scene_transcripts = {}
     if os.path.isfile(transcript_path):
         segments = load_json(transcript_path)
@@ -180,7 +180,7 @@ def _load_stage_prerequisites(video_id: str, stage: int):
                 scene_transcripts.setdefault(sid, []).append(text)
 
     # 加载角色信息
-    characters_path = os.path.join(output_dir, "characters", video_id, "characters.json")
+    characters_path = os.path.join(output_dir, "stage2_features", video_id, "characters.json")
     characters_info = ""
     if os.path.isfile(characters_path):
         characters = load_json(characters_path)
@@ -192,11 +192,6 @@ def _load_stage_prerequisites(video_id: str, stage: int):
         "scene_transcripts": scene_transcripts,
         "characters_info": characters_info,
     }
-
-    if stage == 5:
-        timeline_path = os.path.join(output_dir, "alignment", video_id, "aligned_timeline.json")
-        _check(timeline_path, "对齐数据")
-        result["aligned_timeline"] = load_json(timeline_path)
 
     return result
 
@@ -308,10 +303,11 @@ def qa(
     user_tpl = prompts.get("user", "")
     sys_prompt = prompts.get("system", "")
 
-    if user_tpl:
-        prompt = user_tpl.format(question=question, context=context)
-    else:
-        prompt = f"基于以下场景信息回答问题。\n\n问题：{question}\n\n场景信息：\n{context}\n\n请用中文回答。"
+    if not user_tpl:
+        typer.echo("错误: qa_answer prompt 未配置", err=True)
+        raise typer.Exit(1)
+
+    prompt = user_tpl.format(question=question, context=context)
 
     logger.info("正在生成回答...")
     answer = qwen.generate(prompt, system=sys_prompt)
@@ -348,16 +344,12 @@ def analyze(
     config = get_config()
 
     # 加载 doc_store
-    doc_path = os.path.join(config.output_root, "index", video, "doc_store.json")
+    doc_path = os.path.join(config.output_root, "stage3_captions", video, "doc_store.json")
     if not os.path.isfile(doc_path):
         typer.echo(f"错误: 未找到视频 {video} 的索引数据。请先运行 'videolens index'。", err=True)
         raise typer.Exit(1)
 
     docs = load_json(doc_path)
-
-    # 加载 timeline (如果有)
-    timeline_path = os.path.join(config.output_root, "alignment", video, "aligned_timeline.json")
-    timeline = load_json(timeline_path) if os.path.isfile(timeline_path) else {}
 
     # 拼接上下文
     context_parts = []
@@ -383,28 +375,18 @@ def analyze(
         typer.echo("错误: 未配置 DASHSCOPE_API_KEY，无法进行分析。", err=True)
         raise typer.Exit(1)
 
+    if not user_tpl:
+        typer.echo(f"错误: {prompt_key} prompt 未配置", err=True)
+        raise typer.Exit(1)
+
     from vl.core.llm.qwen_text import QwenTextClient
     qwen = QwenTextClient(model=config.model_text, api_key=config.dashscope_api_key)
 
-    if user_tpl:
-        prompt = user_tpl.format(
-            video_id=video,
-            scene_count=len(docs),
-            context=context,
-        )
-    else:
-        type_labels = {
-            "summary": "内容摘要",
-            "characters": "角色分析",
-            "timeline": "时间线梳理",
-        }
-        label = type_labels.get(analysis_type, "内容分析")
-        prompt = (
-            f"对视频 {video} 进行{label}。\n"
-            f"共 {len(docs)} 个场景。\n\n"
-            f"场景信息：\n{context}\n\n"
-            f"请生成详细的{label}报告。"
-        )
+    prompt = user_tpl.format(
+        video_id=video,
+        scene_count=len(docs),
+        context=context,
+    )
 
     logger.info(f"正在生成{analysis_type}分析...")
     result = qwen.generate(prompt, system=sys_prompt)
@@ -422,7 +404,7 @@ def analyze(
 @app.command("test-stage")
 def test_stage(
     video_id: str = typer.Argument(..., help="视频ID (如 052)"),
-    stage: int = typer.Option(1, "--stage", "-s", help="要测试的阶段 (1-5)"),
+    stage: int = typer.Option(1, "--stage", "-s", help="要测试的阶段 (1-6)"),
 ):
     """单独测试流水线中的某个阶段"""
     typer.echo(_BANNER)
@@ -435,7 +417,7 @@ def test_stage(
         1: "场景分割",
         2: "多模态场景理解",
         3: "视觉语义理解 + 索引",
-        4: "多模态时序对齐",
+        4: "事件提取",
         5: "结构化知识库生成",
     }
     typer.echo(f"测试 Stage {stage}: {stage_names[stage]} (视频: {video_id})")
@@ -457,14 +439,14 @@ def test_stage(
             from vl.pipeline.stage1_ingestion import run_stage1
             scenes = run_stage1(
                 video_path=prereq["video_path"],
-                output_dir=os.path.join(output_dir, "scenes", video_id),
+                output_dir=os.path.join(output_dir, "stage1_scenes", video_id),
                 config=config,
             )
             # 保存 scenes.json
             from vl.core.helpers.json_utils import save_json
             save_json(
                 [s.to_dict() for s in scenes],
-                os.path.join(output_dir, "scenes", video_id, "scenes.json"),
+                os.path.join(output_dir, "stage1_scenes", video_id, "scenes.json"),
             )
             typer.echo(f"\n结果: 检测到 {len(scenes)} 个场景")
 
@@ -503,11 +485,8 @@ def test_stage(
             from vl.pipeline.stage3_understanding import run_stage3
             run_stage3(
                 video_id=video_id,
-                video_title=video_title,
-                genre=genre,
                 scenes=prereq["scenes"],
                 scene_transcripts=prereq["scene_transcripts"],
-                characters_info=prereq["characters_info"],
                 output_dir=output_dir,
                 config=config,
             )
@@ -515,26 +494,23 @@ def test_stage(
             typer.echo(f"\n结果: {len(prereq['scenes'])} 个场景, {captioned} 个有结构化描述")
 
         elif stage == 4:
-            from vl.pipeline.stage4_alignment import run_stage4
-            timeline = run_stage4(
+            from vl.pipeline.stage4_event_builder import run_stage4
+            events = run_stage4(
                 video_id=video_id,
-                video_title=video_title,
                 scenes=prereq["scenes"],
                 scene_transcripts=prereq["scene_transcripts"],
                 output_dir=output_dir,
                 config=config,
             )
-            events = timeline.get("events", [])
-            characters = timeline.get("character_arcs", {})
-            typer.echo(f"\n结果: {len(events)} 个叙事事件, {len(characters)} 个角色弧线")
+            typer.echo(f"\n结果: 提取 {len(events)} 个事件")
 
         elif stage == 5:
             from vl.pipeline.stage5_knowledge import run_stage5
             kb = run_stage5(
                 video_id=video_id,
                 video_title=video_title,
-                genre=genre,
-                aligned_timeline=prereq["aligned_timeline"],
+                scenes=prereq["scenes"],
+                scene_transcripts=prereq["scene_transcripts"],
                 output_dir=output_dir,
                 config=config,
             )

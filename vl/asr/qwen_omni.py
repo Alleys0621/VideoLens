@@ -148,10 +148,12 @@ class QwenOmni:
         api_key: str = "",
         model: str = "qwen3.5-omni-plus",
         language: str = "zh",
+        prompt: str = "",
     ):
         self.api_key = api_key
         self.model = model
         self.language = language
+        self.prompt = prompt or STRUCTURED_PROMPT
 
         self.client = OpenAI(
             api_key=self.api_key,
@@ -199,7 +201,7 @@ class QwenOmni:
             })
 
         # 3. 结构化 Prompt
-        content.append({"type": "text", "text": STRUCTURED_PROMPT})
+        content.append({"type": "text", "text": self.prompt})
 
         # 调用 API (必须 stream=True)
         raw_text = self._call_api(content)

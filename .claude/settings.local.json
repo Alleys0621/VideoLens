@@ -24,7 +24,11 @@
       "Bash(.venv/Scripts/python -c \"from vl.pipeline.stage2_analysis import run_stage2; print\\('stage2 import OK'\\)\")",
       "Bash(.venv/Scripts/python -c \"from vl.core.config import get_config; c = get_config\\(\\); print\\('Config OK'\\); print\\('has hf_token:', hasattr\\(c, 'hf_token'\\)\\); print\\('has face_detection_threshold:', hasattr\\(c, 'face_detection_threshold'\\)\\)\")",
       "Bash(.venv/Scripts/python -c \"from vl.core.models.character import Character; c = Character\\(character_id='c01', label='Test', appearance_scenes=['s1']\\); print\\(c.to_dict\\(\\)\\)\")",
-      "Bash(.venv/Scripts/python -m vl.app.main index \"data/videos/052.mp4\" --no-resume)"
+      "Bash(.venv/Scripts/python -m vl.app.main index \"data/videos/052.mp4\" --no-resume)",
+      "Bash(.venv/Scripts/python -m vl.app.main index \"data/videos/052 鸟蛋之争.mp4\" --no-resume)",
+      "Bash(mv vl/pipeline/stage4_alignment.py vl/pipeline/stage5_alignment.py)",
+      "Bash(mv vl/pipeline/stage5_knowledge.py vl/pipeline/stage6_knowledge.py)",
+      "Bash(cat D:/Projects/VideoLens/data/output/checkpoints/*.json)"
     ]
   }
 }

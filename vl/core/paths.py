@@ -1,4 +1,13 @@
-"""路径管理器 - 统一管理所有输入输出路径"""
+"""路径管理器 - 统一管理所有输入输出路径
+
+输出目录按 stage 命名:
+  stage1_scenes/        - 场景分割 + 关键帧
+  stage2_features/      - 转录 + 角色识别 + CLIP 向量 + 音频预处理
+  stage3_captions/      - 结构化描述 + FAISS 索引 + enriched metadata
+  stage4_events/        - 事件提取
+  stage5_knowledge/     - 结构化知识库
+  checkpoints/          - 断点文件
+"""
 
 import os
 from vl.core.config import get_config
@@ -15,24 +24,21 @@ class PathManager:
     def _ensure_dirs(self):
         """确保关键目录存在"""
         for d in [
-            self.scenes_dir,
-            self.transcripts_dir,
-            self.characters_dir,
-            self.embeddings_dir,
-            self.index_dir,
-            self.captions_dir,
-            self.alignment_dir,
-            self.knowledge_dir,
+            self.stage1_dir,
+            self.stage2_dir,
+            self.stage3_dir,
+            self.stage4_dir,
+            self.stage5_dir,
             self.checkpoints_dir,
         ]:
             os.makedirs(d, exist_ok=True)
 
         if self.video_id:
             for d in [
-                self.video_scenes_dir,
+                self.video_stage1_dir,
                 self.video_keyframes_dir,
-                self.video_transcripts_dir,
-                self.video_embeddings_dir,
+                self.video_stage2_dir,
+                self.video_stage3_dir,
             ]:
                 os.makedirs(d, exist_ok=True)
 
@@ -48,95 +54,91 @@ class PathManager:
     def output_root(self) -> str:
         return self.config.output_root
 
-    # --- Global output directories ---
+    # --- Stage output directories ---
 
     @property
-    def scenes_dir(self) -> str:
-        return os.path.join(self.output_root, "scenes")
+    def stage1_dir(self) -> str:
+        return os.path.join(self.output_root, "stage1_scenes")
 
     @property
-    def transcripts_dir(self) -> str:
-        return os.path.join(self.output_root, "transcripts")
+    def stage2_dir(self) -> str:
+        return os.path.join(self.output_root, "stage2_features")
 
     @property
-    def characters_dir(self) -> str:
-        return os.path.join(self.output_root, "characters")
+    def stage3_dir(self) -> str:
+        return os.path.join(self.output_root, "stage3_captions")
 
     @property
-    def embeddings_dir(self) -> str:
-        return os.path.join(self.output_root, "embeddings")
+    def stage4_dir(self) -> str:
+        return os.path.join(self.output_root, "stage4_events")
 
     @property
-    def index_dir(self) -> str:
-        return os.path.join(self.output_root, "index")
-
-    @property
-    def captions_dir(self) -> str:
-        return os.path.join(self.output_root, "captions")
-
-    @property
-    def alignment_dir(self) -> str:
-        return os.path.join(self.output_root, "alignment")
-
-    @property
-    def knowledge_dir(self) -> str:
-        return os.path.join(self.output_root, "knowledge")
+    def stage5_dir(self) -> str:
+        return os.path.join(self.output_root, "stage5_knowledge")
 
     @property
     def checkpoints_dir(self) -> str:
         return os.path.join(self.output_root, "checkpoints")
 
-    # --- Video-specific directories ---
+    # --- Video-specific stage directories ---
 
     @property
-    def video_scenes_dir(self) -> str:
-        return os.path.join(self.scenes_dir, self.video_id)
+    def video_stage1_dir(self) -> str:
+        return os.path.join(self.stage1_dir, self.video_id)
 
     @property
     def video_keyframes_dir(self) -> str:
-        return os.path.join(self.video_scenes_dir, "keyframes")
+        return os.path.join(self.video_stage1_dir, "keyframes")
 
     @property
-    def video_transcripts_dir(self) -> str:
-        return os.path.join(self.transcripts_dir, self.video_id)
+    def video_stage2_dir(self) -> str:
+        return os.path.join(self.stage2_dir, self.video_id)
 
     @property
-    def video_embeddings_dir(self) -> str:
-        return os.path.join(self.embeddings_dir, self.video_id)
+    def video_stage3_dir(self) -> str:
+        return os.path.join(self.stage3_dir, self.video_id)
 
     @property
-    def video_index_dir(self) -> str:
-        return os.path.join(self.index_dir, self.video_id)
+    def video_stage4_dir(self) -> str:
+        return os.path.join(self.stage4_dir, self.video_id)
+
+    @property
+    def video_stage5_dir(self) -> str:
+        return os.path.join(self.stage5_dir, self.video_id)
 
     # --- File paths ---
 
     @property
     def scenes_json_path(self) -> str:
-        return os.path.join(self.video_scenes_dir, "scenes.json")
+        return os.path.join(self.video_stage1_dir, "scenes.json")
 
     @property
     def metadata_json_path(self) -> str:
-        return os.path.join(self.video_scenes_dir, "metadata.json")
-
-    @property
-    def transcript_json_path(self) -> str:
-        return os.path.join(self.video_transcripts_dir, "transcript.json")
+        return os.path.join(self.video_stage1_dir, "metadata.json")
 
     @property
     def audio_path(self) -> str:
-        return os.path.join(self.output_root, "preprocessing", f"{self.video_id}.wav")
+        return os.path.join(self.stage2_dir, "preprocessing", f"{self.video_id}.wav")
+
+    @property
+    def transcript_json_path(self) -> str:
+        return os.path.join(self.video_stage2_dir, "transcript.json")
+
+    @property
+    def characters_json_path(self) -> str:
+        return os.path.join(self.video_stage2_dir, "characters.json")
 
     @property
     def clip_vectors_path(self) -> str:
-        return os.path.join(self.video_embeddings_dir, "clip_vectors.npy")
+        return os.path.join(self.video_stage2_dir, "clip_vectors.npy")
 
     @property
     def faiss_index_path(self) -> str:
-        return os.path.join(self.video_index_dir, "index.faiss")
+        return os.path.join(self.video_stage3_dir, "index.faiss")
 
     @property
     def doc_store_path(self) -> str:
-        return os.path.join(self.video_index_dir, "doc_store.json")
+        return os.path.join(self.video_stage3_dir, "doc_store.json")
 
     @property
     def checkpoint_path(self) -> str:
