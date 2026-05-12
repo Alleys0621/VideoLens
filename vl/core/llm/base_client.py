@@ -1,12 +1,11 @@
-"""LLM 基础客户端 - OpenAI 兼容 API + JSON 提取 (移植自 MoocAI BaseGenerator)"""
+"""LLM 基础客户端 - OpenAI 兼容 API"""
 
-import json
 from typing import Optional
 
-import regex
 from openai import OpenAI
 
 from vl.core.config import get_config
+from vl.core.helpers.text_utils import extract_json as _extract_json
 
 
 class BaseLLMClient:
@@ -35,18 +34,8 @@ class BaseLLMClient:
         return response.choices[0].message.content
 
     def extract_json(self, raw_output: str) -> Optional[str]:
-        """从 LLM 输出中提取 JSON (使用递归正则匹配)"""
-        match = regex.search(r"\{(?:[^{}]|(?R))*\}", raw_output, regex.DOTALL)
-        if match:
-            json_str = match.group(0)
-            try:
-                data = json.loads(json_str)
-                return json.dumps(data, ensure_ascii=False)
-            except json.JSONDecodeError as e:
-                print(f"JSON 解析出错: {e}")
-                return None
-        print("未匹配到 JSON 结构")
-        return None
+        """从 LLM 输出中提取 JSON"""
+        return _extract_json(raw_output)
 
     def load_prompt_template(self, prompt_path: str) -> str:
         """加载 prompt 模板文件"""

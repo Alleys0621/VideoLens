@@ -1,13 +1,4 @@
-"""路径管理器 - 统一管理所有输入输出路径
-
-输出目录按 stage 命名:
-  stage1_scenes/        - 场景分割 + 关键帧
-  stage2_features/      - 转录 + 角色识别 + CLIP 向量 + 音频预处理
-  stage3_captions/      - 结构化描述 + FAISS 索引 + enriched metadata
-  stage4_events/        - 事件提取
-  stage5_knowledge/     - 结构化知识库
-  checkpoints/          - 断点文件
-"""
+"""路径管理器 - 统一管理所有输入输出路径"""
 
 import os
 from vl.core.config import get_config
@@ -39,6 +30,8 @@ class PathManager:
                 self.video_keyframes_dir,
                 self.video_stage2_dir,
                 self.video_stage3_dir,
+                self.video_stage4_dir,
+                self.video_stage5_dir,
             ]:
                 os.makedirs(d, exist_ok=True)
 
@@ -133,12 +126,28 @@ class PathManager:
         return os.path.join(self.video_stage2_dir, "clip_vectors.npy")
 
     @property
+    def clip_vectors_path_exists(self) -> bool:
+        return os.path.isfile(self.clip_vectors_path)
+
+    @property
+    def captions_json_path(self) -> str:
+        return os.path.join(self.video_stage3_dir, "captions.json")
+
+    @property
     def faiss_index_path(self) -> str:
         return os.path.join(self.video_stage3_dir, "index.faiss")
 
     @property
     def doc_store_path(self) -> str:
         return os.path.join(self.video_stage3_dir, "doc_store.json")
+
+    @property
+    def events_json_path(self) -> str:
+        return os.path.join(self.video_stage4_dir, "events.json")
+
+    @property
+    def knowledge_base_path(self) -> str:
+        return os.path.join(self.video_stage5_dir, "knowledge_base.json")
 
     @property
     def checkpoint_path(self) -> str:

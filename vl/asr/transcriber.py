@@ -2,11 +2,11 @@
 
 import os
 import uuid
-from typing import Optional
 
 from faster_whisper import WhisperModel
 
 from vl.core.models.transcript import TranscriptSegment, Word
+from vl.core.helpers.scene_utils import assign_segments_to_scenes
 from vl.core.logging import get_logger
 
 logger = get_logger()
@@ -17,7 +17,6 @@ def _ensure_hf_env():
     from dotenv import load_dotenv
     from pathlib import Path
 
-    # 找到项目根目录
     current = Path(__file__).resolve()
     for parent in current.parents:
         if (parent / "pyproject.toml").is_file():
@@ -48,7 +47,6 @@ class Transcriber:
         self.beam_size = beam_size
         self.vad_filter = vad_filter
 
-        # 确保环境变量在模型下载前设置
         _ensure_hf_env()
 
         logger.info(f"加载 ASR 模型: {model_size} (device={device}, compute_type={compute_type})")
@@ -56,9 +54,7 @@ class Transcriber:
         logger.info("ASR 模型加载完成")
 
     def transcribe(self, audio_path: str) -> list[TranscriptSegment]:
-        """
-        转录音频文件，返回带时间戳的片段列表。
-        """
+        """转录音频文件，返回带时间戳的片段列表。"""
         if not os.path.isfile(audio_path):
             raise FileNotFoundError(f"音频文件不存在: {audio_path}")
 
@@ -103,10 +99,4 @@ class Transcriber:
         scenes: list,
     ) -> list[TranscriptSegment]:
         """将转录片段分配到对应的场景"""
-        for seg in segments:
-            mid_time = (seg.start_time + seg.end_time) / 2
-            for scene in scenes:
-                if scene.start_time <= mid_time <= scene.end_time:
-                    seg.scene_id = scene.scene_id
-                    break
-        return segments
+        return assign_segments_to_scenes(segments, scenes)

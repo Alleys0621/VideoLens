@@ -1,20 +1,13 @@
-"""Stage 4: Event Builder - 从连续帧描述中提取事件
-
-从 Stage 3 的原子化帧描述中，使用 LLM 提取结构化事件。
-
-流程:
-  1. 按 scene/time_of_day 连续性分组
-  2. 每组收集所有帧的 actions
-  3. LLM 提取事件 (合并连续动作为事件)
-  4. 保存 events.json
-"""
+"""Stage 4: Event Builder - 从连续帧描述中提取事件"""
 
 import json
-import os
 
 from vl.core.config import AppConfig
 from vl.core.models.scene import Scene
+from vl.core.paths import PathManager
 from vl.core.helpers.json_utils import save_json
+from vl.core.helpers.text_utils import extract_json_str
+from vl.core.helpers.prompt_loader import load_prompt
 
 from vl.core.logging import get_logger
 
@@ -25,32 +18,20 @@ def run_stage4(
     video_id: str,
     scenes: list[Scene],
     scene_transcripts: dict[str, list[str]],
-    output_dir: str,
+    paths: PathManager,
     config: AppConfig,
 ) -> list[dict]:
-    """
-    执行 Stage 4: Event Builder。
-
-    Args:
-        scenes: 含 structured_caption 的场景列表 (Stage 3 输出)
-        scene_transcripts: {scene_id: [text, ...]}
-
-    Returns:
-        events: 提取的事件列表
-    """
+    """执行 Stage 4: Event Builder。"""
     logger.info("[Stage 4] Event Builder: 从帧描述中提取事件...")
 
-    # 1. 筛选有描述的场景
     captioned_scenes = [s for s in scenes if s.structured_caption]
     if not captioned_scenes:
         logger.warning("没有带描述的场景，跳过 Event Builder")
         return []
 
-    # 2. 按连续性分组
     groups = _group_by_continuity(captioned_scenes)
     logger.info(f"分为 {len(groups)} 个连续组")
 
-    # 3. 逐组提取事件
     all_events = []
     if config.dashscope_api_key:
         all_events = _extract_events_with_llm(groups, scene_transcripts, config)
@@ -58,17 +39,14 @@ def run_stage4(
         logger.info("未配置 API Key，使用规则模式")
         all_events = _extract_events_by_rules(groups)
 
-    # 4. 保存
-    events_dir = os.path.join(output_dir, "stage4_events", video_id)
-    os.makedirs(events_dir, exist_ok=True)
-    save_json(all_events, os.path.join(events_dir, "events.json"))
+    save_json(all_events, paths.events_json_path)
 
     logger.info(f"[Stage 4] 提取完成: {len(all_events)} 个事件")
     return all_events
 
 
 # ──────────────────────────────────────────────────────────
-# 分组: 按连续性 (同一 scene + time_of_day)
+# 分组
 # ──────────────────────────────────────────────────────────
 
 def _group_by_continuity(scenes: list[Scene]) -> list[list[Scene]]:
@@ -104,7 +82,6 @@ def _get_attrs(scene: Scene) -> dict:
 
 
 def _is_continuous(prev: dict, curr: dict) -> bool:
-    """scene 或 time_of_day 变化 → 断组"""
     if prev["scene"] != "未知" and curr["scene"] != "未知" and prev["scene"] != curr["scene"]:
         return False
     if prev["time_of_day"] != "未知" and curr["time_of_day"] != "未知" and prev["time_of_day"] != curr["time_of_day"]:
@@ -123,14 +100,10 @@ def _extract_events_with_llm(
 ) -> list[dict]:
     """使用 LLM 逐组提取事件"""
     from vl.core.llm.qwen_text import QwenTextClient
-    from vl.core.llm.base_client import BaseLLMClient
 
     text_client = QwenTextClient(model=config.model_text, api_key=config.dashscope_api_key)
-    json_extractor = BaseLLMClient(model=config.model_text, api_key=config.dashscope_api_key)
 
-    prompts = config.prompts.get("event_builder", {})
-    user_template = prompts.get("user", "")
-    system_prompt = prompts.get("system", "")
+    user_template, system_prompt = load_prompt(config, "event_builder")
 
     if not user_template:
         logger.warning("event_builder prompt 未配置，跳过 LLM 事件提取")
@@ -139,7 +112,6 @@ def _extract_events_with_llm(
     all_events = []
 
     for i, group in enumerate(groups):
-        # 构建帧描述序列
         frame_descs = _build_frame_descriptions(group, scene_transcripts)
         if not frame_descs.strip():
             continue
@@ -152,7 +124,7 @@ def _extract_events_with_llm(
         if not raw:
             continue
 
-        extracted = json_extractor.extract_json(raw)
+        extracted = extract_json_str(raw)
         if not extracted:
             continue
 
@@ -169,15 +141,11 @@ def _build_frame_descriptions(
     """将一组场景转为帧描述文本"""
     lines = []
     for scene in group:
-        cap = scene.structured_caption or {}
-        # 兼容 main_actions(string) 和 actions(list)
-        actions = cap.get("main_actions", "")
-        if not actions:
-            raw = cap.get("actions", [])
-            actions = "；".join(str(a) for a in raw) if isinstance(raw, list) else str(raw)
+        cap = scene.get_normalized_caption()
 
+        actions = cap.get("main_actions", "")
         characters = cap.get("characters", [])
-        interaction = cap.get("interactions", "") or cap.get("interaction", "")
+        interaction = cap.get("interactions", "")
         transcript = " ".join(scene_transcripts.get(scene.scene_id, []))
 
         parts = [f"帧{scene.index} ({scene.start_time:.1f}s-{scene.end_time:.1f}s)"]
@@ -225,22 +193,18 @@ def _parse_events(raw_json: str, offset: int, group: list[Scene]) -> list[dict]:
 
 
 # ──────────────────────────────────────────────────────────
-# 规则模式 (无 LLM 时的回退)
+# 规则模式
 # ──────────────────────────────────────────────────────────
 
 def _extract_events_by_rules(groups: list[list[Scene]]) -> list[dict]:
-    """基于规则提取事件 (每个组 = 一个事件)"""
+    """基于规则提取事件"""
     events = []
     for idx, group in enumerate(groups):
-        # 收集所有动作
         actions = []
         characters = set()
         for scene in group:
-            cap = scene.structured_caption or {}
+            cap = scene.get_normalized_caption()
             act = cap.get("main_actions", "")
-            if not act:
-                raw = cap.get("actions", [])
-                act = "；".join(str(a) for a in raw) if isinstance(raw, list) else str(raw)
             if act:
                 actions.append(act)
             for c in cap.get("characters", []):

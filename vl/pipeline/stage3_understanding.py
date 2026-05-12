@@ -1,19 +1,14 @@
-"""Stage 3: 视觉语义理解 - VLM 补充描述 + FAISS 索引
-
-如果 Stage 2 (qwen-omni) 已经生成了视觉描述，则跳过 VLM 调用，
-仅做 FAISS 索引构建和文档存储。
-
-如果 Stage 2 没有视觉描述 (qwen/whisper 后端)，则仍使用 VLM 生成。
-"""
+"""Stage 3: 视觉语义理解 - VLM 补充描述 + FAISS 索引"""
 
 import json
-import os
-
 import numpy as np
 
 from vl.core.config import AppConfig
 from vl.core.models.scene import Scene
-from vl.core.helpers.json_utils import save_json, load_json
+from vl.core.paths import PathManager
+from vl.core.helpers.json_utils import save_json
+from vl.core.helpers.text_utils import extract_json as extract_json_str
+from vl.core.helpers.prompt_loader import load_prompt
 from vl.store.vector_store import VectorStore
 
 from vl.core.logging import get_logger
@@ -25,19 +20,14 @@ def run_stage3(
     video_id: str,
     scenes: list[Scene],
     scene_transcripts: dict[str, list[str]],
-    output_dir: str,
+    paths: PathManager,
     config: AppConfig,
 ):
-    """
-    执行 Stage 3: 视觉语义理解 + 索引构建。
+    """执行 Stage 3: 视觉语义理解 + 索引构建。"""
 
-    1. VLM 结构化场景描述 (仅在 Stage 2 未生成时)
-    2. FAISS 向量索引构建
-    3. 文档存储 (enriched with structured captions)
-    """
     # --- 3.1 检查是否需要 VLM 补充描述 ---
     scenes_with_caption = sum(1 for s in scenes if s.structured_caption)
-    needs_vlm = scenes_with_caption < len(scenes) // 2  # 超过一半没描述才补充
+    needs_vlm = scenes_with_caption < len(scenes) // 2
 
     if needs_vlm and config.dashscope_api_key:
         logger.info("[Stage 3.1] 场景描述不完整 (%d/%d)，使用 VLM 补充...",
@@ -65,20 +55,17 @@ def run_stage3(
             entry["vlm_caption"] = scene.vlm_caption
         captions_data.append(entry)
 
-    captions_dir = os.path.join(output_dir, "stage3_captions", video_id)
-    os.makedirs(captions_dir, exist_ok=True)
-    save_json(captions_data, os.path.join(captions_dir, "captions.json"))
+    save_json(captions_data, paths.captions_json_path)
     logger.info(f"结构化描述已保存: {len(captions_data)} 个场景")
 
     # --- 3.3 构建 FAISS 索引 ---
-    embeddings_path = os.path.join(output_dir, "stage2_features", video_id, "clip_vectors.npy")
-    if os.path.isfile(embeddings_path):
+    if paths.clip_vectors_path_exists:
         _build_faiss_index(
             video_id=video_id,
             scenes=scenes,
             scene_transcripts=scene_transcripts,
-            embeddings_path=embeddings_path,
-            output_dir=output_dir,
+            embeddings_path=paths.clip_vectors_path,
+            paths=paths,
         )
     else:
         logger.warning("未找到 CLIP 向量文件，跳过索引构建")
@@ -90,8 +77,7 @@ def run_stage3(
         "scenes": [s.to_dict() for s in scenes],
         "transcripts": {sid: texts for sid, texts in scene_transcripts.items()},
     }
-    scenes_dir = os.path.join(output_dir, "stage1_scenes", video_id)
-    save_json(metadata, os.path.join(scenes_dir, "metadata.json"))
+    save_json(metadata, paths.metadata_json_path)
 
     logger.info("[Stage 3] 完成")
 
@@ -101,22 +87,20 @@ def _generate_structured_captions(
     scene_transcripts: dict[str, list[str]],
     config: AppConfig,
 ):
-    """使用 VLM 生成结构化场景描述 (仅在需要时调用)"""
+    """使用 VLM 生成结构化场景描述"""
     from vl.core.llm.qwen_vl import QwenVLClient
-    from vl.core.llm.base_client import BaseLLMClient
+    from vl.core.llm.qwen_text import QwenTextClient
 
     vl_client = QwenVLClient(model=config.model_vlm, api_key=config.dashscope_api_key)
-    json_extractor = BaseLLMClient(model=config.model_text, api_key=config.dashscope_api_key)
+    text_client = QwenTextClient(model=config.model_text, api_key=config.dashscope_api_key)
 
-    prompts = config.prompts.get("scene_caption", {})
-    user_template = prompts.get("user", "")
+    user_template, _ = load_prompt(config, "scene_caption")
 
     prev_caption = "{}"
     total = len(scenes)
     captioned = 0
 
     for i, scene in enumerate(scenes):
-        # 跳过已有描述的场景
         if scene.structured_caption:
             continue
         if not scene.keyframe_paths:
@@ -141,16 +125,16 @@ def _generate_structured_captions(
             stride=config.vlm_stride,
         )
         if raw_output:
-            extracted = json_extractor.extract_json(raw_output)
+            extracted = text_client.extract_json(raw_output)
             if extracted:
                 try:
                     caption_dict = json.loads(extracted)
-                    # 归一化: actions(list) → main_actions(string)
+                    scene.structured_caption = scene.get_normalized_caption()
+                    # 用原始提取结果更新到场景
                     if "actions" in caption_dict and "main_actions" not in caption_dict:
                         actions = caption_dict["actions"]
                         if isinstance(actions, list):
-                            caption_dict["main_actions"] = "；".join(str(a) for a in actions)
-                    # 归一化: interaction → interactions
+                            caption_dict["main_actions"] = "\uff1b".join(str(a) for a in actions)
                     if "interaction" in caption_dict and "interactions" not in caption_dict:
                         caption_dict["interactions"] = caption_dict["interaction"]
                     scene.structured_caption = caption_dict
@@ -173,7 +157,7 @@ def _build_faiss_index(
     scenes: list[Scene],
     scene_transcripts: dict[str, list[str]],
     embeddings_path: str,
-    output_dir: str,
+    paths: PathManager,
 ):
     """构建 FAISS 向量索引 + 文档存储"""
     logger.info("[Stage 3.3] 开始构建 FAISS 索引...")
@@ -193,9 +177,7 @@ def _build_faiss_index(
     store.add_batch(scene_ids, embeddings)
     logger.info(f"索引向量总数: {store.size}")
 
-    index_dir = os.path.join(output_dir, "stage3_captions", video_id)
-    os.makedirs(index_dir, exist_ok=True)
-    store.save(os.path.join(index_dir, "index.faiss"))
+    store.save(paths.faiss_index_path)
 
     doc_store = []
     for scene in indexed_scenes:
@@ -213,6 +195,6 @@ def _build_faiss_index(
             doc["structured_caption"] = scene.structured_caption
         doc_store.append(doc)
 
-    save_json(doc_store, os.path.join(index_dir, "doc_store.json"))
+    save_json(doc_store, paths.doc_store_path)
 
     logger.info(f"索引构建完成: {store.size} 个场景向量, dim={dim}")

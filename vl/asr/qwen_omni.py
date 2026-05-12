@@ -1,103 +1,22 @@
 """Qwen3.5-Omni-Plus 全模态视频理解模块
 
 通过 DashScope OpenAI 兼容 API 调用 qwen3.5-omni-plus 模型，
-同时传入音频 + 关键帧图片 + 结构化 prompt，实现像人一样的视频理解：
-  - 听到谁在说话、说了什么、什么情感
-  - 看到画面中有什么角色、在做什么、什么场景
-  - 自然而然地关联音频与画面
-
-核心能力:
-  - 说话人识别 (根据音色区分)
-  - 逐句转录 + 时间戳 + 情感
-  - 视觉场景描述 + 角色识别
-  - 音频与画面的自然关联
-
-流程:
-  1. 将视频按时段切分为 ~2min 片段 (按场景边界)
-  2. 每个片段: 音频切片 + 2~5张关键帧 → qwen3.5-omni-plus
-  3. 解析结构化 JSON 输出 (说话人/台词/情感/视觉描述)
-  4. 映射回各场景
+同时传入音频 + 关键帧图片 + 结构化 prompt，实现像人一样的视频理解。
 """
 
 import base64
 import json
 import os
 import uuid
-from dataclasses import dataclass, field
-from typing import Optional
 
 from openai import OpenAI
 
+from vl.core.models.omni import OmniSegment, OmniSceneDescription, OmniChunkResult
+from vl.core.helpers.text_utils import extract_json_obj
+from vl.core.helpers.scene_utils import assign_segments_to_scenes
 from vl.core.logging import get_logger
 
 logger = get_logger()
-
-
-@dataclass
-class OmniSegment:
-    """单个转写片段 (含说话人 + 情感)"""
-    segment_id: str
-    text: str
-    start_time: float
-    end_time: float
-    speaker: str = ""
-    emotion: str = ""
-    language: str = ""
-    scene_id: str = ""
-    confidence: float = 1.0
-
-    def to_dict(self):
-        return {
-            "segment_id": self.segment_id,
-            "text": self.text,
-            "start_time": self.start_time,
-            "end_time": self.end_time,
-            "speaker": self.speaker,
-            "emotion": self.emotion,
-            "language": self.language,
-            "scene_id": self.scene_id,
-            "confidence": self.confidence,
-        }
-
-
-@dataclass
-class OmniSceneDescription:
-    """片段的视觉场景描述"""
-    time_of_day: str = ""
-    space: str = ""
-    subspace: str = ""
-    scene: str = ""
-    characters: list = field(default_factory=list)
-    main_actions: str = ""
-    interactions: str = ""
-    emotion: str = ""
-    plot_state: str = ""
-
-    def to_dict(self):
-        return {
-            "time_of_day": self.time_of_day,
-            "space": self.space,
-            "subspace": self.subspace,
-            "scene": self.scene,
-            "characters": self.characters,
-            "main_actions": self.main_actions,
-            "interactions": self.interactions,
-            "emotion": self.emotion,
-            "plot_state": self.plot_state,
-        }
-
-
-@dataclass
-class OmniChunkResult:
-    """单个片段的完整理解结果"""
-    chunk_index: int
-    time_start: float
-    time_end: float
-    segments: list[OmniSegment] = field(default_factory=list)
-    speakers: list[dict] = field(default_factory=list)
-    scene_description: Optional[OmniSceneDescription] = None
-    raw_text: str = ""
-    content_type: str = "main"  # "opening" | "main" | "ending"
 
 
 # 结构化 Prompt —— 引导模型输出 JSON
@@ -253,7 +172,7 @@ class QwenOmni:
             time_end=time_end,
         )
 
-        parsed = self._extract_json(raw)
+        parsed = extract_json_obj(raw)
         if not parsed or not isinstance(parsed, dict):
             # JSON 解析失败，作为纯文本处理
             if raw.strip():
@@ -303,7 +222,7 @@ class QwenOmni:
                 scene=visual.get("scene", ""),
                 characters=visual.get("characters", visual.get("characters_visible", [])),
                 main_actions=visual.get("main_actions", visual.get("actions", "")),
-                interactions=visual.get("interactions", ""),
+                interactions=visual.get("interactions", visual.get("interaction", "")),
                 emotion=visual.get("emotion", visual.get("atmosphere", "")),
                 plot_state=visual.get("plot_state", ""),
             )
@@ -311,50 +230,9 @@ class QwenOmni:
         return result
 
     @staticmethod
-    def _extract_json(text: str):
-        """从模型输出中提取 JSON"""
-        import regex
-
-        text = text.strip()
-
-        # 尝试直接解析
-        if text.startswith("{") or text.startswith("["):
-            try:
-                return json.loads(text)
-            except json.JSONDecodeError:
-                pass
-
-        # 提取 JSON 代码块
-        match = regex.search(r"```(?:json)?\s*(\{.*?\})\s*```", text, regex.DOTALL)
-        if match:
-            try:
-                return json.loads(match.group(1))
-            except json.JSONDecodeError:
-                pass
-
-        # 提取裸 JSON 对象
-        match = regex.search(
-            r"\{(?:[^{}]|\{(?:[^{}]|\{[^{}]*\})*\})*\}",
-            text, regex.DOTALL,
-        )
-        if match:
-            try:
-                return json.loads(match.group(0))
-            except json.JSONDecodeError:
-                pass
-
-        return None
-
-    @staticmethod
     def assign_to_scenes(
         segments: list[OmniSegment],
         scenes: list,
     ) -> list[OmniSegment]:
         """将转写片段分配到对应的视频场景"""
-        for seg in segments:
-            mid = (seg.start_time + seg.end_time) / 2
-            for scene in scenes:
-                if scene.start_time <= mid <= scene.end_time:
-                    seg.scene_id = scene.scene_id
-                    break
-        return segments
+        return assign_segments_to_scenes(segments, scenes)

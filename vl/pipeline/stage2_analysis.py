@@ -1,16 +1,4 @@
-"""Stage 2: 多模态场景理解
-
-使用 Qwen3.5-Omni-Plus 同时理解音频+画面，像人一样看视频：
-  - 听到谁在说话、说了什么、什么情感
-  - 看到画面中有什么角色、在做什么、什么场景
-  - 音频与画面的自然关联
-
-流程:
-  1. 将场景按时间分组 (~2min/组)
-  2. 每组: 音频切片 + 关键帧 → Qwen3.5-Omni → 结构化理解
-  3. 解析说话人/台词/情感/视觉描述 → 映射回场景
-  4. CLIP 向量编码 (用于检索)
-"""
+"""Stage 2: 多模态场景理解"""
 
 import os
 import numpy as np
@@ -18,7 +6,9 @@ import numpy as np
 from vl.core.config import AppConfig
 from vl.core.models.scene import Scene
 from vl.core.models.transcript import TranscriptSegment
+from vl.core.paths import PathManager
 from vl.core.helpers.json_utils import save_json
+from vl.core.helpers.prompt_loader import load_prompt
 from vl.vision.clip_encoder import CLIPEncoder
 from pydub import AudioSegment
 
@@ -28,7 +18,7 @@ logger = get_logger()
 
 
 # ---------------------------------------------------------------------------
-# 场景分组: 按时间将场景合并为 ~target_duration 秒的片段
+# 场景分组
 # ---------------------------------------------------------------------------
 
 def _group_scenes_by_time(
@@ -71,13 +61,12 @@ def _select_keyframes(
     if len(all_kf) <= max_frames:
         return all_kf
 
-    # 均匀采样
     step = len(all_kf) / max_frames
     return [all_kf[int(i * step)] for i in range(max_frames)]
 
 
 # ---------------------------------------------------------------------------
-# Qwen-Omni 后端: 全模态理解
+# Qwen-Omni 后端
 # ---------------------------------------------------------------------------
 
 def _transcribe_qwen_omni(
@@ -85,19 +74,10 @@ def _transcribe_qwen_omni(
     scenes: list[Scene],
     config: AppConfig,
 ) -> tuple[list[TranscriptSegment], dict[str, dict], dict[str, str]]:
-    """
-    使用 Qwen3.5-Omni-Plus 进行全模态理解。
-
-    Returns:
-        segments: 转录片段列表
-        visual_descriptions: {scene_id: visual_dict} 视觉描述
-        scene_content_types: {scene_id: content_type} 内容类型
-    """
+    """使用 Qwen3.5-Omni-Plus 进行全模态理解。"""
     from vl.asr.qwen_omni import QwenOmni
 
-    # 从 prompts.yaml 加载 stage2_omni prompt
-    omni_prompts = config.prompts.get("stage2_omni", {})
-    omni_prompt = omni_prompts.get("user", "")
+    omni_prompt, _ = load_prompt(config, "stage2_omni")
 
     omni = QwenOmni(
         api_key=config.dashscope_api_key,
@@ -106,11 +86,9 @@ def _transcribe_qwen_omni(
         prompt=omni_prompt,
     )
 
-    # 按时间分组
     groups = _group_scenes_by_time(scenes, target_duration=config.asr_chunk_duration)
     logger.info(f"场景分为 {len(groups)} 个片段 (每组 ~{config.asr_chunk_duration}s)")
 
-    # 加载完整音频
     logger.info(f"加载音频: {audio_path}")
     full_audio = AudioSegment.from_file(audio_path)
     logger.info(f"音频时长: {len(full_audio) / 1000:.1f}秒")
@@ -126,7 +104,6 @@ def _transcribe_qwen_omni(
                      f"场景 {group[0].scene_id}~{group[-1].scene_id} "
                      f"[{group_start:.1f}s - {group_end:.1f}s]")
 
-        # 提取音频切片
         start_ms = int(group_start * 1000)
         end_ms = int(group_end * 1000)
         chunk_audio = full_audio[start_ms:end_ms]
@@ -137,7 +114,6 @@ def _transcribe_qwen_omni(
         )
         chunk_audio.export(tmp_path, format="wav")
 
-        # 选择关键帧
         kf_paths = _select_keyframes(group, config.asr_max_keyframes_per_chunk)
 
         try:
@@ -149,9 +125,7 @@ def _transcribe_qwen_omni(
                 time_end=group_end,
             )
 
-            # 将台词转为 TranscriptSegment
             for seg in result.segments:
-                # 找到对应的场景
                 mid = (seg.start_time + seg.end_time) / 2
                 scene_id = ""
                 for s in group:
@@ -169,20 +143,14 @@ def _transcribe_qwen_omni(
                     confidence=seg.confidence,
                 ))
 
-            # 视觉描述映射到组内场景
             if result.scene_description:
                 vis_dict = result.scene_description.to_dict()
-                # 主要映射到组内中间场景
-                mid_idx = len(group) // 2
-                for j, s in enumerate(group):
-                    # 所有场景共享基础描述，但可以后续被 stage4 细化
+                for s in group:
                     visual_descriptions[s.scene_id] = vis_dict
 
-            # 将 content_type 映射到组内场景
             for s in group:
                 scene_content_types[s.scene_id] = result.content_type
 
-            # 保存说话人信息
             if result.speakers:
                 speakers_path = os.path.join(
                     os.path.dirname(audio_path),
@@ -198,7 +166,6 @@ def _transcribe_qwen_omni(
 
     logger.info(f"全模态理解完成: {len(all_segments)} 句台词, "
                  f"{len(visual_descriptions)} 个场景有视觉描述")
-    # 统计 content_type 分布
     ct_counts = {}
     for ct in scene_content_types.values():
         ct_counts[ct] = ct_counts.get(ct, 0) + 1
@@ -207,7 +174,7 @@ def _transcribe_qwen_omni(
 
 
 # ---------------------------------------------------------------------------
-# Qwen-ASR 后端: 纯音频转录 (旧版, 保留兼容)
+# Qwen-ASR 后端
 # ---------------------------------------------------------------------------
 
 def _transcribe_qwen(
@@ -243,7 +210,7 @@ def _transcribe_qwen(
 
 
 # ---------------------------------------------------------------------------
-# Whisper 本地后端 (旧版, 保留兼容)
+# Whisper 本地后端
 # ---------------------------------------------------------------------------
 
 def _transcribe_whisper(
@@ -273,16 +240,10 @@ def run_stage2(
     video_id: str,
     scenes: list[Scene],
     audio_path: str,
-    output_dir: str,
+    paths: PathManager,
     config: AppConfig,
 ) -> dict[str, list[str]]:
-    """
-    执行 Stage 2: 多模态场景理解。
-
-    根据配置选择后端:
-      - qwen-omni: 全模态 (音频+画面) 理解，推荐
-      - qwen: 纯音频 API 转录
-      - whisper: 本地 faster-whisper
+    """执行 Stage 2: 多模态场景理解。
 
     Returns:
         scene_transcripts: {scene_id: [text_segments]}
@@ -300,11 +261,9 @@ def run_stage2(
         scene_content_types = {s.scene_id: "main" for s in scenes}
 
     # 保存转录结果
-    transcript_dir = os.path.join(output_dir, "stage2_features", video_id)
-    os.makedirs(transcript_dir, exist_ok=True)
     save_json(
         [s.to_dict() for s in segments],
-        os.path.join(transcript_dir, "transcript.json"),
+        paths.transcript_json_path,
     )
     logger.info(f"转录完成: {len(segments)} 个片段")
 
@@ -313,7 +272,6 @@ def run_stage2(
         for scene in scenes:
             if scene.scene_id in visual_descs:
                 vis = visual_descs[scene.scene_id]
-                # 合并到 structured_caption (如果还没有的话)
                 if not scene.structured_caption:
                     scene.structured_caption = {}
                 scene.structured_caption.update(vis)
@@ -328,10 +286,7 @@ def run_stage2(
     for seg in segments:
         scene_transcripts.setdefault(seg.scene_id, []).append(seg.text)
 
-    # --- 说话人对齐 (仅 whisper 后端需要) ---
-    # 已移除: 使用 qwen-omni 全模态后端时，说话人识别由模型直接完成
-
-    # 2. CLIP 向量编码
+    # CLIP 向量编码
     logger.info("[Stage 2.2] 开始 CLIP 编码...")
     clip = CLIPEncoder(model_name=config.model_clip)
 
@@ -348,18 +303,15 @@ def run_stage2(
             if i < len(embeddings):
                 scene.clip_embedding = embeddings[i].tolist()
 
-        embeddings_dir = os.path.join(output_dir, "stage2_features", video_id)
-        os.makedirs(embeddings_dir, exist_ok=True)
-        np.save(os.path.join(embeddings_dir, "clip_vectors.npy"), embeddings)
+        np.save(paths.clip_vectors_path, embeddings)
         logger.info(f"CLIP 编码完成: {len(embeddings)} 个场景向量")
 
-    # 3. 从 omni 输出中提取角色信息
+    # 从 omni 输出中提取角色信息
     _extract_characters_from_omni(
         visual_descriptions=visual_descs,
         scene_transcripts=scene_transcripts,
         scenes=scenes,
-        video_id=video_id,
-        output_dir=output_dir,
+        paths=paths,
         config=config,
     )
 
@@ -371,17 +323,15 @@ def _extract_characters_from_omni(
     visual_descriptions: dict[str, dict],
     scene_transcripts: dict[str, list[str]],
     scenes: list[Scene],
-    video_id: str,
-    output_dir: str,
+    paths: PathManager,
     config: AppConfig,
 ):
-    """从 qwen-omni 输出中提取角色信息，保存到 characters.json"""
+    """从 qwen-omni 输出中提取角色信息"""
     from collections import defaultdict
     from vl.core.models.character import Character
 
     logger.info("[Stage 2.3] 从 omni 输出中提取角色信息...")
 
-    # 1. 从 visual_descriptions 中聚合角色名 → 出现场景
     char_scenes: dict[str, set[str]] = defaultdict(set)
     for scene in scenes:
         vis = visual_descriptions.get(scene.scene_id)
@@ -391,7 +341,7 @@ def _extract_characters_from_omni(
             if char_name and char_name not in ("未知", "无"):
                 char_scenes[char_name].add(scene.scene_id)
 
-    # 2. 可选: 从台词中提取额外角色名 (LLM)
+    # 可选: 从台词中提取额外角色名
     if config.dashscope_api_key and scene_transcripts:
         try:
             from vl.core.llm.qwen_text import QwenTextClient
@@ -407,10 +357,9 @@ def _extract_characters_from_omni(
                 )
                 existing_names = list(char_scenes.keys())
 
-                char_prompts = config.prompts.get("stage2_character_extract", {})
-                user_tpl = char_prompts.get("user", "")
-                if user_tpl:
-                    prompt = user_tpl.format(
+                char_prompt_tpl, _ = load_prompt(config, "stage2_character_extract")
+                if char_prompt_tpl:
+                    prompt = char_prompt_tpl.format(
                         transcript_summary=transcript_summary,
                         existing_names=", ".join(existing_names) if existing_names else "无",
                     )
@@ -429,13 +378,12 @@ def _extract_characters_from_omni(
                         if n.strip() and n.strip() not in char_scenes
                     ]
                     for name in extra_names:
-                        char_scenes[name]  # 创建空集合条目
+                        char_scenes[name]
                     if extra_names:
                         logger.info(f"  台词中额外识别的角色: {extra_names}")
         except Exception as e:
             logger.warning(f"  台词角色提取失败: {e}")
 
-    # 3. 构建 Character 列表
     characters = []
     for idx, (name, scene_ids) in enumerate(sorted(char_scenes.items())):
         characters.append(Character(
@@ -444,13 +392,10 @@ def _extract_characters_from_omni(
             appearance_scenes=sorted(scene_ids),
         ))
 
-    # 4. 保存
     if characters:
-        characters_dir = os.path.join(output_dir, "stage2_features", video_id)
-        os.makedirs(characters_dir, exist_ok=True)
         save_json(
             [c.to_dict() for c in characters],
-            os.path.join(characters_dir, "characters.json"),
+            paths.characters_json_path,
         )
         logger.info(f"角色提取完成: {[c.label for c in characters]}")
     else:

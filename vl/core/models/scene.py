@@ -47,3 +47,26 @@ class Scene:
     @property
     def duration(self) -> float:
         return self.end_time - self.start_time
+
+    def get_normalized_caption(self) -> dict:
+        """获取归一化的结构化描述。
+
+        统一处理:
+          - actions(list) → main_actions(string)
+          - interaction → interactions
+        """
+        cap = self.structured_caption or {}
+        if not cap:
+            return cap
+
+        # actions(list) → main_actions(string)
+        if "actions" in cap and "main_actions" not in cap:
+            actions = cap["actions"]
+            if isinstance(actions, list):
+                cap["main_actions"] = "\uff1b".join(str(a) for a in actions)
+
+        # interaction → interactions
+        if "interaction" in cap and "interactions" not in cap:
+            cap["interactions"] = cap["interaction"]
+
+        return cap
