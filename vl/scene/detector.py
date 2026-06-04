@@ -1,7 +1,6 @@
 """场景检测 - 使用 PySceneDetect 检测视频场景边界"""
 
 import os
-from typing import Optional
 
 import cv2
 from scenedetect import detect, ContentDetector, AdaptiveDetector, SceneManager, open_video

@@ -174,64 +174,6 @@ def _transcribe_qwen_omni(
 
 
 # ---------------------------------------------------------------------------
-# Qwen-ASR 后端
-# ---------------------------------------------------------------------------
-
-def _transcribe_qwen(
-    audio_path: str,
-    scenes: list[Scene],
-    config: AppConfig,
-) -> tuple[list[TranscriptSegment], dict]:
-    from vl.asr.qwen_asr import QwenASR
-
-    asr = QwenASR(
-        api_key=config.dashscope_api_key,
-        language=config.asr_language,
-        chunk_duration=config.asr_chunk_duration,
-        silence_min_len=config.asr_silence_min_len,
-        silence_thresh=config.asr_silence_thresh,
-    )
-
-    qwen_segments = asr.transcribe(audio_path)
-    qwen_segments = asr.assign_to_scenes(qwen_segments, scenes)
-
-    results = []
-    for seg in qwen_segments:
-        results.append(TranscriptSegment(
-            segment_id=seg.segment_id,
-            scene_id=seg.scene_id,
-            speaker_id=seg.speaker or "SPEAKER_00",
-            text=seg.text,
-            start_time=seg.start_time,
-            end_time=seg.end_time,
-            confidence=seg.confidence,
-        ))
-    return results, {}
-
-
-# ---------------------------------------------------------------------------
-# Whisper 本地后端
-# ---------------------------------------------------------------------------
-
-def _transcribe_whisper(
-    audio_path: str,
-    scenes: list[Scene],
-    config: AppConfig,
-) -> tuple[list[TranscriptSegment], dict]:
-    from vl.asr.transcriber import Transcriber
-
-    transcriber = Transcriber(
-        model_size=config.model_whisper,
-        language=config.asr_language,
-        beam_size=config.asr_beam_size,
-        vad_filter=config.asr_vad_filter,
-    )
-    segments = transcriber.transcribe(audio_path)
-    segments = transcriber.assign_to_scenes(segments, scenes)
-    return segments, {}
-
-
-# ---------------------------------------------------------------------------
 # Stage 2 主入口
 # ---------------------------------------------------------------------------
 
@@ -248,17 +190,11 @@ def run_stage2(
     Returns:
         scene_transcripts: {scene_id: [text_segments]}
     """
-    backend = config.asr_backend
-    logger.info("[Stage 2.1] 开始多模态理解... (backend=%s)", backend)
+    logger.info("[Stage 2.1] 开始多模态理解... (backend=qwen-omni)")
 
-    if backend == "qwen-omni" and config.dashscope_api_key:
-        segments, visual_descs, scene_content_types = _transcribe_qwen_omni(audio_path, scenes, config)
-    elif backend == "qwen" and config.dashscope_api_key:
-        segments, visual_descs = _transcribe_qwen(audio_path, scenes, config)
-        scene_content_types = {s.scene_id: "main" for s in scenes}
-    else:
-        segments, visual_descs = _transcribe_whisper(audio_path, scenes, config)
-        scene_content_types = {s.scene_id: "main" for s in scenes}
+    segments, visual_descs, scene_content_types = _transcribe_qwen_omni(
+        audio_path, scenes, config,
+    )
 
     # 保存转录结果
     save_json(

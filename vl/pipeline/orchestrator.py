@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from vl.core.config import get_config
 from vl.core.paths import PathManager
 from vl.core.logging import get_logger
+from vl.core.cost import get_cost_tracker, reset_cost_tracker
 from vl.core.helpers.json_utils import save_json, load_json
 from vl.core.helpers.ffmpeg import extract_audio
 from vl.core.models.scene import Scene
@@ -56,7 +57,7 @@ class Checkpoint:
 class PipelineOrchestrator:
     """流水线主控制器"""
 
-    TOTAL_STAGES = 5
+    TOTAL_STAGES = 6
 
     def __init__(self, video_path: str, genre: str = "cartoon"):
         self.config = get_config()
@@ -70,6 +71,11 @@ class PipelineOrchestrator:
         self._scene_transcripts: dict[str, list[str]] = {}
         self._characters_info: str = ""
 
+        # 初始化代价追踪
+        reset_cost_tracker()
+        tracker = get_cost_tracker()
+        tracker.configure_pricing(self.config.pricing)
+
     def _load_or_create_checkpoint(self) -> Checkpoint:
         cp_path = self.paths.checkpoint_path
         if os.path.isfile(cp_path):
@@ -80,6 +86,7 @@ class PipelineOrchestrator:
             stages={
                 "stage1": "pending",
                 "stage2": "pending",
+                "stage2.5": "pending",
                 "stage3": "pending",
                 "stage4": "pending",
                 "stage5": "pending",
@@ -96,6 +103,7 @@ class PipelineOrchestrator:
         stages = [
             ("stage1", "场景分割", self._stage1),
             ("stage2", "特征提取", self._stage2),
+            ("stage2.5", "声纹识别", self._stage2_5_voiceprint),
             ("stage3", "帧描述生成", self._stage3),
             ("stage4", "事件提取", self._stage4),
             ("stage5", "结构化知识库", self._stage5),
@@ -105,6 +113,8 @@ class PipelineOrchestrator:
             if resume and self.checkpoint.is_done(stage_name):
                 logger.info(f"[Stage {stage_name}] 已完成，跳过")
                 if stage_name == "stage2":
+                    self._load_stage2_outputs()
+                if stage_name == "stage2.5":
                     self._load_stage2_outputs()
                 continue
 
@@ -118,6 +128,12 @@ class PipelineOrchestrator:
             logger.info("── 各阶段耗时 ──")
             for stage_name, stage_elapsed in self._stage_timings.items():
                 logger.info("  %s: %.1f秒", stage_name, stage_elapsed)
+
+        # 输出代价报告
+        tracker = get_cost_tracker()
+        report = tracker.report()
+        for line in report.split("\n"):
+            logger.info(line)
 
     def _run_stage(self, name: str, func):
         self.checkpoint.mark(name, "running")
@@ -206,6 +222,67 @@ class PipelineOrchestrator:
             characters = load_json(characters_path)
             names = [c.get("label", "") for c in characters if c.get("label")]
             self._characters_info = "、".join(names)
+
+    def _stage2_5_voiceprint(self):
+        """Stage 2.5: 逐段声纹识别，替换匿名 speaker_id 为真实角色名"""
+        config = self.config
+
+        if not config.voiceprint_enabled:
+            logger.info("声纹识别已禁用，跳过")
+            return
+
+        if not config.voiceprint_app_id:
+            logger.warning("缺少讯飞声纹凭证 (XFYUN_APP_ID)，跳过声纹识别")
+            return
+
+        if not os.path.isfile(self.paths.audio_path):
+            logger.warning(f"音频文件不存在: {self.paths.audio_path}，跳过声纹识别")
+            return
+
+        from vl.core.models.transcript import TranscriptSegment
+        from vl.voiceprint.client import VoiceprintClient
+        from vl.voiceprint.matcher import match_per_segment
+
+        # 加载 transcript.json
+        segments_data = load_json(self.paths.transcript_json_path)
+        segments = [TranscriptSegment.from_dict(s) for s in segments_data]
+        logger.info(f"加载了 {len(segments)} 个台词片段")
+
+        client = VoiceprintClient(
+            app_id=config.voiceprint_app_id,
+            api_key=config.voiceprint_api_key,
+            api_secret=config.voiceprint_api_secret,
+            group_id=config.voiceprint_group_id,
+        )
+
+        segments, report = match_per_segment(
+            segments=segments,
+            audio_path=self.paths.audio_path,
+            client=client,
+            score_threshold=config.voiceprint_score_threshold,
+            min_duration=config.voiceprint_min_duration,
+            name_mapping=config.voiceprint_name_mapping,
+        )
+
+        # 覆写 transcript.json（speaker_id 已被替换）
+        save_json(
+            [s.to_dict() for s in segments],
+            self.paths.transcript_json_path,
+        )
+
+        # 保存声纹识别报告
+        save_json(report, self.paths.voiceprint_result_path)
+
+        # 重建 scene_transcripts
+        self._scene_transcripts = {}
+        for seg in segments:
+            if seg.scene_id and seg.text:
+                self._scene_transcripts.setdefault(seg.scene_id, []).append(seg.text)
+
+        logger.info(
+            f"声纹识别完成: {report['matched']}/{report['segments_sent']} 匹配 "
+            f"({report['skipped']} 跳过, {report['failed']} 失败)"
+        )
 
     def _stage3(self):
         scenes = self._load_enriched_scenes()

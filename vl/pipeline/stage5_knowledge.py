@@ -6,7 +6,7 @@ from vl.core.config import AppConfig
 from vl.core.models.scene import Scene
 from vl.core.paths import PathManager
 from vl.core.helpers.json_utils import save_json
-from vl.core.helpers.text_utils import extract_json_str
+from vl.core.helpers.text_utils import extract_json
 from vl.core.helpers.prompt_loader import load_prompt
 
 from vl.core.logging import get_logger
@@ -97,7 +97,7 @@ def _generate_knowledge_base_with_llm(
 
         raw = text_client.generate(prompt, system=system_prompt)
         if raw:
-            extracted = extract_json_str(raw)
+            extracted = extract_json(raw)
             if extracted:
                 try:
                     parsed = json.loads(extracted)

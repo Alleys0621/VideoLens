@@ -1,12 +1,11 @@
 """文本工具 - JSON 提取 (合并自 BaseLLMClient 和 QwenOmni)"""
 
 import json
-from typing import Optional
 
 import regex
 
 
-def extract_json(raw_output: str) -> Optional[str]:
+def extract_json(raw_output: str) -> str | None:
     """从文本中提取 JSON 字符串。
 
     尝试策略:

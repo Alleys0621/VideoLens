@@ -7,7 +7,7 @@ from vl.core.config import AppConfig
 from vl.core.models.scene import Scene
 from vl.core.paths import PathManager
 from vl.core.helpers.json_utils import save_json
-from vl.core.helpers.text_utils import extract_json as extract_json_str
+from vl.core.helpers.text_utils import extract_json
 from vl.core.helpers.prompt_loader import load_prompt
 from vl.store.vector_store import VectorStore
 

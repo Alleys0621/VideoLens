@@ -7,6 +7,7 @@
 import base64
 import json
 import os
+import time
 import uuid
 
 from openai import OpenAI
@@ -14,6 +15,7 @@ from openai import OpenAI
 from vl.core.models.omni import OmniSegment, OmniSceneDescription, OmniChunkResult
 from vl.core.helpers.text_utils import extract_json_obj
 from vl.core.helpers.scene_utils import assign_segments_to_scenes
+from vl.core.cost import get_cost_tracker
 from vl.core.logging import get_logger
 
 logger = get_logger()
@@ -141,8 +143,9 @@ class QwenOmni:
         b64 = base64.b64encode(data).decode()
         return f"data:{mime_type};base64,{b64}"
 
-    def _call_api(self, content: list) -> str:
+    def _call_api(self, content: list, stage: str = "") -> str:
         """调用 Qwen3.5-Omni-Plus API (流式)"""
+        t0 = time.time()
         response = self.client.chat.completions.create(
             model=self.model,
             messages=[{"role": "user", "content": content}],
@@ -152,9 +155,27 @@ class QwenOmni:
         )
 
         full_text = ""
+        input_tokens = 0
+        output_tokens = 0
         for chunk in response:
             if chunk.choices and chunk.choices[0].delta.content:
                 full_text += chunk.choices[0].delta.content
+            # 最后一个 chunk 包含 usage
+            if hasattr(chunk, 'usage') and chunk.usage:
+                input_tokens = chunk.usage.prompt_tokens or 0
+                output_tokens = chunk.usage.completion_tokens or 0
+
+        latency = time.time() - t0
+
+        # 上报用量
+        tracker = get_cost_tracker()
+        tracker.record(
+            model=self.model,
+            input_tokens=input_tokens,
+            output_tokens=output_tokens,
+            latency=latency,
+            stage=stage,
+        )
 
         return full_text
 

@@ -122,6 +122,10 @@ class PathManager:
         return os.path.join(self.video_stage2_dir, "characters.json")
 
     @property
+    def voiceprint_result_path(self) -> str:
+        return os.path.join(self.video_stage2_dir, "voiceprint_result.json")
+
+    @property
     def clip_vectors_path(self) -> str:
         return os.path.join(self.video_stage2_dir, "clip_vectors.npy")
 

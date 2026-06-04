@@ -5,6 +5,7 @@ import os
 import typer
 
 from vl.core.logging import get_logger
+from vl.core.cost import get_cost_tracker, reset_cost_tracker
 
 logger = get_logger()
 
@@ -19,6 +20,23 @@ _BANNER = f"""
 """
 
 app = typer.Typer(name="videolens", help="VideoLens - 影视视频内容分析与检索")
+
+
+def _init_tracker():
+    """初始化代价追踪器 (加载配置中的定价)"""
+    from vl.core.config import get_config
+    config = get_config()
+    reset_cost_tracker()
+    tracker = get_cost_tracker()
+    tracker.configure_pricing(config.pricing)
+    return tracker
+
+
+def _print_cost_report(tracker):
+    """输出代价报告"""
+    report = tracker.report()
+    if tracker.total_calls > 0:
+        typer.echo(report)
 
 
 @app.command()
@@ -42,6 +60,10 @@ def index(
     orchestrator = PipelineOrchestrator(video, genre=genre)
     orchestrator.run(resume=resume)
 
+    # 流水线跑完输出代价报告
+    tracker = get_cost_tracker()
+    _print_cost_report(tracker)
+
 
 @app.command()
 def search(
@@ -52,6 +74,8 @@ def search(
     """搜索场景：根据文本描述检索相关视频场景"""
     typer.echo(_BANNER)
     logger.info(f"搜索查询: \"{query}\" (top_k={top_k}, video={video or '全部'})")
+
+    tracker = _init_tracker()
 
     from vl.services.search import search_scenes
 
@@ -65,6 +89,7 @@ def search(
 
     if not all_results:
         typer.echo("未找到匹配的场景。")
+        _print_cost_report(tracker)
         return
 
     typer.echo(f"\n搜索结果 (共 {len(all_results)} 个):\n")
@@ -81,6 +106,8 @@ def search(
             typer.echo(f"    关键帧: {r['keyframe_paths'][0]}")
         typer.echo("-" * 70)
 
+    _print_cost_report(tracker)
+
 
 @app.command()
 def qa(
@@ -91,6 +118,8 @@ def qa(
     """视频问答：基于检索到的场景上下文回答问题"""
     typer.echo(_BANNER)
     logger.info(f"QA: \"{question}\" (top_k={top_k}, video={video or '全部'})")
+
+    tracker = _init_tracker()
 
     from vl.services.qa import answer_question
 
@@ -115,6 +144,8 @@ def qa(
     else:
         typer.echo("未能生成回答。", err=True)
 
+    _print_cost_report(tracker)
+
 
 @app.command()
 def analyze(
@@ -125,6 +156,8 @@ def analyze(
     """视频分析：生成摘要、角色分析或时间线"""
     typer.echo(_BANNER)
     logger.info(f"分析视频: {video} (类型: {analysis_type})")
+
+    tracker = _init_tracker()
 
     from vl.services.analysis import analyze_video
 
@@ -139,6 +172,8 @@ def analyze(
     typer.echo(f"{'=' * 70}")
     typer.echo(f"\n{result}")
     typer.echo(f"\n{'=' * 70}")
+
+    _print_cost_report(tracker)
 
 
 @app.command("test-stage")
@@ -163,6 +198,8 @@ def test_stage(
     typer.echo(f"测试 Stage {stage}: {stage_names[stage]} (视频: {video_id})")
     typer.echo("-" * 50)
 
+    tracker = _init_tracker()
+
     from vl.services.test_stage import run_test_stage
 
     try:
@@ -177,6 +214,8 @@ def test_stage(
         logger.error(f"Stage {stage} 测试失败: {e}", exc_info=True)
         typer.echo(f"\nStage {stage} 测试失败: {e}", err=True)
         raise typer.Exit(1)
+
+    _print_cost_report(tracker)
 
 
 if __name__ == "__main__":

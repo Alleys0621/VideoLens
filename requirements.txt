@@ -20,9 +20,6 @@ tqdm>=4.67.1
 scenedetect[opencv]>=0.6.4
 # transnetv2-pytorch>=0.1.3  # Phase 2: anime support
 
-# --- ASR ---
-faster-whisper>=1.1.1
-
 # --- Vision ---
 sentence-transformers>=3.4.0
 

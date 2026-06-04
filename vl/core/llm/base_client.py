@@ -1,10 +1,11 @@
 """LLM 基础客户端 - OpenAI 兼容 API"""
 
-from typing import Optional
+import time
 
 from openai import OpenAI
 
 from vl.core.config import get_config
+from vl.core.cost import get_cost_tracker
 from vl.core.helpers.text_utils import extract_json as _extract_json
 
 
@@ -24,16 +25,32 @@ class BaseLLMClient:
         messages: list[dict],
         model: str = "",
         temperature: float = 0.1,
+        stage: str = "",
     ) -> str:
         """发送聊天请求，返回原始文本"""
+        model = model or self.model
+        t0 = time.time()
         response = self.client.chat.completions.create(
-            model=model or self.model,
+            model=model,
             messages=messages,
             temperature=temperature,
         )
+        latency = time.time() - t0
+
+        # 上报用量
+        usage = response.usage
+        tracker = get_cost_tracker()
+        tracker.record(
+            model=model,
+            input_tokens=usage.prompt_tokens if usage else 0,
+            output_tokens=usage.completion_tokens if usage else 0,
+            latency=latency,
+            stage=stage,
+        )
+
         return response.choices[0].message.content
 
-    def extract_json(self, raw_output: str) -> Optional[str]:
+    def extract_json(self, raw_output: str) -> str | None:
         """从 LLM 输出中提取 JSON"""
         return _extract_json(raw_output)
 

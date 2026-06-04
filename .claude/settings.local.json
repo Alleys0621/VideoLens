@@ -28,7 +28,8 @@
       "Bash(.venv/Scripts/python -m vl.app.main index \"data/videos/052 鸟蛋之争.mp4\" --no-resume)",
       "Bash(mv vl/pipeline/stage4_alignment.py vl/pipeline/stage5_alignment.py)",
       "Bash(mv vl/pipeline/stage5_knowledge.py vl/pipeline/stage6_knowledge.py)",
-      "Bash(cat D:/Projects/VideoLens/data/output/checkpoints/*.json)"
+      "Bash(cat D:/Projects/VideoLens/data/output/checkpoints/*.json)",
+      "mcp__zread__search_doc"
     ]
   }
 }

@@ -1,7 +1,6 @@
 """Qwen-Omni 全模态理解数据模型"""
 
 from dataclasses import dataclass, field
-from typing import Optional
 
 
 @dataclass
@@ -66,6 +65,6 @@ class OmniChunkResult:
     time_end: float
     segments: list[OmniSegment] = field(default_factory=list)
     speakers: list[dict] = field(default_factory=list)
-    scene_description: Optional[OmniSceneDescription] = None
+    scene_description: OmniSceneDescription | None = None
     raw_text: str = ""
     content_type: str = "main"  # "opening" | "main" | "ending"

@@ -3,8 +3,7 @@
 models:
   vlm: "qwen-vl-max"
   text: "qwen-plus"
-  omni: "qwen3.5-omni-plus"    # Qwen3.5-Omni 全模态模型
-  whisper: "medium"
+  omni: "qwen3.5-omni-plus"
   clip: "sentence-transformers/clip-ViT-B-32"
 
 scene_detection:
@@ -16,14 +15,25 @@ scene_detection:
   vlm_stride: 2         # VLM 滑动窗口步长
 
 asr:
-  backend: "qwen-omni"       # "qwen-omni" (全模态) / "qwen" (ASR) / "whisper" (本地)
   language: "zh"
-  beam_size: 5
-  vad_filter: true
-  chunk_duration: 120         # 全模态理解每块最大秒数 (推荐 ≤120s)
-  silence_min_len: 500        # 静音检测最短时长 ms
-  silence_thresh: -40          # 静音检测阈值 dBFS
-  max_keyframes_per_chunk: 5  # 每块最多发送的关键帧数
+  chunk_duration: 120
+  max_keyframes_per_chunk: 5
+
+# 声纹识别 (讯飞)
+voiceprint:
+  enabled: true
+  group_id: "default_group"
+  score_threshold: 0.3
+  min_duration: 3.0
+  name_mapping:
+    xiyangyang: "喜羊羊"
+    lanyangyang: "懒羊羊"
+    meiyangyang: "美羊羊"
+    feiyangyang: "沸羊羊"
+    manyangyang: "慢羊羊"
+    huitailang: "灰太狼"
+    hongtailang: "红太狼"
+    nuanyangyang: "暖羊羊"
 
 clip:
   embedding_dim: 512
@@ -36,3 +46,22 @@ retrieval:
 paths:
   data_root: "data"
   output_root: "data/output"
+
+# 模型定价 (CNY / 百万 tokens)，覆盖默认值
+# 默认定价见 vl/core/cost.py DEFAULT_PRICING
+pricing:
+  qwen-plus:
+    input_per_m: 0.8
+    output_per_m: 2.0
+  qwen-vl-max:
+    input_per_m: 3.0
+    output_per_m: 9.0
+  qwen3.5-omni-plus:
+    input_per_m: 2.0
+    output_per_m: 6.0
+  qwen3.5-omni-flash:
+    input_per_m: 0.5
+    output_per_m: 1.5
+  qwen3-asr-flash:
+    input_per_m: 0.5
+    output_per_m: 1.0

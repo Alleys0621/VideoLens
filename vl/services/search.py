@@ -7,6 +7,7 @@ import re
 import numpy as np
 
 from vl.core.config import AppConfig, get_config
+from vl.core.helpers.json_utils import load_json
 from vl.core.helpers.prompt_loader import load_prompt
 from vl.vision.clip_encoder import CLIPEncoder
 from vl.store.vector_store import VectorStore
@@ -70,7 +71,7 @@ def search_scenes(
         store.load(faiss_path)
 
         results = store.search(query_vec, top_k=top_k)
-        docs = json.load(open(doc_path, "r", encoding="utf-8"))
+        docs = load_json(doc_path)
         doc_map = {d["scene_id"]: d for d in docs}
 
         for scene_id, score in results:
