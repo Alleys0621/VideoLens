@@ -27,5 +27,29 @@ data/output/
 # Model weights
 data/models/
 
+# Experiments data
+experiments/results/
+experiments/test_omni_result/
+
 # Logs
 *.log
+
+# Media files (images, audio, video)
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.webp
+*.svg
+*.wav
+*.mp3
+*.flac
+*.aac
+*.ogg
+*.mp4
+*.avi
+*.mkv
+*.mov
+*.wmv
+*.webm

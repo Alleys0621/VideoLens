@@ -1,0 +1,1482 @@
+{
+  "language": "zh",
+  "duration": 846.5,
+  "sentences": [
+    {
+      "text": "等你的你喜羊羊美羊羊懒羊羊沸羊羊，",
+      "start_time": 1.33,
+      "end_time": 11.89,
+      "speaker_id": "spk0"
+    },
+    {
+      "text": "慢羊羊软绵绵，",
+      "start_time": 12.15,
+      "end_time": 13.85,
+      "speaker_id": "spk1"
+    },
+    {
+      "text": "红太狼灰太狼别看我只是一只羊草也为我变得更香。",
+      "start_time": 14.09,
+      "end_time": 28.39,
+      "speaker_id": "spk1"
+    },
+    {
+      "text": "做游戏一场在什么事情都要开心，",
+      "start_time": 60.08,
+      "end_time": 66.94,
+      "speaker_id": "spk1"
+    },
+    {
+      "text": "笑容都会飞翔。",
+      "start_time": 66.94,
+      "end_time": 68.46,
+      "speaker_id": "spk1"
+    },
+    {
+      "text": "就算会晒透在一起，",
+      "start_time": 68.76,
+      "end_time": 70.58,
+      "speaker_id": "spk1"
+    },
+    {
+      "text": "它永远不会出丧。",
+      "start_time": 70.72,
+      "end_time": 72.3,
+      "speaker_id": "spk1"
+    },
+    {
+      "text": "在所有心动的家，",
+      "start_time": 72.66,
+      "end_time": 74.545,
+      "speaker_id": "spk1"
+    },
+    {
+      "text": "他下看你了，",
+      "start_time": 74.85,
+      "end_time": 76.71,
+      "speaker_id": "spk1"
+    },
+    {
+      "text": "虽然我只是羊喜羊羊、",
+      "start_time": 79.21,
+      "end_time": 83.63,
+      "speaker_id": "spk1"
+    },
+    {
+      "text": "美羊羊、",
+      "start_time": 83.91,
+      "end_time": 87.075,
+      "speaker_id": "spk0"
+    },
+    {
+      "text": "鸟蛋之争。",
+      "start_time": 91.25,
+      "end_time": 92.51,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "哎呀啊啊喜羊羊时候不早了，",
+      "start_time": 104.83,
+      "end_time": 110.79,
+      "speaker_id": "spk0"
+    },
+    {
+      "text": "我们还是回去吧。",
+      "start_time": 110.79,
+      "end_time": 113.21,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "啊别着急嘛，",
+      "start_time": 113.51,
+      "end_time": 114.73,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "再玩一会儿。",
+      "start_time": 114.73,
+      "end_time": 115.63,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "喂，",
+      "start_time": 115.73,
+      "end_time": 115.97,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "喜羊羊，",
+      "start_time": 116.59,
+      "end_time": 117.03,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "你看水塘里有大烟啊啊大雁是一种很温顺的动物，",
+      "start_time": 117.03,
+      "end_time": 124.44,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "它们只有冬天才会到青青草原旁的水塘里生宝宝。",
+      "start_time": 125.08,
+      "end_time": 129.38,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "呃，",
+      "start_time": 131.06,
+      "end_time": 131.3,
+      "speaker_id": "spk0"
+    },
+    {
+      "text": "大雁的宝宝是怎样出生的呀？",
+      "start_time": 131.94,
+      "end_time": 134.22,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "当然是从蛋里面出生的这不是喜羊羊的声音嘛，",
+      "start_time": 135.84,
+      "end_time": 142.455,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "啊啊啊是灰太狼。",
+      "start_time": 144.98,
+      "end_time": 148.48,
+      "speaker_id": "spk0"
+    },
+    {
+      "text": "嗯，",
+      "start_time": 149.36,
+      "end_time": 149.575,
+      "speaker_id": "spk0"
+    },
+    {
+      "text": "哼哈哈，",
+      "start_time": 150.01,
+      "end_time": 152.13,
+      "speaker_id": "spk0"
+    },
+    {
+      "text": "原来是你们，",
+      "start_time": 152.13,
+      "end_time": 153.21,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "这可是你们自己送上门来的。",
+      "start_time": 153.21,
+      "end_time": 155.53,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "喂，",
+      "start_time": 156.99,
+      "end_time": 157.23,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "灰太狼水塘里好像有鳄鱼哦。",
+      "start_time": 157.41,
+      "end_time": 160.35,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "哼喜羊羊，",
+      "start_time": 160.49,
+      "end_time": 161.73,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "这次你别想再骗我了，",
+      "start_time": 162.01,
+      "end_time": 163.69,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "哎呀哎呀墨鱼太狼，",
+      "start_time": 163.99,
+      "end_time": 174.76,
+      "speaker_id": "spk0"
+    },
+    {
+      "text": "你天天吧啊啊，",
+      "start_time": 175.0,
+      "end_time": 178.54,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "救命救啊救我啊，",
+      "start_time": 178.64,
+      "end_time": 180.4,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "我们还是回去吧，",
+      "start_time": 181.92,
+      "end_time": 184.275,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "又让喜羊羊他们跑了，",
+      "start_time": 190.91,
+      "end_time": 192.81,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "抓不到羊，",
+      "start_time": 193.57,
+      "end_time": 194.19,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "我没法向老婆交差呀。",
+      "start_time": 194.19,
+      "end_time": 196.31,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "嗯，",
+      "start_time": 197.1,
+      "end_time": 197.34,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "诶抓一只大雁回去也不错呀。",
+      "start_time": 197.38,
+      "end_time": 200.56,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "哎呀，",
+      "start_time": 205.96,
+      "end_time": 206.5,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "怎么办呢？",
+      "start_time": 206.52,
+      "end_time": 207.26,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "大雁也抓不到啊，",
+      "start_time": 207.36,
+      "end_time": 208.7,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "诶哎呀哎呀大雁的蛋也不错呀，",
+      "start_time": 209.38,
+      "end_time": 213.25,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "回家以后等画出小雁呃，",
+      "start_time": 213.33,
+      "end_time": 215.31,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "烤着吃。",
+      "start_time": 215.67,
+      "end_time": 216.13,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "呃，",
+      "start_time": 216.13,
+      "end_time": 216.37,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "太棒了。",
+      "start_time": 217.27,
+      "end_time": 217.95,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "魔法爷真可怜，",
+      "start_time": 217.95,
+      "end_time": 224.225,
+      "speaker_id": "spk0"
+    },
+    {
+      "text": "宝宝就要被灰太狼吃掉了。",
+      "start_time": 224.53,
+      "end_time": 226.87,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "哼，",
+      "start_time": 227.61,
+      "end_time": 227.85,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "我不会让灰太狼得逞的。",
+      "start_time": 228.15,
+      "end_time": 229.95,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "哎，",
+      "start_time": 230.01,
+      "end_time": 230.25,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "我们这样这个诶，",
+      "start_time": 230.57,
+      "end_time": 237.53,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "灰太狼怎么现在不吃肉改吃蛋了啊？",
+      "start_time": 238.37,
+      "end_time": 241.69,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "哎哎，",
+      "start_time": 241.83,
+      "end_time": 242.75,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "谁说的，",
+      "start_time": 242.75,
+      "end_time": 243.31,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "我第一个就吃你，",
+      "start_time": 243.37,
+      "end_time": 244.57,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "哼，",
+      "start_time": 245.37,
+      "end_time": 245.61,
+      "speaker_id": "spk0"
+    },
+    {
+      "text": "别吹牛皮了，",
+      "start_time": 246.03,
+      "end_time": 247.19,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "你拿着鸟蛋干什么？",
+      "start_time": 247.39,
+      "end_time": 248.81,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "明明是抓不到我们改制鸟蛋，",
+      "start_time": 249.25,
+      "end_time": 251.965,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "嘿，",
+      "start_time": 252.35,
+      "end_time": 252.59,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "这可是你自己送上门来的。",
+      "start_time": 252.63,
+      "end_time": 254.89,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "嗯，",
+      "start_time": 254.89,
+      "end_time": 255.13,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "你别跑啊。",
+      "start_time": 255.21,
+      "end_time": 256.31,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "嗯，",
+      "start_time": 256.31,
+      "end_time": 256.55,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "哎呀哎呀哎呀，",
+      "start_time": 256.57,
+      "end_time": 263.49,
+      "speaker_id": "spk0"
+    },
+    {
+      "text": "呃把蛋还给我呀，",
+      "start_time": 266.08,
+      "end_time": 267.74,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "懒羊羊懒羊羊呃，",
+      "start_time": 274.06,
+      "end_time": 277.32,
+      "speaker_id": "spk4"
+    },
+    {
+      "text": "什么事啊？",
+      "start_time": 277.78,
+      "end_time": 278.68,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "村长你有没有看见喜羊羊他们呐，",
+      "start_time": 278.74,
+      "end_time": 282.43,
+      "speaker_id": "spk4"
+    },
+    {
+      "text": "他们好像出去玩了。",
+      "start_time": 282.67,
+      "end_time": 284.33,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "嗯，",
+      "start_time": 285.15,
+      "end_time": 285.39,
+      "speaker_id": "spk0"
+    },
+    {
+      "text": "村长，",
+      "start_time": 285.69,
+      "end_time": 286.17,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "我们回来喽，",
+      "start_time": 286.57,
+      "end_time": 287.55,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "喜羊羊，",
+      "start_time": 290.87,
+      "end_time": 291.45,
+      "speaker_id": "spk4"
+    },
+    {
+      "text": "你们跑出去真是太冒险了，",
+      "start_time": 291.69,
+      "end_time": 294.035,
+      "speaker_id": "spk4"
+    },
+    {
+      "text": "没有铁门的保护，",
+      "start_time": 294.39,
+      "end_time": 295.57,
+      "speaker_id": "spk4"
+    },
+    {
+      "text": "很可能会被灰太狼抓到的呀啊啊灰太狼就在我们后面呢呃什么你把灰太狼也引来了。",
+      "start_time": 295.79,
+      "end_time": 305.41,
+      "speaker_id": "spk4"
+    },
+    {
+      "text": "喜羊羊，",
+      "start_time": 306.23,
+      "end_time": 306.85,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "你不要跑啊，",
+      "start_time": 307.11,
+      "end_time": 308.615,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "赶快把蛋还给我，",
+      "start_time": 309.12,
+      "end_time": 310.42,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "不然我就把你给吃了。",
+      "start_time": 310.64,
+      "end_time": 312.16,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "我是不会把蛋还给你的，",
+      "start_time": 312.4,
+      "end_time": 314.24,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "你也别想伤害大雁的宝宝。",
+      "start_time": 314.5,
+      "end_time": 316.44,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "嗯，",
+      "start_time": 316.62,
+      "end_time": 316.86,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "灰太狼，",
+      "start_time": 317.179,
+      "end_time": 317.88,
+      "speaker_id": "spk4"
+    },
+    {
+      "text": "你是为了一只蛋才追到羊村来的。",
+      "start_time": 318.16,
+      "end_time": 321.04,
+      "speaker_id": "spk4"
+    },
+    {
+      "text": "当然了，",
+      "start_time": 321.36,
+      "end_time": 322.175,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "这只蛋是我费尽辛苦得来的，",
+      "start_time": 322.5,
+      "end_time": 325.1,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "可是我从来没听说过狼会吃蛋的呀。",
+      "start_time": 325.3,
+      "end_time": 328.54,
+      "speaker_id": "spk4"
+    },
+    {
+      "text": "嗯哎呀，",
+      "start_time": 329.1,
+      "end_time": 329.52,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "不许笑。",
+      "start_time": 329.52,
+      "end_time": 330.1,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "这只蛋是我的晚餐，",
+      "start_time": 330.38,
+      "end_time": 331.7,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "喜羊羊，",
+      "start_time": 331.94,
+      "end_time": 332.46,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "你最好还是还给我，",
+      "start_time": 332.58,
+      "end_time": 333.88,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "不然的话还给你啊啊，",
+      "start_time": 334.02,
+      "end_time": 339.09,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "喜羊羊，",
+      "start_time": 340.99,
+      "end_time": 341.57,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "我一定会夺回这只蛋的。",
+      "start_time": 342.69,
+      "end_time": 345.345,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "嗯，",
+      "start_time": 353.82,
+      "end_time": 354.06,
+      "speaker_id": "spk0"
+    },
+    {
+      "text": "喜羊羊，",
+      "start_time": 354.92,
+      "end_time": 355.52,
+      "speaker_id": "spk4"
+    },
+    {
+      "text": "你要为这件事做检讨啊。",
+      "start_time": 355.76,
+      "end_time": 357.945,
+      "speaker_id": "spk4"
+    },
+    {
+      "text": "呃村长是我不好，",
+      "start_time": 358.33,
+      "end_time": 360.27,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "我不应该带着他们擅自走出铁门，",
+      "start_time": 360.55,
+      "end_time": 362.95,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "这样做太冒失了，",
+      "start_time": 363.07,
+      "end_time": 364.49,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "是我不对。",
+      "start_time": 364.97,
+      "end_time": 365.83,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "嗯，",
+      "start_time": 366.57,
+      "end_time": 366.79,
+      "speaker_id": "spk4"
+    },
+    {
+      "text": "以后你要注意不要做这种危险的行为。",
+      "start_time": 366.79,
+      "end_time": 370.315,
+      "speaker_id": "spk4"
+    },
+    {
+      "text": "但是你为了保护大雁，",
+      "start_time": 370.7,
+      "end_time": 372.42,
+      "speaker_id": "spk4"
+    },
+    {
+      "text": "宝宝勇斗灰太狼这个错误我就不罚你了啊。",
+      "start_time": 372.42,
+      "end_time": 377.76,
+      "speaker_id": "spk4"
+    },
+    {
+      "text": "大雁的宝宝还没有离开它的壳，",
+      "start_time": 378.0,
+      "end_time": 380.12,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "我们也找不到他的妈妈、",
+      "start_time": 380.52,
+      "end_time": 382.18,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "村长，",
+      "start_time": 382.78,
+      "end_time": 383.26,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "我们该怎么办呢？",
+      "start_time": 383.6,
+      "end_time": 384.935,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "啊，",
+      "start_time": 385.31,
+      "end_time": 385.55,
+      "speaker_id": "spk4"
+    },
+    {
+      "text": "这个我要想一想，",
+      "start_time": 386.01,
+      "end_time": 388.61,
+      "speaker_id": "spk4"
+    },
+    {
+      "text": "嗯嗯，",
+      "start_time": 388.61,
+      "end_time": 398.77,
+      "speaker_id": "spk0"
+    },
+    {
+      "text": "嗯该死的喜羊羊，",
+      "start_time": 398.83,
+      "end_time": 403.11,
+      "speaker_id": "spk0"
+    },
+    {
+      "text": "我一定要夺回这只蛋扬眉吐气，",
+      "start_time": 403.61,
+      "end_time": 407.23,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "顺便再把你捉住也好，",
+      "start_time": 407.87,
+      "end_time": 410.09,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "给我老婆一个交代呀。",
+      "start_time": 410.17,
+      "end_time": 412.17,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "嗯，",
+      "start_time": 412.31,
+      "end_time": 412.785,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "啊幸好我早有准备，",
+      "start_time": 413.39,
+      "end_time": 421.645,
+      "speaker_id": "spk0"
+    },
+    {
+      "text": "你你你你的嗯嗯嗯嗯我终于进了羊村了，",
+      "start_time": 428.46,
+      "end_time": 439.175,
+      "speaker_id": "spk0"
+    },
+    {
+      "text": "请。",
+      "start_time": 454.47,
+      "end_time": 454.71,
+      "speaker_id": "spk0"
+    },
+    {
+      "text": "嗯 the 啊，",
+      "start_time": 465.17,
+      "end_time": 483.37,
+      "speaker_id": "spk0"
+    },
+    {
+      "text": "喜羊羊，",
+      "start_time": 483.41,
+      "end_time": 483.97,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "你看这是什么啊？",
+      "start_time": 484.19,
+      "end_time": 485.95,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "这是你从我那里抢走的蛋，",
+      "start_time": 486.11,
+      "end_time": 488.41,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "昨天晚上我又把它偷了回来啊，",
+      "start_time": 488.89,
+      "end_time": 492.43,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "真的是那颗蛋呢。",
+      "start_time": 492.65,
+      "end_time": 493.97,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "哎，",
+      "start_time": 494.07,
+      "end_time": 494.31,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "哦那我们怎么办呢？",
+      "start_time": 494.47,
+      "end_time": 496.03,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "喜羊狼你想怎么样啊啊？",
+      "start_time": 496.41,
+      "end_time": 498.59,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "嗯，",
+      "start_time": 498.91,
+      "end_time": 499.15,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "很简单，",
+      "start_time": 499.49,
+      "end_time": 500.27,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "只要你们其中一只羊来交换，",
+      "start_time": 500.49,
+      "end_time": 502.37,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "否则的话我就把这只蛋摔在地上。",
+      "start_time": 502.79,
+      "end_time": 506.51,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "嗯，",
+      "start_time": 507.47,
+      "end_time": 507.71,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "呃喜羊羊快想想办法呀，",
+      "start_time": 508.31,
+      "end_time": 510.37,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "嗯别着急，",
+      "start_time": 510.37,
+      "end_time": 511.27,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "让我再想想办法，",
+      "start_time": 511.27,
+      "end_time": 512.83,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "俺不要再费心思啦。",
+      "start_time": 513.65,
+      "end_time": 515.29,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "想出办法也是没用的。",
+      "start_time": 515.61,
+      "end_time": 517.21,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "一个小时之后，",
+      "start_time": 517.39,
+      "end_time": 518.53,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "在铁门外，",
+      "start_time": 518.85,
+      "end_time": 519.67,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "喜羊羊必须成为我的猎物来交换这个蛋，",
+      "start_time": 519.93,
+      "end_time": 522.91,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "否则的话我就把它摔在地上，",
+      "start_time": 523.33,
+      "end_time": 525.89,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "明白了吗？",
+      "start_time": 526.03,
+      "end_time": 527.03,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "啊，",
+      "start_time": 527.03,
+      "end_time": 527.27,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "孩子们，",
+      "start_time": 533.85,
+      "end_time": 534.51,
+      "speaker_id": "spk4"
+    },
+    {
+      "text": "你们遇到什么困难了？",
+      "start_time": 534.73,
+      "end_time": 536.47,
+      "speaker_id": "spk4"
+    },
+    {
+      "text": "哎，",
+      "start_time": 536.97,
+      "end_time": 537.21,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "灰太狼偷走了大雁的宝宝，",
+      "start_time": 537.47,
+      "end_time": 539.63,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "而且他威胁喜羊羊灰太狼说一个小时后，",
+      "start_time": 539.87,
+      "end_time": 544.88,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "要不把喜羊羊送给他的话，",
+      "start_time": 544.98,
+      "end_time": 546.86,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "他就要摔碎那颗蛋了啊，",
+      "start_time": 547.0,
+      "end_time": 549.06,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "怎么办呢？",
+      "start_time": 549.2,
+      "end_time": 549.92,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "啊，",
+      "start_time": 550.22,
+      "end_time": 550.725,
+      "speaker_id": "spk4"
+    },
+    {
+      "text": "就算是灰太狼真的把我吃了，",
+      "start_time": 551.52,
+      "end_time": 553.62,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "我也一定不会让他得逞的。",
+      "start_time": 553.7,
+      "end_time": 555.64,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "想不到灰太狼这么狡猾呀，",
+      "start_time": 555.64,
+      "end_time": 557.9,
+      "speaker_id": "spk4"
+    },
+    {
+      "text": "看来也只好使用我的最新发明了啊。",
+      "start_time": 558.62,
+      "end_time": 561.62,
+      "speaker_id": "spk4"
+    },
+    {
+      "text": "可是村长这只是一根普通的绳子哟，",
+      "start_time": 566.01,
+      "end_time": 569.25,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "你可不要小看它呀，",
+      "start_time": 569.53,
+      "end_time": 571.33,
+      "speaker_id": "spk4"
+    },
+    {
+      "text": "这是弹力绳索，",
+      "start_time": 571.55,
+      "end_time": 572.93,
+      "speaker_id": "spk4"
+    },
+    {
+      "text": "可以无限延长哦。",
+      "start_time": 573.25,
+      "end_time": 575.07,
+      "speaker_id": "spk4"
+    },
+    {
+      "text": "只要把它绑在身上，",
+      "start_time": 575.19,
+      "end_time": 576.855,
+      "speaker_id": "spk4"
+    },
+    {
+      "text": "灰太狼把你带到什么地方，",
+      "start_time": 577.47,
+      "end_time": 579.31,
+      "speaker_id": "spk4"
+    },
+    {
+      "text": "只要你一吹口哨，",
+      "start_time": 579.51,
+      "end_time": 580.97,
+      "speaker_id": "spk4"
+    },
+    {
+      "text": "他就能把你捞回来呀。",
+      "start_time": 581.23,
+      "end_time": 583.17,
+      "speaker_id": "spk4"
+    },
+    {
+      "text": "灰太狼，",
+      "start_time": 588.19,
+      "end_time": 590.215,
+      "speaker_id": "spk4"
+    },
+    {
+      "text": "按照你的条件，",
+      "start_time": 595.04,
+      "end_time": 596.28,
+      "speaker_id": "spk4"
+    },
+    {
+      "text": "我们已经把喜羊羊捆绑好了来和你交换灰太狼。",
+      "start_time": 596.48,
+      "end_time": 604.82,
+      "speaker_id": "spk4"
+    },
+    {
+      "text": "诶，",
+      "start_time": 605.48,
+      "end_time": 605.72,
+      "speaker_id": "spk4"
+    },
+    {
+      "text": "你怎么能不守信用啊啊，",
+      "start_time": 605.72,
+      "end_time": 608.5,
+      "speaker_id": "spk4"
+    },
+    {
+      "text": "你们上当了，",
+      "start_time": 608.5,
+      "end_time": 610.18,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "我才不会把蛋给你们呢，",
+      "start_time": 610.18,
+      "end_time": 612.54,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "等回到家，",
+      "start_time": 612.54,
+      "end_time": 613.54,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "把喜羊羊和蛋一块煮着吃。",
+      "start_time": 613.54,
+      "end_time": 617.205,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "嗯嗯，",
+      "start_time": 619.79,
+      "end_time": 623.73,
+      "speaker_id": "spk0"
+    },
+    {
+      "text": "嗯嗯哎灰太狼，",
+      "start_time": 623.73,
+      "end_time": 640.85,
+      "speaker_id": "spk0"
+    },
+    {
+      "text": "你这么走下去不累吗？",
+      "start_time": 641.05,
+      "end_time": 642.45,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "嗯，",
+      "start_time": 642.45,
+      "end_time": 642.69,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "不如你把我放下来歇一会儿吧啊，",
+      "start_time": 643.61,
+      "end_time": 646.53,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "怎么样啊？",
+      "start_time": 646.87,
+      "end_time": 647.61,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "哎啊你别耍花样啊，",
+      "start_time": 649.65,
+      "end_time": 651.609,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "我已经成为了你的猎物了，",
+      "start_time": 653.37,
+      "end_time": 655.23,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "还能耍什么花样啊？",
+      "start_time": 655.41,
+      "end_time": 656.83,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "嗯，",
+      "start_time": 658.09,
+      "end_time": 658.33,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "来，",
+      "start_time": 658.57,
+      "end_time": 658.81,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "我帮你拿着蛋怎么样？",
+      "start_time": 658.89,
+      "end_time": 660.25,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "如果不小心打破了很可惜的哟，",
+      "start_time": 660.39,
+      "end_time": 662.33,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "俺说的也有道理呀啊呃想跑没那么容易，",
+      "start_time": 662.33,
+      "end_time": 674.13,
+      "speaker_id": "spk0"
+    },
+    {
+      "text": "别想跑太好了。",
+      "start_time": 683.17,
+      "end_time": 692.76,
+      "speaker_id": "spk0"
+    },
+    {
+      "text": "嘿，",
+      "start_time": 700.51,
+      "end_time": 700.75,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "抓不到我抓不到我抓不到我捉不到羊，",
+      "start_time": 700.85,
+      "end_time": 705.57,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "但我也不会放过。",
+      "start_time": 705.87,
+      "end_time": 707.315,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "嘿嘿，",
+      "start_time": 707.71,
+      "end_time": 708.19,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "喜羊羊，",
+      "start_time": 708.45,
+      "end_time": 709.05,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "这蛋还在我的手上呢啊啊又让灰太狼得逞了。",
+      "start_time": 709.51,
+      "end_time": 715.67,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "哼，",
+      "start_time": 716.07,
+      "end_time": 716.31,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "你不乖乖跟我回去的话，",
+      "start_time": 716.63,
+      "end_time": 718.17,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "我就把这个蛋摔破，",
+      "start_time": 718.55,
+      "end_time": 720.09,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "它让大眼宝宝为你而死，",
+      "start_time": 720.21,
+      "end_time": 722.94,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "你们忍心吗？",
+      "start_time": 723.26,
+      "end_time": 724.24,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "说你们忍心吗？",
+      "start_time": 724.64,
+      "end_time": 725.96,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "我们不忍心，",
+      "start_time": 726.72,
+      "end_time": 727.76,
+      "speaker_id": "spk4"
+    },
+    {
+      "text": "可是我们想过了也不能失去，",
+      "start_time": 727.76,
+      "end_time": 731.2,
+      "speaker_id": "spk4"
+    },
+    {
+      "text": "喜羊羊没办法了。",
+      "start_time": 731.2,
+      "end_time": 733.58,
+      "speaker_id": "spk4"
+    },
+    {
+      "text": "嗯，",
+      "start_time": 733.64,
+      "end_time": 733.88,
+      "speaker_id": "spk4"
+    },
+    {
+      "text": "好，",
+      "start_time": 734.78,
+      "end_time": 735.145,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "大雁，",
+      "start_time": 735.54,
+      "end_time": 735.94,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "你去找这些羊报仇吧。",
+      "start_time": 736.16,
+      "end_time": 737.88,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "诶，",
+      "start_time": 738.66,
+      "end_time": 738.9,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "呃怎么会是一只鳄鱼啊？",
+      "start_time": 744.22,
+      "end_time": 746.44,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "灰太狼大雁的蛋，",
+      "start_time": 749.38,
+      "end_time": 750.99,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "在这里，",
+      "start_time": 750.99,
+      "end_time": 751.59,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "刚才我们已经换过了，",
+      "start_time": 751.85,
+      "end_time": 753.61,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "你不要哭了，",
+      "start_time": 755.03,
+      "end_time": 755.95,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "再哭的话，",
+      "start_time": 756.31,
+      "end_time": 757.15,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "我就把你给吃掉。",
+      "start_time": 757.25,
+      "end_time": 758.51,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "宝贝儿是谁敢欺负你呀啊嗯哎呀？",
+      "start_time": 761.91,
+      "end_time": 772.23,
+      "speaker_id": "spk2"
+    },
+    {
+      "text": "喜羊羊，",
+      "start_time": 772.23,
+      "end_time": 773.11,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "我是不会放过你的，",
+      "start_time": 773.11,
+      "end_time": 774.73,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "哎呀哎呀救命啊，",
+      "start_time": 775.57,
+      "end_time": 777.33,
+      "speaker_id": "spk3"
+    },
+    {
+      "text": "救命别看我只是一只羊变得更香。",
+      "start_time": 777.69,
+      "end_time": 794.67,
+      "speaker_id": "spk1"
+    },
+    {
+      "text": "三有什么难题去解把，",
+      "start_time": 795.14,
+      "end_time": 798.72,
+      "speaker_id": "spk1"
+    },
+    {
+      "text": "我都不会去欣赏，",
+      "start_time": 798.72,
+      "end_time": 800.4,
+      "speaker_id": "spk1"
+    },
+    {
+      "text": "有什么危险在我面前也不会去慌乱，",
+      "start_time": 800.72,
+      "end_time": 804.34,
+      "speaker_id": "spk1"
+    },
+    {
+      "text": "就算也难去把我吹捕也当做游戏一场。",
+      "start_time": 804.64,
+      "end_time": 810.74,
+      "speaker_id": "spk1"
+    },
+    {
+      "text": "在什么世界都爱开心，",
+      "start_time": 812.48,
+      "end_time": 814.64,
+      "speaker_id": "spk1"
+    },
+    {
+      "text": "笑容都会飞翔，",
+      "start_time": 814.68,
+      "end_time": 816.12,
+      "speaker_id": "spk1"
+    },
+    {
+      "text": "就算会晒得站一起来，",
+      "start_time": 816.44,
+      "end_time": 818.6,
+      "speaker_id": "spk1"
+    },
+    {
+      "text": "永远不会沮丧。",
+      "start_time": 818.62,
+      "end_time": 820.02,
+      "speaker_id": "spk1"
+    },
+    {
+      "text": "在岁有天气，",
+      "start_time": 820.34,
+      "end_time": 821.58,
+      "speaker_id": "spk1"
+    },
+    {
+      "text": "拥有家人大笑的力量，",
+      "start_time": 821.58,
+      "end_time": 824.485,
+      "speaker_id": "spk1"
+    },
+    {
+      "text": "虽然我只是要喜羊羊、",
+      "start_time": 826.97,
+      "end_time": 831.7,
+      "speaker_id": "spk1"
+    },
+    {
+      "text": "美羊羊、",
+      "start_time": 831.98,
+      "end_time": 832.66,
+      "speaker_id": "spk1"
+    },
+    {
+      "text": "懒羊羊、",
+      "start_time": 832.94,
+      "end_time": 833.6,
+      "speaker_id": "spk1"
+    },
+    {
+      "text": "沸羊羊，",
+      "start_time": 833.64,
+      "end_time": 834.62,
+      "speaker_id": "spk1"
+    },
+    {
+      "text": "慢羊羊软绵绵。",
+      "start_time": 834.86,
+      "end_time": 836.58,
+      "speaker_id": "spk1"
+    },
+    {
+      "text": "红太狼、",
+      "start_time": 836.8,
+      "end_time": 837.52,
+      "speaker_id": "spk1"
+    },
+    {
+      "text": "灰太狼特别特别，",
+      "start_time": 837.52,
+      "end_time": 846.505,
+      "speaker_id": "spk1"
+    }
+  ]
+}

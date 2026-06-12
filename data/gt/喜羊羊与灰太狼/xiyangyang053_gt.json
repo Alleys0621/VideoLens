@@ -1,0 +1,980 @@
+{
+  "segments": [
+    {
+      "segment_id": "bbc95f8d",
+      "begin_time": 85.2,
+      "end_time": 93.0,
+      "text": "啦啦啦啦啦啦啦啦啦。啦啦啦啦啦啦啦啦啦。",
+      "speaker_gt": "懒羊羊",
+      "emotion_gt": "开心语调"
+    },
+    {
+      "segment_id": "9554c1a1",
+      "begin_time": 93.1,
+      "end_time": 94.78,
+      "text": "懒羊羊的歌声。",
+      "speaker_gt": "喜羊羊",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "82cad70a",
+      "begin_time": 94.78,
+      "end_time": 95.72,
+      "text": "嘿嘿嘿呀。",
+      "speaker_gt": "懒羊羊",
+      "emotion_gt": "开心语调"
+    },
+    {
+      "segment_id": "858100cb",
+      "begin_time": 115.008,
+      "end_time": 117.178,
+      "text": "哎呀，这羊肉的味道真好。",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "开心语调"
+    },
+    {
+      "segment_id": "c0f4b2bf",
+      "begin_time": 120.0,
+      "end_time": 123.1,
+      "text": "嗯，懒羊羊的肥肉味道真不错。",
+      "speaker_gt": "红太狼",
+      "emotion_gt": "开心语调"
+    },
+    {
+      "segment_id": "c8066643",
+      "begin_time": 123.2,
+      "end_time": 128.2,
+      "text": "哎，啊，这喜羊羊的羊腿肉味最好吃了。",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "开心语调"
+    },
+    {
+      "segment_id": "f996acdb",
+      "begin_time": 128.2,
+      "end_time": 129.9,
+      "text": "再吃一块吧。",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "开心语调"
+    },
+    {
+      "segment_id": "194b9ada",
+      "begin_time": 143.1,
+      "end_time": 146.9,
+      "text": "虽然喜羊羊最可恶，但是它的肉味道是好极了。",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "开心语调"
+    },
+    {
+      "segment_id": "427cf955",
+      "begin_time": 147.0,
+      "end_time": 149.9,
+      "text": "还是沸羊羊好，健美的肌肉。",
+      "speaker_gt": "红太狼",
+      "emotion_gt": "开心语调"
+    },
+    {
+      "segment_id": "3216a8d6",
+      "begin_time": 159.1,
+      "end_time": 163.08,
+      "text": "不过，再怎么吃，还是青草的味道。",
+      "speaker_gt": "红太狼",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "ecdeddca",
+      "begin_time": 163.1,
+      "end_time": 168.9,
+      "text": "哎，不是吧老婆。只要你发挥出想象力，没有事情是不可能的。",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "关切语调"
+    },
+    {
+      "segment_id": "69b58064",
+      "begin_time": 169.0,
+      "end_time": 179.3,
+      "text": "你看我啊。啊呜嗯。嗯。啊，香喷喷的羊肉，口感真是好啊。",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "开心语调"
+    },
+    {
+      "segment_id": "d3cc5322",
+      "begin_time": 179.995,
+      "end_time": 181.075,
+      "text": "哎呦。",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "恐惧语调"
+    },
+    {
+      "segment_id": "40dcc94a",
+      "begin_time": 182.1,
+      "end_time": 184.17,
+      "text": "草就是草，羊肉就是羊肉！",
+      "speaker_gt": "红太狼",
+      "emotion_gt": "愤怒语调"
+    },
+    {
+      "segment_id": "9333255e",
+      "begin_time": 184.05,
+      "end_time": 185.1,
+      "text": "老婆，其实我呢。",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "恐惧语调"
+    },
+    {
+      "segment_id": "08ead56e",
+      "begin_time": 185.1,
+      "end_time": 186.1,
+      "text": "哎呦。",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "悲伤语调"
+    },
+    {
+      "segment_id": "c8a69f5c",
+      "begin_time": 186.955,
+      "end_time": 189.5,
+      "text": "我都快想不起来羊肉是什么滋味了。",
+      "speaker_gt": "红太狼",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "73d654ba",
+      "begin_time": 190.0,
+      "end_time": 193.02,
+      "text": "就因为你这个废物，没用的家伙。",
+      "speaker_gt": "红太狼",
+      "emotion_gt": "愤怒语调"
+    },
+    {
+      "segment_id": "0a22e7f9",
+      "begin_time": 197.06,
+      "end_time": 204.07,
+      "text": "灰太狼你这个笨蛋，嘴巴大，脑袋圆，长得难看家里没钱。我怎么就瞎了眼了，找了你这连羊都不会抓的白痴。",
+      "speaker_gt": "红太狼",
+      "emotion_gt": "愤怒语调"
+    },
+    {
+      "segment_id": "f77d2928",
+      "begin_time": 207.2,
+      "end_time": 209.9,
+      "text": "哎，老婆你骂完了没有啊？",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "7dc54300",
+      "begin_time": 211.0,
+      "end_time": 215.3,
+      "text": "没有，骂得我口都干了。哎，快去把润喉糖拿给我。",
+      "speaker_gt": "红太狼",
+      "emotion_gt": "愤怒语调"
+    },
+    {
+      "segment_id": "8e89dc77",
+      "begin_time": 216.0,
+      "end_time": 216.3,
+      "text": "是。",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "26f6fbf2",
+      "begin_time": 221.007,
+      "end_time": 222.0,
+      "text": "老婆。",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "77ddfff2",
+      "begin_time": 232.2,
+      "end_time": 238.2,
+      "text": "哼，你这个笨蛋，嘴巴大脑袋圆，长得难看家里没钱。我怎么就瞎了眼了。",
+      "speaker_gt": "红太狼",
+      "emotion_gt": "愤怒语调"
+    },
+    {
+      "segment_id": "e63d0c1f",
+      "begin_time": 238.2,
+      "end_time": 243.1,
+      "text": "找了你这连羊都不会抓的白痴！哎呦，为什么会这样？",
+      "speaker_gt": "红太狼",
+      "emotion_gt": "惊奇语调"
+    },
+    {
+      "segment_id": "2fa41bc6",
+      "begin_time": 251.1,
+      "end_time": 253.0,
+      "text": "啊，变声糖。",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "惊奇语调"
+    },
+    {
+      "segment_id": "ad639367",
+      "begin_time": 254.1,
+      "end_time": 262.16,
+      "text": "吃了绿色声音拥有醉人的功能，可以把人迷倒。吃了红色声音拥有强大的破坏力，请小心服用。",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "c8442c30",
+      "begin_time": 267.1,
+      "end_time": 270.2,
+      "text": "十足的蠢货，连润喉糖都分不清吗？",
+      "speaker_gt": "红太狼",
+      "emotion_gt": "厌恶语调"
+    },
+    {
+      "segment_id": "0532dbc3",
+      "begin_time": 270.0,
+      "end_time": 276.0,
+      "text": "有了老婆，我有办法了。你打扫好厨房，我马上就带羊回来。",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "开心语调"
+    },
+    {
+      "segment_id": "be375551",
+      "begin_time": 284.0,
+      "end_time": 286.27,
+      "text": "哇，好漂亮的图案呢。",
+      "speaker_gt": "美羊羊",
+      "emotion_gt": "惊奇语调"
+    },
+    {
+      "segment_id": "92865ef1",
+      "begin_time": 287.15,
+      "end_time": 290.1,
+      "text": "我也试试看吧。",
+      "speaker_gt": "美羊羊",
+      "emotion_gt": "开心语调"
+    },
+    {
+      "segment_id": "37a0b94e",
+      "begin_time": 290.834,
+      "end_time": 298.9,
+      "text": "小姑娘，小姑娘，小姑娘。",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "e1acee1b",
+      "begin_time": 299.29,
+      "end_time": 301.1,
+      "text": "是谁呀？",
+      "speaker_gt": "美羊羊",
+      "emotion_gt": "惊奇语调"
+    },
+    {
+      "segment_id": "9ae6ad07",
+      "begin_time": 302.0,
+      "end_time": 325.2,
+      "text": "是我呀，是卖毛线的人。你能过来一下吗？小姑娘，过来一下。到这边来。过来这边，过来这边，过来这边，过来这边，过来这边，过来呀，过来这边。",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "0f631506",
+      "begin_time": 326.0,
+      "end_time": 327.1,
+      "text": "大婶儿！",
+      "speaker_gt": "美羊羊",
+      "emotion_gt": "惊奇语调"
+    },
+    {
+      "segment_id": "67775f06",
+      "begin_time": 327.1,
+      "end_time": 337.0,
+      "text": "哎呀！哎哎哎，小姑娘你真漂亮啊。",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "开心语调"
+    },
+    {
+      "segment_id": "cccdd14b",
+      "begin_time": 340.0,
+      "end_time": 345.2,
+      "text": "谢谢大婶。大婶你有什么事吗？",
+      "speaker_gt": "美羊羊",
+      "emotion_gt": "开心语调"
+    },
+    {
+      "segment_id": "6f21a10f",
+      "begin_time": 345.2,
+      "end_time": 359.08,
+      "text": "我见你织毛衣，我有很多毛线球，你可以帮我买一些吗？小姑娘。买一些吧买一些吧买一些吧买一些吧买一些吧。",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "",
+      "begin_time": 359.1,
+      "end_time": 360.11,
+      "text": "好···好的",
+      "speaker_gt": "美羊羊",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "3aec512d",
+      "begin_time": 364.2,
+      "end_time": 366.28,
+      "text": "大婶，毛线球呢？",
+      "speaker_gt": "美羊羊",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "1e9cf899",
+      "begin_time": 369.2,
+      "end_time": 383.25,
+      "text": "在这呢，黄色的，绿色的，还有红色的，有橙色有紫色，还有灰色蓝色，啊你看，样样都有。小姑娘。",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "d8176069",
+      "begin_time": 389.12,
+      "end_time": 392.2,
+      "text": "小姑娘你醉了，快倒下吧。",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "0de4070f",
+      "begin_time": 396.0,
+      "end_time": 398.2,
+      "text": "成功了！",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "开心语调"
+    },
+    {
+      "segment_id": "c584906e",
+      "begin_time": 413.1,
+      "end_time": 415.28,
+      "text": "不好了，美羊羊被抓走了。",
+      "speaker_gt": "喜羊羊",
+      "emotion_gt": "焦急语调"
+    },
+    {
+      "segment_id": "b52a2f8b",
+      "begin_time": 416.23,
+      "end_time": 419.13,
+      "text": "我看到了，前面还有灰太狼的脚印呢。",
+      "speaker_gt": "喜羊羊",
+      "emotion_gt": "焦急语调"
+    },
+    {
+      "segment_id": "642a6a27",
+      "begin_time": 419.2,
+      "end_time": 421.04,
+      "text": "马上去救美羊羊。",
+      "speaker_gt": "沸羊羊",
+      "emotion_gt": "焦急语调"
+    },
+    {
+      "segment_id": "80a08e0b",
+      "begin_time": 421.1,
+      "end_time": 427.05,
+      "text": "等一等，等一等，你们先穿上我最新研制的防狼必胜套装。",
+      "speaker_gt": "慢羊羊",
+      "emotion_gt": "关切语调"
+    },
+    {
+      "segment_id": "8837bddb",
+      "begin_time": 437.2,
+      "end_time": 445.2,
+      "text": "防狼必胜套装是纯钢制造的。可以让灰太狼看得到吃不着，唯一的缺点就是。",
+      "speaker_gt": "慢羊羊",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "55777853",
+      "begin_time": 445.2,
+      "end_time": 447.01,
+      "text": "村长我们走喽！",
+      "speaker_gt": "喜羊羊",
+      "emotion_gt": "焦急语调"
+    },
+    {
+      "segment_id": "b335347c",
+      "begin_time": 447.08,
+      "end_time": 450.0,
+      "text": "等等我！",
+      "speaker_gt": "懒羊羊",
+      "emotion_gt": "焦急语调"
+    },
+    {
+      "segment_id": "57614249",
+      "begin_time": 450.05,
+      "end_time": 452.26,
+      "text": "哎呀，缺点就是太重了。",
+      "speaker_gt": "慢羊羊",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "19419fba",
+      "begin_time": 463.15,
+      "end_time": 466.0,
+      "text": "这套武装实在是要命啊。",
+      "speaker_gt": "喜羊羊",
+      "emotion_gt": "悲伤语调"
+    },
+    {
+      "segment_id": "d74e62e0",
+      "begin_time": 466.01,
+      "end_time": 468.0,
+      "text": "是啊，是啊。",
+      "speaker_gt": "沸羊羊",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "d30448c7",
+      "begin_time": 479.1,
+      "end_time": 483.0,
+      "text": "哎呦，呃，等等我！",
+      "speaker_gt": "懒羊羊",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "0eee809f",
+      "begin_time": 489.2,
+      "end_time": 494.16,
+      "text": "点点羊羊，点点羊羊，点中谁人当肥羊？",
+      "speaker_gt": "喜羊羊、沸羊羊",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "317ed140",
+      "begin_time": 496.13,
+      "end_time": 503.19,
+      "text": "小朋友，你们在找人吗？你们在找人吗？你们在找人吗？你们在找人吗？",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "69d4d3a3",
+      "begin_time": 503.9,
+      "end_time": 506.0,
+      "text": "哦，真好听的声音。",
+      "speaker_gt": "沸羊羊",
+      "emotion_gt": "惊奇语调"
+    },
+    {
+      "segment_id": "2bb1708c",
+      "begin_time": 506.0,
+      "end_time": 508.02,
+      "text": "大婶，你有没有看见？",
+      "speaker_gt": "喜羊羊",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "b290aee0",
+      "begin_time": 507.839,
+      "end_time": 512.0,
+      "text": "一只狼抓了一只羊经过是吗？他们往这边去了。",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "ff05b550",
+      "begin_time": 514.0,
+      "end_time": 525.1,
+      "text": "啊，不对不对，是那边呀。啊，是右边才对。去前面了。上面呀，左右两边。后面呀。",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "04023ddf",
+      "begin_time": 536.1,
+      "end_time": 538.1,
+      "text": "等等我。",
+      "speaker_gt": "懒羊羊",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "fd3d14b7",
+      "begin_time": 547.04,
+      "end_time": 548.23,
+      "text": "我好害怕呀。",
+      "speaker_gt": "美羊羊",
+      "emotion_gt": "恐惧语调"
+    },
+    {
+      "segment_id": "9aa453d1",
+      "begin_time": 549.0,
+      "end_time": 552.1,
+      "text": "别吵，给我吃了就不会害怕了。",
+      "speaker_gt": "红太狼",
+      "emotion_gt": "厌恶语调"
+    },
+    {
+      "segment_id": "cb61702a",
+      "begin_time": 552.14,
+      "end_time": 553.2,
+      "text": "没错。",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "50a23a5b",
+      "begin_time": 553.27,
+      "end_time": 558.08,
+      "text": "别用这样的声音说话了，我不想都吃醉羊。",
+      "speaker_gt": "红太狼",
+      "emotion_gt": "厌恶语调"
+    },
+    {
+      "segment_id": "8c1f9ccd",
+      "begin_time": 558.08,
+      "end_time": 560.0,
+      "text": "我也不想的。",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "恐惧语调"
+    },
+    {
+      "segment_id": "98e8180d",
+      "begin_time": 560.07,
+      "end_time": 563.16,
+      "text": "老婆，那先吃哪一只好呢？",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "953f3d0c",
+      "begin_time": 567.0,
+      "end_time": 568.14,
+      "text": "随便吧。",
+      "speaker_gt": "红太狼",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "c6a5b6fe",
+      "begin_time": 568.15,
+      "end_time": 572.28,
+      "text": "哎呀点点羊羊点中谁人当肥羊。",
+      "speaker_gt": "灰太狼、红太狼",
+      "emotion_gt": "开心语调"
+    },
+    {
+      "segment_id": "639612ce",
+      "begin_time": 572.28,
+      "end_time": 574.2,
+      "text": "快开门，快开门。",
+      "speaker_gt": "懒羊羊",
+      "emotion_gt": "焦急语调"
+    },
+    {
+      "segment_id": "32f91618",
+      "begin_time": 574.2,
+      "end_time": 575.23,
+      "text": "懒羊羊。",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "惊奇语调"
+    },
+    {
+      "segment_id": "a6bca70c",
+      "begin_time": 576.15,
+      "end_time": 579.9,
+      "text": "哎呀老婆，今天晚上吃四喜羊肉丸子。",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "开心语调"
+    },
+    {
+      "segment_id": "dbc4f380",
+      "begin_time": 580.1,
+      "end_time": 581.0,
+      "text": "嗯",
+      "speaker_gt": "红太狼",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "",
+      "begin_time": 581.0,
+      "end_time": 584.9,
+      "text": "哎，啊",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "开心语调"
+    },
+    {
+      "segment_id": "2feac0c6",
+      "begin_time": 586.302,
+      "end_time": 590.1,
+      "text": "嗯嗯嗯嗯",
+      "speaker_gt": "懒羊羊",
+      "emotion_gt": "恐惧语调"
+    },
+    {
+      "segment_id": "c1282e08",
+      "begin_time": 590.2,
+      "end_time": 593.16,
+      "text": "快把喜羊羊他们放了。",
+      "speaker_gt": "懒羊羊",
+      "emotion_gt": "焦急语调"
+    },
+    {
+      "segment_id": "4ed76dc6",
+      "begin_time": 593.2,
+      "end_time": 599.03,
+      "text": "哈哈哈哈。傻瓜，现在你就去陪他们吧。",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "f2cf6d6a",
+      "begin_time": 599.1,
+      "end_time": 602.17,
+      "text": "咦！啊呀！",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "f197bc2a",
+      "begin_time": 602.18,
+      "end_time": 604.0,
+      "text": "啊呀！",
+      "speaker_gt": "懒羊羊",
+      "emotion_gt": "恐惧语调"
+    },
+    {
+      "segment_id": "71fa93bc",
+      "begin_time": 604.855,
+      "end_time": 607.27,
+      "text": "诶？哎呀！",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "悲伤语调"
+    },
+    {
+      "segment_id": "30b933ae",
+      "begin_time": 610.0,
+      "end_time": 612.29,
+      "text": "嗯，啊哎",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "愤怒语调"
+    },
+    {
+      "segment_id": "b88fe2b6",
+      "begin_time": 613.4,
+      "end_time": 613.27,
+      "text": "啊呀",
+      "speaker_gt": "懒羊羊",
+      "emotion_gt": "恐惧语调"
+    },
+    {
+      "segment_id": "93569953",
+      "begin_time": 613.835,
+      "end_time": 617.01,
+      "text": "嗯？嗯？啊？！",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "惊奇语调"
+    },
+    {
+      "segment_id": "0683515c",
+      "begin_time": 617.1,
+      "end_time": 617.9,
+      "text": "啊",
+      "speaker_gt": "懒羊羊",
+      "emotion_gt": "惊奇语调"
+    },
+    {
+      "segment_id": "549052fe",
+      "begin_time": 617.9,
+      "end_time": 618.8,
+      "text": "嗯",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "惊奇语调"
+    },
+    {
+      "segment_id": "d2159d22",
+      "begin_time": 622.08,
+      "end_time": 628.0,
+      "text": "嘿嘿嘿嘿嘿嘿嘿嘿嘿。再不放了他们，我就扎你了。",
+      "speaker_gt": "懒羊羊",
+      "emotion_gt": "开心语调"
+    },
+    {
+      "segment_id": "f8b2e45b",
+      "begin_time": 628.01,
+      "end_time": 631.0,
+      "text": "咦啊嘿",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "恐惧语调"
+    },
+    {
+      "segment_id": "325abb4d",
+      "begin_time": 636.1,
+      "end_time": 638.0,
+      "text": "灰太狼，快放了他们。",
+      "speaker_gt": "懒羊羊",
+      "emotion_gt": "焦急语调"
+    },
+    {
+      "segment_id": "83256cf4",
+      "begin_time": 638.0,
+      "end_time": 641.04,
+      "text": "小胖子，我吃过晚饭再收拾你。",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "68409a00",
+      "begin_time": 641.06,
+      "end_time": 643.1,
+      "text": "老婆，吃羊啦。",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "开心语调"
+    },
+    {
+      "segment_id": "8390b8fa",
+      "begin_time": 644.0,
+      "end_time": 646.29,
+      "text": "不要把他们当晚饭呀。",
+      "speaker_gt": "懒羊羊",
+      "emotion_gt": "恐惧语调"
+    },
+    {
+      "segment_id": "67e88cbf",
+      "begin_time": 648.3,
+      "end_time": 653.15,
+      "text": "嗯，嗯，说起晚饭，我还没吃呢。",
+      "speaker_gt": "懒羊羊",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "09d78746",
+      "begin_time": 654.1,
+      "end_time": 664.3,
+      "text": "嗯？啊，样子很好吃哎。",
+      "speaker_gt": "懒羊羊",
+      "emotion_gt": "惊奇语调"
+    },
+    {
+      "segment_id": "8f506674",
+      "begin_time": 672.1,
+      "end_time": 673.23,
+      "text": "救命啊！",
+      "speaker_gt": "美羊羊",
+      "emotion_gt": "恐惧语调"
+    },
+    {
+      "segment_id": "1a80ffea",
+      "begin_time": 673.23,
+      "end_time": 676.0,
+      "text": "别叫了，没有人救得了你。",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "483e248f",
+      "begin_time": 675.25,
+      "end_time": 679.0,
+      "text": "美羊羊，你不要死啊！",
+      "speaker_gt": "懒羊羊",
+      "emotion_gt": "悲伤语调"
+    },
+    {
+      "segment_id": "1d5accd4",
+      "begin_time": 679.15,
+      "end_time": 681.01,
+      "text": "好难听的声音",
+      "speaker_gt": "沸羊羊",
+      "emotion_gt": "厌恶语调"
+    },
+    {
+      "segment_id": "a779b7b5",
+      "begin_time": 682.0,
+      "end_time": 686.3,
+      "text": "大家都死了，我会很寂寞的。",
+      "speaker_gt": "懒羊羊",
+      "emotion_gt": "悲伤语调"
+    },
+    {
+      "segment_id": "",
+      "begin_time": 684.0,
+      "end_time": 687.18,
+      "text": "好恐怖，比灰太狼的声音还可怕",
+      "speaker_gt": "美羊羊",
+      "emotion_gt": "厌恶语调"
+    },
+    {
+      "segment_id": "aafebbd4",
+      "begin_time": 688.0,
+      "end_time": 689.3,
+      "text": "这是羊叫还是鬼叫啊？",
+      "speaker_gt": "沸羊羊",
+      "emotion_gt": "厌恶语调"
+    },
+    {
+      "segment_id": "44804094",
+      "begin_time": 690.0,
+      "end_time": 692.12,
+      "text": "灰太狼快出去收拾他！",
+      "speaker_gt": "红太狼",
+      "emotion_gt": "愤怒语调"
+    },
+    {
+      "segment_id": "d72140db",
+      "begin_time": 693.0,
+      "end_time": 696.18,
+      "text": "哎呀不如你来收拾吧老婆。",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "恐惧语调"
+    },
+    {
+      "segment_id": "",
+      "begin_time": 694.0,
+      "end_time": 700.17,
+      "text": "喜羊羊！美羊羊！",
+      "speaker_gt": "懒羊羊",
+      "emotion_gt": "悲伤语调"
+    },
+    {
+      "segment_id": "cfceae07",
+      "begin_time": 698.2,
+      "end_time": 700.27,
+      "text": "小胖子快走开！",
+      "speaker_gt": "红太狼",
+      "emotion_gt": "愤怒语调"
+    },
+    {
+      "segment_id": "f9af9ce8",
+      "begin_time": 705.0,
+      "end_time": 707.06,
+      "text": "懒羊羊，唱支歌吧。",
+      "speaker_gt": "喜羊羊",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "5593f1b1",
+      "begin_time": 710.26,
+      "end_time": 712.13,
+      "text": "唱哪一首啊？",
+      "speaker_gt": "懒羊羊",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "ce5b35c3",
+      "begin_time": 712.15,
+      "end_time": 715.09,
+      "text": "随便吧，或者绕口令也行。",
+      "speaker_gt": "喜羊羊",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "75535eb6",
+      "begin_time": 715.23,
+      "end_time": 731.03,
+      "text": "我是懒羊羊，我爱吃东西，吃很多的东西，吃完要睡觉，睡个大懒觉。懒觉睡多了，再去吃东西，吃完东西了，再去睡大觉。哎呀救命啊，我受不了了。",
+      "speaker_gt": "懒羊羊",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "",
+      "begin_time": 720.1,
+      "end_time": 730.14,
+      "text": "哎呀呀，哎呀哎呀哎呀，哎呀救命啊，我受不了了。",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "恐惧语调"
+    },
+    {
+      "segment_id": "b1f3298b",
+      "begin_time": 732.07,
+      "end_time": 734.17,
+      "text": "我们也受不了了。",
+      "speaker_gt": "喜羊羊、沸羊羊、美羊羊",
+      "emotion_gt": "恐惧语调"
+    },
+    {
+      "segment_id": "a6012711",
+      "begin_time": 734.18,
+      "end_time": 736.23,
+      "text": "你们没事太好了。",
+      "speaker_gt": "懒羊羊",
+      "emotion_gt": "关切语调"
+    },
+    {
+      "segment_id": "137264df",
+      "begin_time": 736.27,
+      "end_time": 739.1,
+      "text": "你不要再发出声音了。",
+      "speaker_gt": "喜羊羊、沸羊羊、美羊羊",
+      "emotion_gt": "愤怒语调"
+    },
+    {
+      "segment_id": "56bf7223",
+      "begin_time": 745.29,
+      "end_time": 749.1,
+      "text": "你们走快点啊，迟了灰太狼会追上来的。",
+      "speaker_gt": "沸羊羊",
+      "emotion_gt": "焦急语调"
+    },
+    {
+      "segment_id": "7d5c3179",
+      "begin_time": 749.2,
+      "end_time": 752.2,
+      "text": "别跑那么快，衣服好重啊。",
+      "speaker_gt": "懒羊羊",
+      "emotion_gt": "焦急语调"
+    },
+    {
+      "segment_id": "bef14751",
+      "begin_time": 752.2,
+      "end_time": 754.15,
+      "text": "别再说话了。",
+      "speaker_gt": "喜羊羊、沸羊羊、美羊羊",
+      "emotion_gt": "愤怒语调"
+    },
+    {
+      "segment_id": "3925b5ae",
+      "begin_time": 755.112,
+      "end_time": 758.04,
+      "text": "放心吧，慢慢回去就行了。",
+      "speaker_gt": "喜羊羊",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "fcf1eff7",
+      "begin_time": 758.17,
+      "end_time": 761.15,
+      "text": "不快不行了，灰太狼一定不会甘心的呀。",
+      "speaker_gt": "沸羊羊",
+      "emotion_gt": "焦急语调"
+    },
+    {
+      "segment_id": "f8feb674",
+      "begin_time": 761.18,
+      "end_time": 765.2,
+      "text": "对呀，就像他常说的那样，我一定会回来的。",
+      "speaker_gt": "美羊羊",
+      "emotion_gt": "焦急语调"
+    },
+    {
+      "segment_id": "e9a6224b",
+      "begin_time": 766.0,
+      "end_time": 769.1,
+      "text": "我保证，这次他一定不会回来的。",
+      "speaker_gt": "喜羊羊",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "ea6f763e",
+      "begin_time": 771.05,
+      "end_time": 793.8,
+      "text": "我是懒羊羊，爱吃东西，吃很多的东西，吃完要睡觉，睡个大懒觉。懒觉睡多了，再去吃东西，吃完又睡觉，睡个大懒觉！我是懒羊羊！我爱吃东西！吃很多东西！",
+      "speaker_gt": "懒羊羊",
+      "emotion_gt": "平淡语气"
+    },
+    {
+      "segment_id": "",
+      "begin_time": 772.0,
+      "end_time": 774.04,
+      "text": "好难听啊",
+      "speaker_gt": "红太狼",
+      "emotion_gt": "厌恶语调"
+    },
+    {
+      "segment_id": "52e220d0",
+      "begin_time": 790.06,
+      "end_time": 793.3,
+      "text": "可恶的喜羊羊，我一定会报仇的！",
+      "speaker_gt": "灰太狼",
+      "emotion_gt": "愤怒语调"
+    }
+  ]
+}

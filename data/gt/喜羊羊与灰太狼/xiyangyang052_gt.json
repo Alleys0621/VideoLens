@@ -1,0 +1,714 @@
+[
+  {
+    "segment_id": "571bd9b7",
+    "begin_time": 0.0,
+    "end_time": 85.1,
+    "speaker_gt": "歌手",
+    "text": "喜羊羊 美羊羊 懒羊羊 沸羊羊 慢羊羊 软绵绵 红太狼 灰太狼...别看我只是一只羊，绿草因为我变得更香，天空因为我变得更蓝，白云因为我变得柔软。别看我只是一只羊，羊儿的聪明难以想象。天再高心情一样奔放，每天都追赶太阳。有什么难题去牵绊我都不会去心伤，有什么危险在我面前也不会去慌乱，就算有狼群把我追捕也当做游戏一场。在什么时间都爱开心笑容都会飞翔，就算会摔倒站得起来永远不会沮丧。在所有天气拥有叫人大笑的力量，虽然我只是羊。喜羊羊 美羊羊...",
+    "emotion_gt": "开心语调"
+  },
+  {
+    "segment_id": "7b2893ed",
+    "begin_time": 99.4,
+    "end_time": 112.16,
+    "speaker_gt": "美羊羊",
+    "text": "啊？喜羊羊，时候不早了，我们还是回去吧。",
+    "emotion_gt": "关切语调"
+  },
+  {
+    "segment_id": "c9223e75",
+    "begin_time": 113.1,
+    "end_time": 115.27,
+    "speaker_gt": "喜羊羊",
+    "text": "啊，别着急嘛，再玩一会儿。",
+    "emotion_gt": "开心语调"
+  },
+  {
+    "segment_id": "93f093d6",
+    "begin_time": 116.3,
+    "end_time": 118.26,
+    "speaker_gt": "沸羊羊",
+    "text": "喜羊羊你看，水塘里有大雁！",
+    "emotion_gt": "惊奇语调"
+  },
+  {
+    "segment_id": "f21d6846",
+    "begin_time": 121.4,
+    "end_time": 130.2,
+    "speaker_gt": "美羊羊",
+    "text": "啊，大雁是一种很温顺的动物。它们只有冬天才会到青青草原旁的水塘里生宝宝。呵呵呵。",
+    "emotion_gt": "开心语调"
+  },
+  {
+    "segment_id": "279efe49",
+    "begin_time": 130.8,
+    "end_time": 134.2,
+    "speaker_gt": "沸羊羊",
+    "text": "嗯？大雁的宝宝是怎样出生的呀？",
+    "emotion_gt": "惊奇语调"
+  },
+  {
+    "segment_id": "077aaa7b",
+    "begin_time": 135.2,
+    "end_time": 137.3,
+    "speaker_gt": "喜羊羊",
+    "text": "当然是从蛋里面出生的。",
+    "emotion_gt": "平淡语气"
+  },
+  {
+    "segment_id": "",
+    "begin_time": 137.3,
+    "end_time": 141.0,
+    "speaker_gt": "灰太狼",
+    "text": "这不是喜羊羊的声音吗？",
+    "emotion_gt": "惊奇语调"
+  },
+  {
+    "segment_id": "9f259db5",
+    "begin_time": 147.0,
+    "end_time": 149.2,
+    "speaker_gt": "美羊羊",
+    "text": "是灰太狼！",
+    "emotion_gt": "惊奇语调"
+  },
+  {
+    "segment_id": "beb87096",
+    "begin_time": 150.0,
+    "end_time": 156.0,
+    "speaker_gt": "灰太狼",
+    "text": "哈哈，原来是你们，这可是你们自己送上门来的。",
+    "emotion_gt": "开心语调"
+  },
+  {
+    "segment_id": "10e1c3a3",
+    "begin_time": 157.0,
+    "end_time": 161.0,
+    "speaker_gt": "喜羊羊",
+    "text": "喂，灰太狼，水塘里好像有鳄鱼呀！",
+    "emotion_gt": "惊奇语调"
+  },
+  {
+    "segment_id": "fd04b00a",
+    "begin_time": 161.0,
+    "end_time": 164.1,
+    "speaker_gt": "灰太狼",
+    "text": "哼，喜羊羊，这次你别想再骗我了。",
+    "emotion_gt": "愤怒语调"
+  },
+  {
+    "segment_id": "",
+    "begin_time": 165.0,
+    "end_time": 173.0,
+    "speaker_gt": "灰太狼",
+    "text": "啊！哎呀哎呀！",
+    "emotion_gt": "惊奇语调"
+  },
+  {
+    "segment_id": "ab0c390d",
+    "begin_time": 173.1,
+    "end_time": 177.1,
+    "speaker_gt": "喜羊羊",
+    "text": "灰太狼，我没骗你吧？",
+    "emotion_gt": "开心语调"
+  },
+  {
+    "segment_id": "7ea17d46",
+    "begin_time": 178.0,
+    "end_time": 181.2,
+    "speaker_gt": "灰太狼",
+    "text": "救命啊，救我！",
+    "emotion_gt": "恐惧语调"
+  },
+  {
+    "segment_id": "1d55ca78",
+    "begin_time": 181.2,
+    "end_time": 185.0,
+    "speaker_gt": "喜羊羊",
+    "text": "我们还是回去吧。",
+    "emotion_gt": "平淡语气"
+  },
+  {
+    "segment_id": "762498f8",
+    "begin_time": 187.2,
+    "end_time": 197.0,
+    "speaker_gt": "灰太狼",
+    "text": "哎呦，又让喜羊羊他们跑了。抓不到羊，我没法向老婆交差。",
+    "emotion_gt": "悲伤语调"
+  },
+  {
+    "segment_id": "",
+    "begin_time": 197.0,
+    "end_time": 202.0,
+    "speaker_gt": "灰太狼",
+    "text": "哎，抓一只大雁回去，也不错呀。",
+    "emotion_gt": "开心语调"
+  },
+  {
+    "segment_id": "",
+    "begin_time": 205.2,
+    "end_time": 219.1,
+    "speaker_gt": "灰太狼",
+    "text": "哎呀怎么办呢，大雁也抓不到啊。",
+    "emotion_gt": "焦急语调"
+  },
+  {
+    "segment_id": "",
+    "begin_time": 219.1,
+    "end_time": 220.1,
+    "speaker_gt": "灰太狼",
+    "text": "诶？哎呀！大雁的蛋也不错呀，回家以后，等孵化出小雁烤着吃。太棒了，哈哈",
+    "emotion_gt": "开心语调"
+  },
+  {
+    "segment_id": "721b45e5",
+    "begin_time": 221.0,
+    "end_time": 227.2,
+    "speaker_gt": "美羊羊",
+    "text": "大雁真可怜，宝宝就要被灰太狼吃掉了。",
+    "emotion_gt": "悲伤语调"
+  },
+  {
+    "segment_id": "c977e620",
+    "begin_time": 227.2,
+    "end_time": 234.1,
+    "speaker_gt": "喜羊羊",
+    "text": "哼，我不会让灰太狼得逞的。哎，我们这样……",
+    "emotion_gt": "愤怒语调"
+  },
+  {
+    "segment_id": "",
+    "begin_time": 235.0,
+    "end_time": 241.2,
+    "speaker_gt": "喜羊羊",
+    "text": "灰太狼，怎么现在不吃肉改吃蛋了？啊？",
+    "emotion_gt": "厌恶语调"
+  },
+  {
+    "segment_id": "849842fa",
+    "begin_time": 241.26,
+    "end_time": 245.1,
+    "speaker_gt": "灰太狼",
+    "text": "谁说的？我第一个就吃你！",
+    "emotion_gt": "愤怒语调"
+  },
+  {
+    "segment_id": "1e8cec92",
+    "begin_time": 245.1,
+    "end_time": 252.0,
+    "speaker_gt": "喜羊羊",
+    "text": "哼，别吹牛皮了，你拿着鸟蛋干什么？明明是抓不到我们，改吃鸟蛋。",
+    "emotion_gt": "厌恶语调"
+  },
+  {
+    "segment_id": "b9b7131d",
+    "begin_time": 252.02,
+    "end_time": 260.0,
+    "speaker_gt": "灰太狼",
+    "text": "这可是你自己送上门来的，嗯？你别跑啊！",
+    "emotion_gt": "愤怒语调"
+  },
+  {
+    "segment_id": "",
+    "begin_time": 261.0,
+    "end_time": 270.0,
+    "speaker_gt": "灰太狼",
+    "text": "啊呀！把蛋还给我呀!",
+    "emotion_gt": "焦急语调"
+  },
+  {
+    "segment_id": "659380b6",
+    "begin_time": 273.0,
+    "end_time": 276.16,
+    "speaker_gt": "慢羊羊",
+    "text": "懒羊羊，懒羊羊！",
+    "emotion_gt": "关切语调"
+  },
+  {
+    "segment_id": "e67ee421",
+    "begin_time": 276.46,
+    "end_time": 279.2,
+    "speaker_gt": "懒羊羊",
+    "text": "什么事啊，村长？",
+    "emotion_gt": "平淡语气"
+  },
+  {
+    "segment_id": "15145def",
+    "begin_time": 279.4,
+    "end_time": 282.16,
+    "speaker_gt": "慢羊羊",
+    "text": "你有没有看见喜羊羊他们呐？",
+    "emotion_gt": "平淡语气"
+  },
+  {
+    "segment_id": "1ca35203",
+    "begin_time": 282.56,
+    "end_time": 284.28,
+    "speaker_gt": "懒羊羊",
+    "text": "他们好像出去玩了。",
+    "emotion_gt": "平淡语气"
+  },
+  {
+    "segment_id": "8eed60b4",
+    "begin_time": 285.16,
+    "end_time": 288.11,
+    "speaker_gt": "喜羊羊",
+    "text": "村长，我们回来咯！",
+    "emotion_gt": "开心语调"
+  },
+  {
+    "segment_id": "29da5ab1",
+    "begin_time": 290.0,
+    "end_time": 299.0,
+    "speaker_gt": "慢羊羊",
+    "text": "喜羊羊，你们跑出去真是太冒险了，没有铁门的保护，很可能会被灰太狼抓到的呀。",
+    "emotion_gt": "关切语调"
+  },
+  {
+    "segment_id": "5a2e0a3e",
+    "begin_time": 299.16,
+    "end_time": 302.06,
+    "speaker_gt": "喜羊羊",
+    "text": "灰太狼就在我们后面呢。",
+    "emotion_gt": "平淡语气"
+  },
+  {
+    "segment_id": "72bef42c",
+    "begin_time": 302.16,
+    "end_time": 305.36,
+    "speaker_gt": "慢羊羊",
+    "text": "什么？你把灰太狼也引来了？",
+    "emotion_gt": "惊奇语调"
+  },
+  {
+    "segment_id": "82fbda39",
+    "begin_time": 305.96,
+    "end_time": 312.1,
+    "speaker_gt": "灰太狼",
+    "text": "喜羊羊，你不要跑啊！赶快把蛋还给我，不然我就把你给吃了！",
+    "emotion_gt": "愤怒语调"
+  },
+  {
+    "segment_id": "eade11b0",
+    "begin_time": 312.1,
+    "end_time": 316.2,
+    "speaker_gt": "喜羊羊",
+    "text": "我是不会把蛋还给你的，你也别想伤害大雁的宝宝。",
+    "emotion_gt": "愤怒语调"
+  },
+  {
+    "segment_id": "ebc73623",
+    "begin_time": 316.2,
+    "end_time": 321.14,
+    "speaker_gt": "慢羊羊",
+    "text": "灰太狼，你是为了一只蛋才追到羊村来的？",
+    "emotion_gt": "惊奇语调"
+  },
+  {
+    "segment_id": "4ab9a63e",
+    "begin_time": 321.14,
+    "end_time": 325.0,
+    "speaker_gt": "灰太狼",
+    "text": "当然了，这只蛋是我费尽辛苦得来的。",
+    "emotion_gt": "愤怒语调"
+  },
+  {
+    "segment_id": "15554416",
+    "begin_time": 325.0,
+    "end_time": 329.04,
+    "speaker_gt": "慢羊羊",
+    "text": "可是我从来没听说过狼会吃蛋的呀。",
+    "emotion_gt": "平淡语气"
+  },
+  {
+    "segment_id": "31cb918a",
+    "begin_time": 329.04,
+    "end_time": 335.08,
+    "speaker_gt": "灰太狼",
+    "text": "哎呀不许笑，这只蛋是我的晚餐。喜羊羊，你最好还是还给我。不然的话",
+    "emotion_gt": "愤怒语调"
+  },
+  {
+    "segment_id": "",
+    "begin_time": 335.08,
+    "end_time": 336.1,
+    "speaker_gt": "喜羊羊",
+    "text": "还给你",
+    "emotion_gt": "平淡语气"
+  },
+  {
+    "segment_id": "e0e223d2",
+    "begin_time": 336.1,
+    "end_time": 345.33,
+    "speaker_gt": "灰太狼",
+    "text": "喜羊羊，我一定会夺回这只蛋的！",
+    "emotion_gt": "愤怒语调"
+  },
+  {
+    "segment_id": "b536aa3d",
+    "begin_time": 353.6,
+    "end_time": 358.0,
+    "speaker_gt": "慢羊羊",
+    "text": "嗯，喜羊羊，你要为这件事做检讨啊。",
+    "emotion_gt": "平淡语气"
+  },
+  {
+    "segment_id": "31c6afc5",
+    "begin_time": 358.0,
+    "end_time": 366.13,
+    "speaker_gt": "喜羊羊",
+    "text": "呃呃，村长，是我不好，我不应该带着他们擅自走出铁门，这样做太冒失了，是我不对。",
+    "emotion_gt": "平淡语气"
+  },
+  {
+    "segment_id": "aeb2f924",
+    "begin_time": 366.13,
+    "end_time": 377.0,
+    "speaker_gt": "慢羊羊",
+    "text": "嗯，以后你要注意，不要做这种危险的行为。但是你为了保护大雁宝宝勇斗灰太狼，这个错误我就不罚你了。",
+    "emotion_gt": "关切语调"
+  },
+  {
+    "segment_id": "95d5c849",
+    "begin_time": 377.0,
+    "end_time": 385.0,
+    "speaker_gt": "喜羊羊",
+    "text": "啊，大雁的宝宝还没有离开它的壳，我们也找不到它的妈妈。村长，我们该怎么办呢？",
+    "emotion_gt": "关切语调"
+  },
+  {
+    "segment_id": "08d9a7f3",
+    "begin_time": 385.0,
+    "end_time": 389.25,
+    "speaker_gt": "慢羊羊",
+    "text": "嗯...啊？这个，我要想一想。",
+    "emotion_gt": "平淡语气"
+  },
+  {
+    "segment_id": "5cb47c85",
+    "begin_time": 401.1,
+    "end_time": 413.0,
+    "speaker_gt": "灰太狼",
+    "text": "该死的喜羊羊，我一定要夺回这只蛋。扬眉吐气，顺便再把你捉住，也好给我老婆一个交代呀。",
+    "emotion_gt": "愤怒语调"
+  },
+  {
+    "segment_id": "",
+    "begin_time": 413.0,
+    "end_time": 438.0,
+    "speaker_gt": "灰太狼",
+    "text": "啊，幸好我早有准备。咦！呀！我终于进了羊村了。",
+    "emotion_gt": "开心语调"
+  },
+  {
+    "segment_id": "",
+    "begin_time": 482.15,
+    "end_time": 492.02,
+    "speaker_gt": "灰太狼",
+    "text": "哎，喜羊羊，你看这是什么？啊，这是你从我那里抢走的蛋。昨天晚上我又把它偷了回来，嘿嘿。",
+    "emotion_gt": "开心语调"
+  },
+  {
+    "segment_id": "c261a6e3",
+    "begin_time": 492.04,
+    "end_time": 494.03,
+    "speaker_gt": "美羊羊",
+    "text": "啊，真的是那颗蛋呢！",
+    "emotion_gt": "惊奇语调"
+  },
+  {
+    "segment_id": "2d61321f",
+    "begin_time": 494.04,
+    "end_time": 496.1,
+    "speaker_gt": "沸羊羊",
+    "text": "哎，啊，那我们怎么办呢？",
+    "emotion_gt": "焦急语调"
+  },
+  {
+    "segment_id": "a433a6e1",
+    "begin_time": 496.1,
+    "end_time": 498.3,
+    "speaker_gt": "喜羊羊",
+    "text": "灰太狼，你想怎么样啊？啊？",
+    "emotion_gt": "愤怒语调"
+  },
+  {
+    "segment_id": "f5b7dccb",
+    "begin_time": 498.3,
+    "end_time": 507.04,
+    "speaker_gt": "灰太狼",
+    "text": "嗯，很简单，只要你们其中一只羊来交换，否则的话，我就把这只蛋摔在地上。",
+    "emotion_gt": "平淡语气"
+  },
+  {
+    "segment_id": "dda109fd",
+    "begin_time": 507.15,
+    "end_time": 510.1,
+    "speaker_gt": "沸羊羊",
+    "text": "呃，喜羊羊，快想想办法呀！",
+    "emotion_gt": "焦急语调"
+  },
+  {
+    "segment_id": "2d481d0b",
+    "begin_time": 510.1,
+    "end_time": 512.2,
+    "speaker_gt": "喜羊羊",
+    "text": "嗯，别着急，让我再想想办法。",
+    "emotion_gt": "关切语调"
+  },
+  {
+    "segment_id": "56cf725e",
+    "begin_time": 513.2,
+    "end_time": 527.24,
+    "speaker_gt": "灰太狼",
+    "text": "不要再费心思了，想出办法也是没用的。一个小时之后，在铁门外，喜羊羊必须成为我的猎物来交换这个蛋，否则的话，我就把它摔在地上，明白了吗？",
+    "emotion_gt": "愤怒语调"
+  },
+  {
+    "segment_id": "9ca062a4",
+    "begin_time": 533.2,
+    "end_time": 537.0,
+    "speaker_gt": "慢羊羊",
+    "text": "孩子们，你们遇到什么困难了？",
+    "emotion_gt": "关切语调"
+  },
+  {
+    "segment_id": "683463b9",
+    "begin_time": 537.0,
+    "end_time": 542.1,
+    "speaker_gt": "美羊羊",
+    "text": "唉，灰太狼偷走了大雁的宝宝，而且他威胁喜羊羊。",
+    "emotion_gt": "愤怒语调"
+  },
+  {
+    "segment_id": "fcad2af2",
+    "begin_time": 542.1,
+    "end_time": 550.1,
+    "speaker_gt": "沸羊羊",
+    "text": "灰太狼说一个小时后要不把喜羊羊送给他的话，他就要摔碎那颗蛋了。啊，怎么办啊",
+    "emotion_gt": "焦急语调"
+  },
+  {
+    "segment_id": "02031f79",
+    "begin_time": 551.0,
+    "end_time": 555.18,
+    "speaker_gt": "喜羊羊",
+    "text": "就算是灰太狼真的把我吃了，我也一定不会让他得逞的！",
+    "emotion_gt": "愤怒语调"
+  },
+  {
+    "segment_id": "c2edb217",
+    "begin_time": 555.18,
+    "end_time": 562.01,
+    "speaker_gt": "慢羊羊",
+    "text": "想不到灰太狼这么狡猾呀。看来也只好使用我的最新发明了。",
+    "emotion_gt": "平淡语气"
+  },
+  {
+    "segment_id": "482694c5",
+    "begin_time": 564.0,
+    "end_time": 569.13,
+    "speaker_gt": "喜羊羊",
+    "text": "哈？可是村长，这只是一根普通的绳子呀。",
+    "emotion_gt": "惊奇语调"
+  },
+  {
+    "segment_id": "173b8c3a",
+    "begin_time": 569.13,
+    "end_time": 584.0,
+    "speaker_gt": "慢羊羊",
+    "text": "你可不要小看它呀，这是弹力绳索，可以无限延长。只要把它绑在身上，无论灰太狼把你带到什么地方，只要你一吹口哨，它就能把你拉回来呀。",
+    "emotion_gt": "平淡语气"
+  },
+  {
+    "segment_id": "e9908f1d",
+    "begin_time": 588.0,
+    "end_time": 600.1,
+    "speaker_gt": "慢羊羊",
+    "text": "灰太狼。按照你的条件，我们已经把喜羊羊捆绑好了来和你交换。",
+    "emotion_gt": "平淡语气"
+  },
+  {
+    "segment_id": "",
+    "begin_time": 604.0,
+    "end_time": 607.24,
+    "speaker_gt": "慢羊羊",
+    "text": "灰太狼，你怎么能不守信用啊？",
+    "emotion_gt": "惊奇语调"
+  },
+  {
+    "segment_id": "f40627ef",
+    "begin_time": 607.24,
+    "end_time": 616.2,
+    "speaker_gt": "灰太狼",
+    "text": "你们上当了，我才不会把蛋给你们呢。等回到家，把喜羊羊和蛋一块儿煮着吃。",
+    "emotion_gt": "开心语调"
+  },
+  {
+    "segment_id": "743c5dd6",
+    "begin_time": 639.05,
+    "end_time": 647.23,
+    "speaker_gt": "喜羊羊",
+    "text": "嗨，灰太狼，你这么走下去不累吗？不如你把我放下来歇一会儿吧，啊？怎么样啊？",
+    "emotion_gt": "开心语调"
+  },
+  {
+    "segment_id": "f8d23821",
+    "begin_time": 647.23,
+    "end_time": 652.1,
+    "speaker_gt": "灰太狼",
+    "text": "哎你别耍花样。",
+    "emotion_gt": "愤怒语调"
+  },
+  {
+    "segment_id": "82412b50",
+    "begin_time": 653.0,
+    "end_time": 657.0,
+    "speaker_gt": "喜羊羊",
+    "text": "我已经成为了你的猎物了，还能耍什么花样啊？",
+    "emotion_gt": "开心语调"
+  },
+  {
+    "segment_id": "",
+    "begin_time": 658.0,
+    "end_time": 663.03,
+    "speaker_gt": "喜羊羊",
+    "text": "来，我帮你拿着蛋怎么样？如果不小心打破了，很可惜的哟。",
+    "emotion_gt": "关切语调"
+  },
+  {
+    "segment_id": "10c0ca27",
+    "begin_time": 663.08,
+    "end_time": 665.0,
+    "speaker_gt": "灰太狼",
+    "text": "哎，说的也有道理呀。",
+    "emotion_gt": "平淡语气"
+  },
+  {
+    "segment_id": "",
+    "begin_time": 671.5,
+    "end_time": 674.2,
+    "speaker_gt": "灰太狼",
+    "text": "嗯...想跑没那么容易。",
+    "emotion_gt": "愤怒语调"
+  },
+  {
+    "segment_id": "",
+    "begin_time": 683.0,
+    "end_time": 685.0,
+    "speaker_gt": "灰太狼",
+    "text": "别想逃！",
+    "emotion_gt": "愤怒语调"
+  },
+  {
+    "segment_id": "",
+    "begin_time": 691.0,
+    "end_time": 693.0,
+    "speaker_gt": "慢羊羊",
+    "text": "太好了",
+    "emotion_gt": "开心语调"
+  },
+  {
+    "segment_id": "5a85d30f",
+    "begin_time": 700.0,
+    "end_time": 704.0,
+    "speaker_gt": "喜羊羊",
+    "text": "嘿嘿，抓不到我，抓不到我，抓不到我。",
+    "emotion_gt": "开心语调"
+  },
+  {
+    "segment_id": "e033da7f",
+    "begin_time": 704.06,
+    "end_time": 713.02,
+    "speaker_gt": "灰太狼",
+    "text": "捉不到羊，蛋我也不会放过。嘿嘿，喜羊羊，这蛋还在我的手上呢，啊？",
+    "emotion_gt": "开心语调"
+  },
+  {
+    "segment_id": "b6c7ed3a",
+    "begin_time": 713.02,
+    "end_time": 715.3,
+    "speaker_gt": "喜羊羊",
+    "text": "唉，又让灰太狼得逞了。",
+    "emotion_gt": "悲伤语调"
+  },
+  {
+    "segment_id": "f48c8bc6",
+    "begin_time": 715.3,
+    "end_time": 726.15,
+    "speaker_gt": "灰太狼",
+    "text": "哼，你不乖乖跟我回去的话，我就把这个蛋摔破它，让大雁宝宝为你而死。你们忍心吗？说，你们忍心吗？",
+    "emotion_gt": "愤怒语调"
+  },
+  {
+    "segment_id": "990f71ef",
+    "begin_time": 726.15,
+    "end_time": 734.09,
+    "speaker_gt": "慢羊羊",
+    "text": "我们不忍心，可是我们想过了，也不能失去喜羊羊，没办法了。",
+    "emotion_gt": "平淡语气"
+  },
+  {
+    "segment_id": "f4363922",
+    "begin_time": 734.09,
+    "end_time": 738.2,
+    "speaker_gt": "灰太狼",
+    "text": "好，大雁，你去找这些羊报仇吧！",
+    "emotion_gt": "愤怒语调"
+  },
+  {
+    "segment_id": "",
+    "begin_time": 744.0,
+    "end_time": 747.2,
+    "speaker_gt": "灰太狼",
+    "text": "呃，怎么会是一只鳄鱼呀？啊？",
+    "emotion_gt": "惊奇语调"
+  },
+  {
+    "segment_id": "a946acce",
+    "begin_time": 748.0,
+    "end_time": 754.3,
+    "speaker_gt": "喜羊羊",
+    "text": "哈哈，灰太狼，大雁的蛋在这里，刚才我们已经换过了。",
+    "emotion_gt": "开心语调"
+  },
+  {
+    "segment_id": "fb227673",
+    "begin_time": 754.3,
+    "end_time": 759.2,
+    "speaker_gt": "灰太狼",
+    "text": "你不要哭了，再哭的话，我就把你给吃掉。",
+    "emotion_gt": "愤怒语调"
+  },
+  {
+    "segment_id": "a2807447",
+    "begin_time": 760.0,
+    "end_time": 764.29,
+    "speaker_gt": "鳄鱼妈妈",
+    "text": "宝贝儿，是谁敢欺负你呀？啊？",
+    "emotion_gt": "愤怒语调"
+  },
+  {
+    "segment_id": "3c08e0b6",
+    "begin_time": 772.0,
+    "end_time": 775.15,
+    "speaker_gt": "灰太狼",
+    "text": "喜羊羊，我是不会放过你的！",
+    "emotion_gt": "愤怒语调"
+  },
+  {
+    "segment_id": "",
+    "begin_time": 775.15,
+    "end_time": 780.1,
+    "speaker_gt": "灰太狼",
+    "text": "啊！哎呀救命啊！救命！",
+    "emotion_gt": "恐惧语调"
+  },
+  {
+    "segment_id": "6c8b185a",
+    "begin_time": 781.0,
+    "end_time": 847.16,
+    "speaker_gt": "歌手",
+    "text": "别看我只是一只羊，绿草因为我变得更香，天空因为我变得更蓝，白云变得更柔软。有什么难题去牵绊我都不会去心伤，有什么危险在我面前也不会去慌乱，就算有狼群把我追捕也当做游戏一场。在什么时间都爱开心笑容都会飞翔，就算会摔倒站得起来永远不会沮丧。在所有天气拥有叫人大笑的力量，虽然我只是羊。喜羊羊 美羊羊 懒羊羊 沸羊羊 慢羊羊 软绵绵 红太狼 灰太狼...",
+    "emotion_gt": "开心语调"
+  }
+]
