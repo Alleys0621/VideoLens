@@ -32,6 +32,7 @@ class AppConfig:
     model_omni_flash: str = "qwen3.5-omni-flash"
     model_vlm: str = "qwen-vl-max"
     model_text: str = "qwen-plus"
+    model_ocr: str = "qwen3-vl-plus"  # 字幕 OCR 专用 (输入便宜, 适合多帧采样)
 
     # Stage 1: 音频处理
     theme_window: int = 120
@@ -42,9 +43,12 @@ class AppConfig:
     name_mapping: dict = field(default_factory=dict)
 
     # Stage 2: 视觉处理
+    scene_detector: str = "pyscenedetect"
     content_threshold: float = 27.0
     min_scene_len: float = 1.0
     samples_per_scene: int = 8
+    transnet_threshold: float = 0.5
+    transnet_model_path: str = "models/transnetv2.onnx"
 
     # Paths
     project_root: str = ""
@@ -89,6 +93,7 @@ def load_config() -> AppConfig:
         model_omni_flash=models.get("omni_flash", "qwen3.5-omni-flash"),
         model_vlm=models.get("vlm", "qwen-vl-max"),
         model_text=models.get("text", "qwen-plus"),
+        model_ocr=models.get("ocr", "qwen3-vl-plus"),
         theme_window=s1.get("theme_window", 120),
         chunk_duration=s1.get("chunk_duration", 60),
         silence_db=s1.get("silence_db", -30.0),
@@ -98,6 +103,9 @@ def load_config() -> AppConfig:
         content_threshold=s2.get("content_threshold", 27.0),
         min_scene_len=s2.get("min_scene_len", 1.0),
         samples_per_scene=s2.get("samples_per_scene", 8),
+        scene_detector=s2.get("scene_detector", "pyscenedetect"),
+        transnet_threshold=s2.get("transnet_threshold", 0.5),
+        transnet_model_path=s2.get("transnet_model_path", "models/transnetv2.onnx"),
         project_root=project_root,
         data_root=data_root,
         output_root=output_root,

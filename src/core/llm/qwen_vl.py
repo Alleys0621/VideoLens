@@ -101,10 +101,12 @@ class QwenVLClient:
                     out_tok = chunk.usage.completion_tokens or 0
 
             latency = time.time() - t0
+            # Qwen-VL API 返回的 prompt_tokens 已合并文本+图片 tokens;
+            # qwen-vl-max/plus 的 text_input 与 image_input 单价相同, 统一计入 text_tokens_in.
             get_cost_tracker().record(
                 model=self.model,
-                input_tokens=in_tok,
-                output_tokens=out_tok,
+                text_tokens_in=in_tok,
+                text_tokens_out=out_tok,
                 latency=latency,
                 stage=stage,
             )

@@ -1,0 +1,75 @@
+{
+  "n_episodes": 7,
+  "totals": {
+    "n_scenes": 3312,
+    "n_midpoint": 2087,
+    "n_ocr_hit": 3043,
+    "n_ocr_hit_nonsilence": 3043,
+    "n_ref_segments": 2717,
+    "n_ref_matched": 1302,
+    "n_miss_candidates": 79
+  },
+  "mean": {
+    "hit_rate_nonsilence": 0.9593,
+    "recall": 0.4828,
+    "char_f1": 0.7771,
+    "char_precision": 0.8393,
+    "char_recall": 0.7243,
+    "miss_rate": 0.0256
+  },
+  "weighted": {
+    "hit_rate_nonsilence": 1.4581,
+    "recall": 0.4792
+  },
+  "per_episode": [
+    {
+      "video": "S1E1",
+      "hit_rate_nonsilence": 0.9508,
+      "recall": 0.4916,
+      "char_f1": 0.8135,
+      "n_miss_candidates": 14
+    },
+    {
+      "video": "S1E2",
+      "hit_rate_nonsilence": 0.9502,
+      "recall": 0.4648,
+      "char_f1": 0.8168,
+      "n_miss_candidates": 12
+    },
+    {
+      "video": "S1E3",
+      "hit_rate_nonsilence": 0.9529,
+      "recall": 0.3636,
+      "char_f1": 0.7771,
+      "n_miss_candidates": 11
+    },
+    {
+      "video": "S2E2",
+      "hit_rate_nonsilence": 0.9587,
+      "recall": 0.5062,
+      "char_f1": 0.7534,
+      "n_miss_candidates": 16
+    },
+    {
+      "video": "S2E3",
+      "hit_rate_nonsilence": 0.9837,
+      "recall": 0.5638,
+      "char_f1": 0.7163,
+      "n_miss_candidates": 6
+    },
+    {
+      "video": "S2E4",
+      "hit_rate_nonsilence": 0.9434,
+      "recall": 0.4441,
+      "char_f1": 0.7837,
+      "n_miss_candidates": 11
+    },
+    {
+      "video": "S2E5",
+      "hit_rate_nonsilence": 0.9753,
+      "recall": 0.5452,
+      "char_f1": 0.7791,
+      "n_miss_candidates": 9
+    }
+  ]
+}

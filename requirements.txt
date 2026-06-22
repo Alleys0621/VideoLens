@@ -14,6 +14,7 @@ requests>=2.31.0
 
 # --- Scene Detection ---
 scenedetect[opencv]>=0.6.4
+onnxruntime>=1.18.0
 
 # --- CLI ---
 typer>=0.15.0

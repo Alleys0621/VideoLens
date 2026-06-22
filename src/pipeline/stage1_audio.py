@@ -26,7 +26,9 @@ from dataclasses import dataclass
 
 from openai import OpenAI
 
+from src.core.cost import get_cost_tracker
 from src.core.helpers.text_utils import extract_json_obj
+from src.core.llm.base_client import _report_usage
 
 if not hasattr(sys.stdout, 'reconfigure'):
     pass
@@ -42,7 +44,6 @@ CHUNK_DURATION = 60
 SILENCE_DB = -30
 SILENCE_REMOVE_MIN = 0.3
 SPEECH_REMOVE_MAX = 0.3
-PRICING = {"input": 18.0, "output": 13.3}
 
 NAME_MAP = {}  # 由 pipeline.yaml voiceprint_groups 动态注入
 
@@ -109,6 +110,7 @@ def detect_theme_songs(client, audio_path, total_duration, prompt_text):
                 os.remove(tmp.name)
 
         try:
+            t_call = time.time()
             response = client.chat.completions.create(
                 model=THEME_MODEL,
                 messages=[{
@@ -126,9 +128,15 @@ def detect_theme_songs(client, audio_path, total_duration, prompt_text):
             )
 
             full_text = ""
+            final_usage = None
             for chunk in response:
                 if chunk.choices and chunk.choices[0].delta.content:
                     full_text += chunk.choices[0].delta.content
+                if getattr(chunk, "usage", None):
+                    final_usage = chunk.usage
+
+            if final_usage is not None:
+                _report_usage(THEME_MODEL, final_usage, time.time() - t_call, "stage1_theme")
 
             raw_clean = full_text.strip()
             if raw_clean.startswith("```"):
@@ -351,6 +359,9 @@ def omni_recognize(client, pp_path, segments, chunks, user_template):
     all_dialogues = []
     total_in = total_out = 0
     total_latency = 0
+    total_cost = 0.0
+
+    tracker = get_cost_tracker()
 
     for ci, (chunk_start, chunk_end) in enumerate(chunks):
         chunk_dur = chunk_end - chunk_start
@@ -396,17 +407,22 @@ def omni_recognize(client, pp_path, segments, chunks, user_template):
             )
 
             full_text = ""
-            in_tok = out_tok = 0
+            chunk_usage = None
             for chunk in response:
                 if chunk.choices and chunk.choices[0].delta.content:
                     full_text += chunk.choices[0].delta.content
-                if hasattr(chunk, "usage") and chunk.usage:
-                    in_tok = chunk.usage.prompt_tokens or 0
-                    out_tok = chunk.usage.completion_tokens or 0
+                if getattr(chunk, "usage", None):
+                    chunk_usage = chunk.usage
 
-            total_in += in_tok
-            total_out += out_tok
-            total_latency += time.time() - t0
+            # 上报分模态成本 (CostTracker 内部按 omni 定价表自动分档)
+            chunk_latency = time.time() - t0
+            prev_cost = tracker.total_cost
+            if chunk_usage is not None:
+                _report_usage(OMNI_MODEL, chunk_usage, chunk_latency, "stage1_dialogue")
+                total_in += getattr(chunk_usage, "prompt_tokens", 0) or 0
+                total_out += getattr(chunk_usage, "completion_tokens", 0) or 0
+            total_cost += tracker.total_cost - prev_cost
+            total_latency += chunk_latency
 
             parsed = extract_json_obj(full_text)
             if parsed and isinstance(parsed, dict):
@@ -428,9 +444,8 @@ def omni_recognize(client, pp_path, segments, chunks, user_template):
         except Exception as e:
             print(f"  chunk {ci} fail: {e}")
 
-    cost = total_in / 1e6 * PRICING["input"] + total_out / 1e6 * PRICING["output"]
-    print(f"  完成: {len(all_dialogues)} 段, ¥{cost:.4f}, {total_latency:.0f}s")
-    return all_dialogues, {"input_tokens": total_in, "output_tokens": total_out, "cost": cost}
+    print(f"  完成: {len(all_dialogues)} 段, ¥{total_cost:.4f}, {total_latency:.0f}s")
+    return all_dialogues, {"input_tokens": total_in, "output_tokens": total_out, "cost": total_cost}
 
 
 # ══════════════════════════════════════════════════════════════

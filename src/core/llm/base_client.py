@@ -9,6 +9,54 @@ from src.core.cost import get_cost_tracker
 from src.core.helpers.text_utils import extract_json as _extract_json
 
 
+def _report_usage(model: str, usage, latency: float, stage: str):
+    """从 OpenAI 兼容 usage 对象拆分模态 token 后上报 CostTracker
+
+    DashScope 的 omni/vl 模型会返回 prompt_tokens_details.{text,audio}_tokens
+    与 completion_tokens_details.text_tokens；图片 token 通常不单独回传，
+    用 (prompt_tokens - audio - text) 估算。
+    纯文本模型不会返回 details，回退到 prompt_tokens / completion_tokens。
+    """
+    if usage is None:
+        get_cost_tracker().record(model=model, latency=latency, stage=stage)
+        return
+
+    prompt_tok = getattr(usage, "prompt_tokens", 0) or 0
+    completion_tok = getattr(usage, "completion_tokens", 0) or 0
+
+    text_in = audio_in = 0
+    ptd = getattr(usage, "prompt_tokens_details", None)
+    if ptd is not None:
+        audio_in = getattr(ptd, "audio_tokens", None) or 0
+        text_in = getattr(ptd, "text_tokens", None) or 0
+
+    text_out = 0
+    ctd = getattr(usage, "completion_tokens_details", None)
+    if ctd is not None:
+        text_out = getattr(ctd, "text_tokens", None) or 0
+
+    # 文本输出回退：未返回 details 时使用总 completion_tokens
+    if text_out == 0 and completion_tok:
+        text_out = completion_tok
+
+    # 文本输入回退：纯文本模型未返回 details 时使用总 prompt_tokens
+    if text_in == 0 and audio_in == 0 and prompt_tok:
+        text_in = prompt_tok
+
+    # 图片输入估算：总输入 - 已知音频/文本 (vl 模型通常不回传 image_tokens)
+    image_in = max(0, prompt_tok - text_in - audio_in) if (text_in or audio_in) else 0
+
+    get_cost_tracker().record(
+        model=model,
+        text_tokens_in=text_in,
+        audio_tokens_in=audio_in,
+        image_tokens_in=image_in,
+        text_tokens_out=text_out,
+        latency=latency,
+        stage=stage,
+    )
+
+
 class BaseLLMClient:
     """OpenAI 兼容 LLM 客户端基类"""
 
@@ -37,16 +85,7 @@ class BaseLLMClient:
         )
         latency = time.time() - t0
 
-        # 上报用量
-        usage = response.usage
-        tracker = get_cost_tracker()
-        tracker.record(
-            model=model,
-            input_tokens=usage.prompt_tokens if usage else 0,
-            output_tokens=usage.completion_tokens if usage else 0,
-            latency=latency,
-            stage=stage,
-        )
+        _report_usage(model, response.usage, latency, stage)
 
         return response.choices[0].message.content
 

@@ -2,9 +2,16 @@
 
 单例模式，全局追踪所有 LLM API 调用的 token 用量、费用和延迟。
 支持按模型汇总，按阶段分组，输出结构化报告。
+
+定价设计要点：
+  Qwen-Omni 系列（qwen3.5-omni-plus / flash）按 **输入模态** 分别计价：
+  文本输入、音频输入、图片/视频输入各有独立费率；输出按模态（文本/音频）分别计价。
+  官方价格见 https://help.aliyun.com/zh/model-studio/model-pricing
+
+  纯文本/视觉模型（qwen-plus / qwen-vl-max 等）可只用 text_input + text_output 字段，
+  其余模态字段为 0。ModelPricing.calculate() 对 0 单价的模态自动跳过。
 """
 
-import time
 from dataclasses import dataclass, field
 
 
@@ -12,37 +19,90 @@ from dataclasses import dataclass, field
 class CallRecord:
     """单次 API 调用记录"""
     model: str
-    input_tokens: int = 0
-    output_tokens: int = 0
+    # 分模态输入 token
+    text_tokens_in: int = 0
+    audio_tokens_in: int = 0
+    image_tokens_in: int = 0
+    # 输出 token (目前只用到文本输出)
+    text_tokens_out: int = 0
+    audio_tokens_out: int = 0
     cost: float = 0.0          # CNY
     latency: float = 0.0       # 秒
     stage: str = ""            # 所属阶段
 
+    @property
+    def input_tokens(self) -> int:
+        return self.text_tokens_in + self.audio_tokens_in + self.image_tokens_in
+
+    @property
+    def output_tokens(self) -> int:
+        return self.text_tokens_out + self.audio_tokens_out
+
 
 @dataclass
 class ModelPricing:
-    """模型定价 (CNY / 百万 tokens)"""
-    input_per_m: float = 0.0
-    output_per_m: float = 0.0
+    """模型分模态定价 (CNY / 百万 tokens)
 
-    def calculate(self, input_tokens: int, output_tokens: int) -> float:
-        return (input_tokens * self.input_per_m + output_tokens * self.output_per_m) / 1_000_000
+    未使用的模态单价保持 0，calculate() 会自动跳过。
+    """
+    text_input_per_m: float = 0.0
+    audio_input_per_m: float = 0.0
+    image_input_per_m: float = 0.0
+    text_output_per_m: float = 0.0
+    audio_output_per_m: float = 0.0
+
+    def calculate(
+        self,
+        text_tokens_in: int = 0,
+        audio_tokens_in: int = 0,
+        image_tokens_in: int = 0,
+        text_tokens_out: int = 0,
+        audio_tokens_out: int = 0,
+    ) -> float:
+        """按各模态单价分别计价后求和，单价为 0 的模态自动跳过。"""
+        cost = 0.0
+        if text_tokens_in and self.text_input_per_m:
+            cost += text_tokens_in * self.text_input_per_m / 1_000_000
+        if audio_tokens_in and self.audio_input_per_m:
+            cost += audio_tokens_in * self.audio_input_per_m / 1_000_000
+        if image_tokens_in and self.image_input_per_m:
+            cost += image_tokens_in * self.image_input_per_m / 1_000_000
+        if text_tokens_out and self.text_output_per_m:
+            cost += text_tokens_out * self.text_output_per_m / 1_000_000
+        if audio_tokens_out and self.audio_output_per_m:
+            cost += audio_tokens_out * self.audio_output_per_m / 1_000_000
+        return cost
 
 
 # ──────────────────────────────────────────────────────────
-# DashScope Qwen 系列默认定价 (CNY / 百万 tokens)
-# 来源: https://help.aliyun.com/zh/model-studio/getting-started/models
+# DashScope Qwen 系列默认定价 (CNY / 百万 tokens, 中国内地)
+# 来源: https://help.aliyun.com/zh/model-studio/model-pricing
 # ──────────────────────────────────────────────────────────
 
+# 每个条目字段:
+#   text_input / audio_input / image_input / text_output / audio_output
 DEFAULT_PRICING: dict[str, dict] = {
-    "qwen-plus":              {"input": 0.8,  "output": 2.0},
-    "qwen-turbo":             {"input": 0.3,  "output": 0.6},
-    "qwen-max":               {"input": 2.0,  "output": 6.0},
-    "qwen-vl-max":            {"input": 3.0,  "output": 9.0},
-    "qwen-vl-plus":           {"input": 1.5,  "output": 4.5},
-    "qwen3.5-omni-plus":      {"input": 2.0,  "output": 6.0},
-    "qwen3.5-omni-flash":     {"input": 0.5,  "output": 1.5},
-    "qwen3-asr-flash":        {"input": 0.5,  "output": 1.0},
+    # --- 纯文本模型 ---
+    "qwen-plus":          {"text_input": 0.8, "text_output": 2.0},
+    "qwen-turbo":         {"text_input": 0.3, "text_output": 0.6},
+    "qwen-max":           {"text_input": 2.0, "text_output": 6.0},
+
+    # --- 视觉模型 (文本/图片同档输入价) ---
+    "qwen-vl-max":        {"text_input": 3.0, "image_input": 3.0, "text_output": 9.0},
+    "qwen-vl-plus":       {"text_input": 1.5, "image_input": 1.5, "text_output": 4.5},
+
+    # --- Qwen3-VL (输入便宜, 输出贵, 适合 OCR 这类输入大输出小的任务) ---
+    "qwen3-vl-plus":      {"text_input": 1.4, "image_input": 1.4, "text_output": 11.2},
+    "qwen3-vl-flash":     {"text_input": 0.6, "image_input": 0.6, "text_output": 4.8},
+
+    # --- Omni 模型 (按输入模态分档) ---
+    "qwen3.5-omni-plus":  {"text_input": 7.0,  "audio_input": 53.0,  "image_input": 40.0,  "text_output": 213.0},
+    "qwen3.5-omni-flash": {"text_input": 2.2,  "audio_input": 18.0,  "image_input": 13.3,  "text_output": 72.0},
+    "qwen3-omni-flash":   {"text_input": 1.8,  "audio_input": 15.8,  "image_input": 3.3,   "text_output": 12.7},
+    "qwen-omni-turbo":    {"text_input": 0.4,  "audio_input": 25.0,  "image_input": 1.5,   "text_output": 4.5},
+
+    # --- ASR ---
+    "qwen3-asr-flash":    {"audio_input": 0.5, "text_output": 1.0},
 }
 
 
@@ -59,23 +119,34 @@ class CostTracker:
     def _load_default_pricing(self):
         for model, prices in DEFAULT_PRICING.items():
             self._pricing[model] = ModelPricing(
-                input_per_m=prices["input"],
-                output_per_m=prices["output"],
+                text_input_per_m=prices.get("text_input", 0.0),
+                audio_input_per_m=prices.get("audio_input", 0.0),
+                image_input_per_m=prices.get("image_input", 0.0),
+                text_output_per_m=prices.get("text_output", 0.0),
+                audio_output_per_m=prices.get("audio_output", 0.0),
             )
 
     def configure_pricing(self, pricing_config: dict):
         """从 pipeline.yaml 加载自定义定价 (覆盖默认值)
 
-        配置格式:
+        配置格式 (单档模型可省略未用模态):
           pricing:
             qwen-plus:
-              input_per_m: 0.8
-              output_per_m: 2.0
+              text_input: 0.8
+              text_output: 2.0
+            qwen3.5-omni-flash:
+              text_input: 2.2
+              audio_input: 18.0
+              image_input: 13.3
+              text_output: 72.0
         """
         for model, prices in pricing_config.items():
             self._pricing[model] = ModelPricing(
-                input_per_m=prices.get("input_per_m", prices.get("input", 0)),
-                output_per_m=prices.get("output_per_m", prices.get("output", 0)),
+                text_input_per_m=prices.get("text_input", prices.get("input", 0.0)),
+                audio_input_per_m=prices.get("audio_input", 0.0),
+                image_input_per_m=prices.get("image_input", 0.0),
+                text_output_per_m=prices.get("text_output", prices.get("output", 0.0)),
+                audio_output_per_m=prices.get("audio_output", 0.0),
             )
 
     def get_pricing(self, model: str) -> ModelPricing:
@@ -83,7 +154,7 @@ class CostTracker:
         # 精确匹配
         if model in self._pricing:
             return self._pricing[model]
-        # 前缀匹配 (如 qwen-plus-latest → qwen-plus)
+        # 前缀匹配 (如 qwen3.5-omni-flash-2026-03-15 → qwen3.5-omni-flash)
         for key in self._pricing:
             if model.startswith(key):
                 return self._pricing[key]
@@ -95,19 +166,34 @@ class CostTracker:
     def record(
         self,
         model: str,
-        input_tokens: int = 0,
-        output_tokens: int = 0,
+        text_tokens_in: int = 0,
+        audio_tokens_in: int = 0,
+        image_tokens_in: int = 0,
+        text_tokens_out: int = 0,
+        audio_tokens_out: int = 0,
         latency: float = 0.0,
         stage: str = "",
     ):
-        """记录一次 API 调用"""
+        """记录一次 API 调用
+
+        参数均为分模态 token 数；模型未启用的模态传 0 即可。
+        """
         pricing = self.get_pricing(model)
-        cost = pricing.calculate(input_tokens, output_tokens)
+        cost = pricing.calculate(
+            text_tokens_in=text_tokens_in,
+            audio_tokens_in=audio_tokens_in,
+            image_tokens_in=image_tokens_in,
+            text_tokens_out=text_tokens_out,
+            audio_tokens_out=audio_tokens_out,
+        )
 
         self._records.append(CallRecord(
             model=model,
-            input_tokens=input_tokens,
-            output_tokens=output_tokens,
+            text_tokens_in=text_tokens_in,
+            audio_tokens_in=audio_tokens_in,
+            image_tokens_in=image_tokens_in,
+            text_tokens_out=text_tokens_out,
+            audio_tokens_out=audio_tokens_out,
             cost=cost,
             latency=latency,
             stage=stage,
@@ -145,11 +231,19 @@ class CostTracker:
         for r in self._records:
             if r.model not in models:
                 models[r.model] = {
-                    "calls": 0, "input_tokens": 0, "output_tokens": 0,
+                    "calls": 0,
+                    "text_in": 0, "audio_in": 0, "image_in": 0,
+                    "text_out": 0, "audio_out": 0,
+                    "input_tokens": 0, "output_tokens": 0,
                     "cost": 0.0, "latency": 0.0,
                 }
             m = models[r.model]
             m["calls"] += 1
+            m["text_in"] += r.text_tokens_in
+            m["audio_in"] += r.audio_tokens_in
+            m["image_in"] += r.image_tokens_in
+            m["text_out"] += r.text_tokens_out
+            m["audio_out"] += r.audio_tokens_out
             m["input_tokens"] += r.input_tokens
             m["output_tokens"] += r.output_tokens
             m["cost"] += r.cost
@@ -163,11 +257,19 @@ class CostTracker:
             stage = r.stage or "unknown"
             if stage not in stages:
                 stages[stage] = {
-                    "calls": 0, "input_tokens": 0, "output_tokens": 0,
+                    "calls": 0,
+                    "text_in": 0, "audio_in": 0, "image_in": 0,
+                    "text_out": 0, "audio_out": 0,
+                    "input_tokens": 0, "output_tokens": 0,
                     "cost": 0.0, "latency": 0.0,
                 }
             s = stages[stage]
             s["calls"] += 1
+            s["text_in"] += r.text_tokens_in
+            s["audio_in"] += r.audio_tokens_in
+            s["image_in"] += r.image_tokens_in
+            s["text_out"] += r.text_tokens_out
+            s["audio_out"] += r.audio_tokens_out
             s["input_tokens"] += r.input_tokens
             s["output_tokens"] += r.output_tokens
             s["cost"] += r.cost
@@ -186,46 +288,61 @@ class CostTracker:
             return "(无 LLM 调用记录)"
 
         lines = []
-        lines.append("=" * 65)
+        lines.append("=" * 95)
         lines.append("  LLM 调用代价报告")
-        lines.append("=" * 65)
+        lines.append("=" * 95)
 
         # 按模型汇总
         by_model = self.summary_by_model()
         lines.append("")
-        lines.append(f"  {'模型':<25s} {'调用':>5s} {'输入':>10s} {'输出':>10s} {'费用(CNY)':>10s} {'延迟(s)':>8s}")
-        lines.append("  " + "-" * 70)
+        header = (
+            f"  {'模型':<22s} {'调用':>4s} "
+            f"{'文入':>9s} {'音入':>9s} {'图入':>9s} "
+            f"{'文出':>9s} {'费用(CNY)':>11s} {'延迟(s)':>8s}"
+        )
+        lines.append(header)
+        lines.append("  " + "-" * 92)
 
         for model, m in sorted(by_model.items(), key=lambda x: -x[1]["cost"]):
             lines.append(
-                f"  {model:<25s} {m['calls']:>5d} "
-                f"{m['input_tokens']:>10,d} {m['output_tokens']:>10,d} "
-                f"{m['cost']:>10.4f} {m['latency']:>8.1f}"
+                f"  {model:<22s} {m['calls']:>4d} "
+                f"{m['text_in']:>9,d} {m['audio_in']:>9,d} {m['image_in']:>9,d} "
+                f"{m['text_out']:>9,d} {m['cost']:>11.4f} {m['latency']:>8.1f}"
             )
 
-        lines.append("  " + "-" * 70)
+        lines.append("  " + "-" * 92)
         lines.append(
-            f"  {'合计':<25s} {self.total_calls:>5d} "
-            f"{self.total_input_tokens:>10,d} {self.total_output_tokens:>10,d} "
-            f"{self.total_cost:>10.4f} {self.total_latency:>8.1f}"
+            f"  {'合计':<22s} {self.total_calls:>4d} "
+            f"{sum(m['text_in'] for m in by_model.values()):>9,d} "
+            f"{sum(m['audio_in'] for m in by_model.values()):>9,d} "
+            f"{sum(m['image_in'] for m in by_model.values()):>9,d} "
+            f"{self.total_output_tokens:>9,d} "
+            f"{self.total_cost:>11.4f} {self.total_latency:>8.1f}"
         )
 
         # 按阶段汇总 (如果有)
         by_stage = self.summary_by_stage()
         if by_stage and len(by_stage) > 1:
             lines.append("")
-            lines.append(f"  {'阶段':<15s} {'调用':>5s} {'输入':>10s} {'输出':>10s} {'费用(CNY)':>10s}")
-            lines.append("  " + "-" * 55)
+            lines.append(
+                f"  {'阶段':<18s} {'调用':>4s} "
+                f"{'文入':>9s} {'音入':>9s} {'图入':>9s} "
+                f"{'文出':>9s} {'费用(CNY)':>11s}"
+            )
+            lines.append("  " + "-" * 75)
             for stage, s in sorted(by_stage.items(), key=lambda x: -x[1]["cost"]):
                 lines.append(
-                    f"  {stage:<15s} {s['calls']:>5d} "
-                    f"{s['input_tokens']:>10,d} {s['output_tokens']:>10,d} "
-                    f"{s['cost']:>10.4f}"
+                    f"  {stage:<18s} {s['calls']:>4d} "
+                    f"{s['text_in']:>9,d} {s['audio_in']:>9,d} {s['image_in']:>9,d} "
+                    f"{s['text_out']:>9,d} {s['cost']:>11.4f}"
                 )
 
         lines.append("")
-        lines.append(f"  总费用: {self.total_cost:.4f} CNY | 总 tokens: {self.total_tokens:,d} | 总调用: {self.total_calls} 次")
-        lines.append("=" * 65)
+        lines.append(
+            f"  总费用: {self.total_cost:.4f} CNY | "
+            f"总 tokens: {self.total_tokens:,d} | 总调用: {self.total_calls} 次"
+        )
+        lines.append("=" * 95)
 
         return "\n".join(lines)
 

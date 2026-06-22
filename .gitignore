@@ -26,8 +26,10 @@ data/output/
 
 # Model weights
 data/models/
+models/*.onnx
 
 # Experiments data
+experiments/_archive/
 experiments/results/
 experiments/test_omni_result/
 

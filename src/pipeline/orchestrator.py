@@ -15,29 +15,46 @@ sys.stdout.reconfigure(encoding="utf-8")
 
 
 def resolve_video_path(video_dir: str) -> str:
-    """解析视频文件路径, 支持 data/videos/ 下的子目录结构
+    """解析视频文件路径, 支持 data/videos/ 下的子目录结构.
+
+    支持的视频格式 (按优先级): .mp4, .mkv, .mov, .avi
+    支持嵌套子目录, 如 "家有儿女/第一季/第01集".
 
     例如:
-      "052 鸟蛋之争"        → data/videos/喜羊羊与灰太狼/052 鸟蛋之争.mp4
-      "家有儿女/第001集"     → data/videos/家有儿女/第001集.mp4
+      "052 鸟蛋之争"               → data/videos/喜羊羊与灰太狼/052 鸟蛋之争.mp4
+      "家有儿女/第001集"            → data/videos/家有儿女/第二季/第001集.mp4
+      "家有儿女/第一季/第01集"       → data/videos/家有儿女/第一季/第01集.mkv
     """
-    # 直接路径
-    direct = os.path.join("data", "videos", f"{video_dir}.mp4")
-    if os.path.isfile(direct):
-        return direct
-
-    # 在子目录中搜索
+    VIDEO_EXTS = (".mp4", ".mkv", ".mov", ".avi")
     videos_root = "data/videos"
+
+    # 1. 直接路径 (含子目录)
+    for ext in VIDEO_EXTS:
+        direct = os.path.join(videos_root, f"{video_dir}{ext}")
+        if os.path.isfile(direct):
+            return direct
+
+    # 2. 在子目录中扁平搜索 (兼容老式 "第001集" 不带季路径)
     if os.path.isdir(videos_root):
         for subdir in os.listdir(videos_root):
             subdir_path = os.path.join(videos_root, subdir)
             if os.path.isdir(subdir_path):
-                candidate = os.path.join(subdir_path, f"{video_dir}.mp4")
-                if os.path.isfile(candidate):
-                    return candidate
+                # 一级子目录
+                for ext in VIDEO_EXTS:
+                    candidate = os.path.join(subdir_path, f"{video_dir}{ext}")
+                    if os.path.isfile(candidate):
+                        return candidate
+                # 二级子目录 (季)
+                for sub2 in os.listdir(subdir_path):
+                    sub2_path = os.path.join(subdir_path, sub2)
+                    if os.path.isdir(sub2_path):
+                        for ext in VIDEO_EXTS:
+                            candidate = os.path.join(sub2_path, f"{video_dir}{ext}")
+                            if os.path.isfile(candidate):
+                                return candidate
 
-    # 返回默认路径 (后续会报错)
-    return direct
+    # 3. 返回默认路径 (后续会报错)
+    return os.path.join(videos_root, f"{video_dir}.mp4")
 
 
 def get_show_name(video_dir: str) -> str:
