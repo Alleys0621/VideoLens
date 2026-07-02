@@ -166,3 +166,697 @@ stage2_scene_caption:
     【输入】
     - 当前台词：{audiotext}
     - 上一帧摘要：{caption}
+
+# ============================================================
+# Stage 3: 知识库构建
+# ============================================================
+
+# ------------------------------------------------------------
+# Stage 3 P1: Communicative Action 批量抽取
+# 输入: N 条对齐的 audio_segment + scene + ocr + caption (N ∈ [10, 15])
+# 输出: N 条 Action 记录 (顺序与输入一一对应, results.length 必须等于 batch.length)
+# ------------------------------------------------------------
+stage3_p1_action_extract:
+  user: |
+    你是中文情景剧 Communicative Action 批量抽取系统。
+
+    # 输出硬约束 (最重要, 必须严格遵守)
+    - 直接输出一个 JSON 对象, 严格遵守下方输出 Schema
+    - 禁止任何解释性文字、规则确认、任务复述、思考过程
+    - 禁止"好的我会..." / "根据规则..." / "请处理 batch 中的..." 这类元描述
+    - 第一个字符必须是 `{`, 最后一个字符必须是 `}`
+    - 不要 Markdown 代码块包裹
+    - 收到 batch 后立即处理数据, 不要先确认规则
+
+    # 任务
+    输入: 同一 video_id 下的 N 条对齐数据
+    输出: N 条结果, 顺序与输入一一对应, results.length 必须等于 batch.length
+
+    # 字幕处理规则 (重要: OCR 用于纠错 ASR, 而非替换)
+    - OCR 存在 + ASR 存在: 以 ASR 为基底, 用 OCR 修正 ASR 的错字/漏字, utterance 保留完整句子
+    - 只有 OCR (无 ASR): 直接用 OCR (注意 OCR 可能是碎片, 原样保留)
+    - 只有 ASR (OCR="无字幕"): 直接用 ASR
+    - 都为空 → skip=true
+
+    字幕纠错示例:
+      ASR="有猕猴桃。", OCR="猕猴桃" → utterance="有猕猴桃。" (不能丢"有"字)
+      ASR="我是让你人往右", OCR="我是让你人往右" → utterance="我是让你人往右" (OCR 仅做确认)
+      ASR="嗯嗯嗯好好好", OCR="无字幕" → utterance="嗯嗯嗯好好好"
+
+    # utterance 字段硬约束
+    - 必须是原话, 逐字保留, 禁止摘要/改写/压缩
+    - 标点可酌情保留或省略, 但字与词不可增删
+
+    # 说话人规则
+    - speaker_pred="" (完全未识别) → actor="路人"
+    - speaker_pred 非空但 vp_score<0.4 (声纹低置信度) → actor 保留 speaker_pred 原值, evidence.vp_low_confidence=true (标记低置信但不丢名)
+    - speaker_pred 非空且 vp_score>=0.4 → actor = speaker_pred
+    - captions.characters 若为泛化称呼 ("男性角色"/"女性角色"/"中年男性"), 忽略, actor 信 audio.speaker_pred
+
+    # Action.action 枚举与判断规则
+    - inform: 陈述、告知、说明事实、传递信息 (默认)
+    - ask: 疑问句, 向他人索取信息 — 包括"怎么回事?" "为什么?" "谁干的?" "怎么回事儿啊?", 即使带情绪色彩, 只要本质是索取信息即归 ask
+    - answer: 直接回应上一句疑问
+    - command: 祈使句、命令、要求对方做事
+    - refuse: 拒绝、否定、推托
+    - promise: 承诺、保证、答应未来做某事
+    - threaten: 威胁性话语
+    - deceive: 说谎、误导、隐瞒 (需依赖上下文判定)
+    - argue: 争辩、反驳、顶嘴
+    - invite: 邀请、约请、请求对方参与某事 (如"来吃饭吧" "一起去玩" "坐下来聊聊")
+    - react: 纯情绪反应型短发言 — "哎呀!" "天哪!" "哈哈哈!" "太好了!" "我的妈呀!" "真的吗?!" 等不索取信息的感叹
+
+    # 优先级 (重要)
+    ask > react: 若一句话既表达情绪又在索取信息 (如"怎么回事儿啊?!" "我的天啊这怎么办?"), 统一归 ask。
+    react 仅限不索取信息的纯感叹。
+
+    # target 字段
+    P1 阶段固定为空字符串 "", 留给 P2 推理
+
+    # 输出 Schema
+    # 重要: evidence 内所有字段都是平级, 不要嵌套二级 evidence 对象
+    {
+      "results": [
+        {
+          "skip": false,
+          "action": {
+            "action_id": "string (格式: {video_id}_a{scene.index:04d})",
+            "actor": "string",
+            "action": "inform|ask|answer|command|refuse|promise|threaten|deceive|argue|invite|react",
+            "target": "",
+            "emotion": "string",
+            "utterance": "原话逐字保留",
+            "evidence": {
+              "vp_low_confidence": false,
+              "scene_id": "string",
+              "segment_id": "string",
+              "timestamp": [0.0, 0.0],
+              "keyframe": "string",
+              "caption": "自然语言简述, 便于人读",
+              "caption_struct": {
+                "space": "string",
+                "characters": ["string"],
+                "actions": [{"character": "string", "action": "string", "target": "string|null"}]
+              },
+              "utterance": "与顶层 utterance 一致"
+            }
+          }
+        }
+      ]
+    }
+
+    # results 数量硬约束
+    results.length === batch.length, 即便某条 skip, 也要输出 {"skip": true, "reason": "..."} 占位
+
+    # 少样本示例 (batch 长度 3, 展示不同 case)
+
+    输入:
+    {
+      "video_id": "家有儿女/第001集",
+      "batch": [
+        {
+          "audio_segment": {"segment_id": "a0173753", "begin_time": 40.286, "end_time": 41.086, "speaker_pred": "刘梅", "vp_score": 0.56, "text": "有猕猴桃。", "emotion": "平静"},
+          "scene": {"scene_id": "家有儿女/第001集_a0022", "index": 22, "start_time": 40.786, "end_time": 41.786, "anchor_type": "midpoint", "speaker": "刘梅", "anchor_text": "有猕猴桃。", "keyframe_path": "data/output/家有儿女/第001集/keyframes/a0022_midpoint_00041.29s_刘梅.jpg"},
+          "ocr": "猕猴桃",
+          "caption": {"time_of_day": "白天", "scene": "室内", "space": "客厅", "characters": ["女性角色", "男性角色", "男孩", "女孩"], "actions": [{"character": "女性角色", "action": "talk"}], "interaction": "对话", "temporal_relation": "延续"}
+        },
+        {
+          "audio_segment": {"segment_id": "d623ed08", "begin_time": 26.566, "end_time": 28.326, "speaker_pred": "刘梅", "vp_score": 0.6, "text": "哎哎哎，怎么回事儿啊？", "emotion": "惊奇语调"},
+          "scene": {"scene_id": "家有儿女/第001集_a0011", "index": 11, "start_time": 26.566, "end_time": 27.566, "anchor_type": "midpoint", "speaker": "刘梅", "anchor_text": "哎哎哎，怎么回事儿啊？", "keyframe_path": "data/output/家有儿女/第001集/keyframes/a0011_midpoint_00027.07s_刘梅.jpg"},
+          "ocr": "怎么回事啊",
+          "caption": {"time_of_day": "白天", "scene": "室内", "space": "客厅", "characters": ["女性角色", "女孩", "男孩"], "actions": [{"character": "女性角色", "action": "react"}], "interaction": "对话", "temporal_relation": "变化"}
+        },
+        {
+          "audio_segment": {"segment_id": "x9f3a001", "begin_time": 100.2, "end_time": 100.9, "speaker_pred": "刘星", "vp_score": 0.72, "text": "天哪！", "emotion": "惊奇语调"},
+          "scene": {"scene_id": "家有儿女/第001集_a0048", "index": 48, "start_time": 99.7, "end_time": 100.7, "anchor_type": "midpoint", "speaker": "刘星", "anchor_text": "天哪！", "keyframe_path": "data/output/家有儿女/第001集/keyframes/a0048_midpoint_00100.45s_刘星.jpg"},
+          "ocr": "天哪",
+          "caption": {"time_of_day": "白天", "scene": "室内", "space": "客厅", "characters": ["男孩"], "actions": [{"character": "男孩", "action": "react"}], "interaction": "对话", "temporal_relation": "变化"}
+        }
+      ]
+    }
+
+    输出:
+    {
+      "results": [
+        {"skip": false, "action": {"action_id": "家有儿女/第001集_a0022", "actor": "刘梅", "action": "inform", "target": "", "emotion": "平静", "utterance": "有猕猴桃。", "evidence": {"scene_id": "家有儿女/第001集_a0022", "segment_id": "a0173753", "timestamp": [40.786, 41.786], "keyframe": "data/output/家有儿女/第001集/keyframes/a0022_midpoint_00041.29s_刘梅.jpg", "caption": "室内·客厅·白天; 女性角色向家人说话", "caption_struct": {"space": "客厅", "characters": ["女性角色", "男性角色", "男孩", "女孩"], "actions": [{"character": "女性角色", "action": "talk"}]}, "utterance": "有猕猴桃。"}}},
+        {"skip": false, "action": {"action_id": "家有儿女/第001集_a0011", "actor": "刘梅", "action": "ask", "target": "", "emotion": "惊奇语调", "utterance": "哎哎哎，怎么回事儿啊？", "evidence": {"scene_id": "家有儿女/第001集_a0011", "segment_id": "d623ed08", "timestamp": [26.566, 27.566], "keyframe": "data/output/家有儿女/第001集/keyframes/a0011_midpoint_00027.07s_刘梅.jpg", "caption": "室内·客厅·白天; 女性角色惊奇发问", "caption_struct": {"space": "客厅", "characters": ["女性角色", "女孩", "男孩"], "actions": [{"character": "女性角色", "action": "react"}]}, "utterance": "哎哎哎，怎么回事儿啊？"}}},
+        {"skip": false, "action": {"action_id": "家有儿女/第001集_a0048", "actor": "刘星", "action": "react", "target": "", "emotion": "惊奇语调", "utterance": "天哪！", "evidence": {"scene_id": "家有儿女/第001集_a0048", "segment_id": "x9f3a001", "timestamp": [100.2, 100.9], "keyframe": "data/output/家有儿女/第001集/keyframes/a0048_midpoint_00100.45s_刘星.jpg", "caption": "室内·客厅·白天; 男孩惊呼", "caption_struct": {"space": "客厅", "characters": ["男孩"], "actions": [{"character": "男孩", "action": "react"}]}, "utterance": "天哪！"}}}
+      ]
+    }
+
+    # skip 示例 (silence 锚点)
+    若 batch 中某条满足: scene.anchor_type="silence" 且 ocr="无字幕" 且 audio_segment.text=""
+    输出对应位置: {"skip": true, "reason": "silence_anchor_empty"}
+
+    # 边界 case 提醒
+    - 一句 utterance 既感叹又问 → 归 ask (如"我的天啊这怎么办?")
+    - OCR 是碎片名词 (如"猕猴桃") + ASR 是完整句 → utterance 用 ASR 完整句, 不要用 OCR 碎片
+    - utterance 中带"嗯""啊"等语气词 → 原样保留, 不要清洗
+
+    # 待处理数据
+    __INPUT_BATCH_JSON__
+
+# ------------------------------------------------------------
+# Stage 3 P2: Event 聚合 + target 推理
+# 输入: 同集按时间序排列的若干 Action (P1 产出, target 为空)
+# 输出: 若干 Event, 每个 Event 含 actions (target 已补齐) + motivation + motivation_confidence + outcome + summary + retrieval_text + keywords
+# ------------------------------------------------------------
+stage3_p2_event_aggregate:
+  user: |
+    你是中文情景剧 Event 聚合 + target 推理系统。
+
+    # 输出硬约束 (最重要, 必须严格遵守)
+    - 直接输出一个 JSON 对象, 严格遵守下方输出 Schema
+    - 禁止任何解释性文字、规则确认、任务复述、思考过程
+    - 禁止"好的我会..." / "根据规则..." / "请处理 actions 中的..." 这类元描述
+    - 第一个字符必须是 `{`, 最后一个字符必须是 `}`
+    - 不要 Markdown 代码块包裹
+    - 收到 actions 数据后立即聚合处理, 不要先确认规则
+
+    # 任务
+    输入: 同一视频内按时间序排列的若干 Action (P1 产出, target 为空)
+    输出: 若干 Event, 每个 Event 含 actions (target 已补齐)、motivation、motivation_confidence、outcome、summary、retrieval_text、keywords
+
+    # Event 定义 (论文版)
+    由若干连续的 Communicative Actions 围绕同一主题或目标组织形成的叙事单元。
+    不预设严格叙事学边界, 采用"主题一致性 + 目标一致性"聚合, 不强制满足完整"起因—经过—结果"结构。
+
+    # 聚合规则
+    - 仅聚合同一 video_id 的 Action
+    - 同一 space (地点) 优先聚合
+    - 时间戳必须单调递增
+    - 主题一致: 连续动作服务于同一目标/冲突/话题
+    - 主题连续性优先于数量约束 — 绝不为满足数量要求强行拆分或合并事件
+
+    # Action 数量约束 (软约束)
+    - 推荐范围: 3–8 个
+    - 允许范围: 2–15 个
+    - < 2: 必须与相邻 Event 合并
+    - > 15: 在主题明显转折点切分; 若整体就是同一主题 (如家庭会议), 保留为一个长 Event
+    - 单个 Action 不能跨 Event
+
+    # target 推理规则 (本 prompt 核心职责, 必须严格执行)
+    依据优先级:
+    1. utterance 内容直接指明 (最高优先级, 覆盖以下所有默认)
+       示例: "站住! 喜羊羊正在逃跑" → target="喜羊羊"
+       示例: "刘星, 你过来" → target="刘星"
+    2. A→B→A / A→B→C 交替发言默认推断 (本 prompt 主要规则, 不允许偷懒跳过):
+       当 Event 内有 2+ 个不同 actor 交替发言时, 每个 actor 的 target 默认 = 时序上下一个发言的 actor.
+       - A→B→A: A.target=B, B.target=A
+       - A→B→C→A: A.target=B, B.target=C, C.target=A
+       - 群体发言后多人分别回应: A 说"你们..." 之后 B、C、D 都回应 → A.target=[B,C,D]
+       这条是默认行为, 不需要 utterance 明确指明, 也不算脑补 (因为 actor 都在 event 内, 是基于对话结构的合理推断).
+    3. caption_struct.actions[].target 若为具名角色, 可作参考验证
+
+    target 类型: string | list[string]
+    - 单一目标: target="刘梅"
+    - 多人对话场景: target=["刘星", "夏雪"]
+      示例: 刘梅说"你们快点", 随后刘星、夏雪分别回应 → 刘梅.target=["刘星", "夏雪"]
+
+    # target 严格不脑补 (硬约束, 与上面 A→B→A 默认配合)
+    - target 列表只能包含本 Event 内 actions 中实际出现过的 actor (A→B→A 默认推断不算脑补)
+    - caption_struct.characters 若为泛化称呼 ("女性角色"/"男孩"), 不能转写成具名填入 target
+    - 仅以下三种情况允许 target="" 或 target=[]:
+      (a) Event 内只有 1 个 actor (独白 / 自言自语)
+      (b) 群体广播且无明确接收方 (如对全家说话, 后续无具体个人回应)
+      (c) utterance 是旁白 / 画外音
+      除以上 3 种外, 必须依据规则 1 或规则 2 填充 target, 不允许留空.
+      宁可基于 A→B→A 推断, 也不要无依据地填入具名角色.
+
+    # motivation 与 motivation_confidence (抑制幻觉的关键字段)
+    - motivation: 描述该 Event 中角色的驱动力/意图/目标
+    - motivation_confidence:
+      * explicit: 动机在 utterance 中明确表述 (如"我要参加比赛" → motivation="参加比赛")
+      * inferred: 动机需要推断 (如刘星说"我要参加比赛", 推断"希望获得奖励" → inferred)
+
+    # motivation 诚实标注 (硬约束)
+    - 只有当某句 utterance 字面直接表达了目的 (如"我要去参加比赛"→ motivation="参加比赛"), 才能标 explicit
+    - 任何从行为/表情/场景推断的动机 (如"质问"→ 推断"想了解"), 必须标 inferred
+    - 推断困难 → motivation="动机不明", motivation_confidence="inferred"
+
+    # 角色归一
+    - actor / target 必须使用 characters_known 中的标准 name (如"老妈/妈妈" → "刘梅")
+    - 无法归一的具名 → 保留原字符串, 在输出 characters_to_resolve[] 中列出
+    - 泛化称呼 ("男性角色"/"女性角色") 禁止作为 actor/target
+
+    # outcome 写法
+    1 句话说明"结果如何" (成功/失败/未决/转折/无变化)。
+    允许 outcome="无变化" (如闲聊收场), 但要显式标注。
+
+    # summary 写法
+    - 3–5 句中文
+    - 必须包含视觉动作 — 从各 Action 的 evidence.caption_struct.actions 聚合转译 (如"刘星走近夏雪" "夏雪转身离开")
+    - 必须包含关键对白 (可改写, 不要逐字引用)
+    - 必须包含地点、时间、参与角色
+    - 不可写输入 actions 中未体现的信息 (如"神色慌张"这种观察推理禁止写入)
+
+    # retrieval_text 写法 (用于 Embedding)
+    - 2–4 句中文, 连贯自然
+    - 必须包含: 核心事件 + 关键角色名 + 关键地点/道具 + 主要冲突或转折
+    - 不要逐字重复 summary, 要做语义压缩
+
+    # keywords 写法 (用于 BM25)
+    - 5–8 个词/短语
+    - 必含: 所有具名角色、关键地点、关键道具、事件类型词 ("偷窃"/"争吵"/"约定"/"准备"/"误会"等)
+    - 禁止泛化词 ("事情"/"东西"/"情况")
+
+    # 输出 Schema
+    {
+      "events": [
+        {
+          "event_id": "string (格式: {video_id}_e{seq:03d})",
+          "title": "10–15字事件标题",
+          "participants": ["character_id"],
+          "motivation": "string",
+          "motivation_confidence": "explicit|inferred",
+          "outcome": "string",
+          "summary": "3–5句含视觉动作与关键对白的剧情梗概",
+          "actions": [
+            {"action_id": "string", "target": "string 或 list[string] 或空字符串"}
+          ],
+          "retrieval_text": "2–4句embedding友好文本",
+          "keywords": ["关键词"],
+          "evidence": [
+            {"type": "visual", "description": "画面视觉动作描述 (从 caption_struct.actions 聚合)", "scene_ids": ["scene_id"]}
+          ]
+        }
+      ],
+      "characters_to_resolve": [
+        {"raw_name": "string", "first_action_id": "string", "suggested_character_id": "char_new_xxx"}
+      ]
+    }
+
+    # 少样本示例 (target 严格不脑补 + motivation 诚实标 inferred)
+
+    输入:
+    {
+      "video_id": "家有儿女/第001集",
+      "actions": [
+        {"action_id": "家有儿女/第001集_a0030", "actor": "刘梅", "action": "command", "target": "", "emotion": "愤怒语调", "utterance": "你们仨刚才在这儿干吗呢", "evidence": {"scene_id": "家有儿女/第001集_a0030", "timestamp": [95.0, 96.0], "caption_struct": {"space": "客厅", "characters": ["女性角色", "男孩"], "actions": [{"character": "女性角色", "action": "command"}]}}},
+        {"action_id": "家有儿女/第001集_a0032", "actor": "刘星", "action": "answer", "target": "", "emotion": "厌恶语调", "utterance": "因为您的儿子也需要隐私 谢谢", "evidence": {"scene_id": "家有儿女/第001集_a0032", "timestamp": [97.5, 98.5], "caption_struct": {"space": "客厅", "characters": ["男孩", "女性角色"], "actions": [{"character": "男孩", "action": "answer"}]}}},
+        {"action_id": "家有儿女/第001集_a0034", "actor": "刘梅", "action": "ask", "target": "", "emotion": "愤怒语调", "utterance": "这也是你的隐私吗", "evidence": {"scene_id": "家有儿女/第001集_a0034", "timestamp": [99.0, 100.0], "caption_struct": {"space": "客厅", "characters": ["女性角色", "男孩"], "actions": [{"character": "女性角色", "action": "ask"}]}}}
+      ],
+      "characters_known": [{"character_id": "char_mei", "name": "刘梅"}, {"character_id": "char_xing", "name": "刘星"}]
+    }
+
+    输出:
+    {
+      "events": [
+        {
+          "event_id": "家有儿女/第001集_e002",
+          "title": "刘梅质问刘星刚才在做什么",
+          "participants": ["char_mei", "char_xing"],
+          "motivation": "了解孩子们刚才在做什么",
+          "motivation_confidence": "inferred",
+          "outcome": "刘星以隐私为由搪塞, 刘梅继续追问, 对话未结束",
+          "summary": "在客厅, 刘梅质问刘星刚才在做什么。刘星以'您的儿子也需要隐私'为由回避, 刘梅不依不饶继续追问。两人面对面站立对话, 刘星没有进一步交代。",
+          "actions": [
+            {"action_id": "家有儿女/第001集_a0030", "target": ["刘星"]},
+            {"action_id": "家有儿女/第001集_a0032", "target": "刘梅"},
+            {"action_id": "家有儿女/第001集_a0034", "target": "刘星"}
+          ],
+          "retrieval_text": "刘梅在客厅质问刘星刚才在做什么。刘星以隐私为由搪塞, 刘梅继续追问。动机是查明孩子们的行为, 结果是刘星回避, 对话陷入僵局。",
+          "keywords": ["刘梅", "刘星", "客厅", "质问", "隐私", "搪塞"],
+          "evidence": [
+            {"type": "visual", "description": "刘梅与刘星在客厅面对面对话", "scene_ids": ["家有儿女/第001集_a0030", "家有儿女/第001集_a0032"]}
+          ]
+        }
+      ],
+      "characters_to_resolve": []
+    }
+
+    # 关键修订点 (与旧版对比)
+    - target=["刘星"]: 只写上下文中实际出现过的 actor (旧版错误脑补了夏雪、夏雨)
+    - motivation="了解孩子们刚才在做什么" + confidence="inferred": "了解意图"本身是从"质问"行为推断的, 没 utterance 直接说"我想知道", 因此必须标 inferred
+    - summary 不写"神色慌张": 输入 actions 中并未体现, 属于观察推理禁止写入
+    - A→B→A 默认推断已强制使用: 旧版在"上下文清楚时仍允许 target 留空"导致大量 link 缺失, 新版要求 2+ 交互 actor 时必须按对话结构填充, 仅独白/群体广播/旁白允许空 target
+
+    # 边界 case
+    - Event 内所有 actor 都是"路人" → participants=["char_unknown"], motivation 必为 inferred, A→B→A 推断仍适用 (target 填下一个发言的路人)
+    - 连续 2+ 个 action 都是同一 actor (独白) → 允许合并为 1 个 Event, participants 仅含该角色, 独白部分 target="" (符合允许空的情况 a)
+    - actions 数量正好 2 且与前后都无法合并 → 仍生成 Event, 两个 actor 互为 target
+    - motivation 无法从 utterance 提取且推断困难 → motivation="动机不明", motivation_confidence="inferred"
+
+    # 待处理数据
+    __INPUT_ACTIONS_JSON__
+
+# ============================================================
+# Stage 3 P3: PlotArc 跨集剧情弧
+# 输入: 本集 events + 上游 global_arcs.json (跨集累积, 可能为空)
+# 输出: 本集触发的 arc_updates[] (新增/推进/收束), 以及对应的 arc 状态字段
+# ============================================================
+stage3_p3_plot_arc:
+  user: |
+    你是中文情景剧的 PlotArc 识别系统。
+
+    # 任务
+    输入: 本集按时间序排列的 events + 上游已有的 global_arcs (可能为空)
+    输出: 本集对应的 arc_updates (新增/推进/收束), 每个 update 含完整 arc 字段
+
+    # PlotArc 定义
+    跨越多集的剧情弧线, 围绕同一主题/冲突/角色关系展开. 例如:
+    - "夏雪融入新家庭" 跨多集展现夏雪从抵触到接受的过程
+    - "刘星学习成绩" 跨多集的学习困境与突破
+    - "CC 计划" 孩子们的某个秘密项目跨集推进
+
+    # 区分 Event vs PlotArc
+    - Event: 单集内完成的叙事单元 (1-3 分钟)
+    - PlotArc: 跨集的长线主题 (需要多集才能完整展现)
+
+    # Arc 类型 (type 字段)
+    - character_growth: 角色成长/转变
+    - relationship: 角色关系演变 (父子/夫妻/兄弟姐妹/朋友)
+    - conflict: 持续冲突
+    - mystery: 悬念/秘密
+    - goal: 角色追求某目标
+
+    # Arc 状态 (status 字段)
+    - open: 本集新开或继续推进, 未结束
+    - progressing: 推进中, 已有显著进展但未收束
+    - resolved: 本集收束, 冲突解决/目标达成
+    - suspended: 暂时搁置, 本集未推进
+
+    # 匹配规则
+    1. 优先与现有 arcs 做主题匹配 (相同 type + 相似 participants + 相似主题)
+    2. 匹配上 → 标 update_type="progressing" 或 "resolved", 累加 related_event_ids
+    3. 匹配不上 → 新开 arc, update_type="new"
+    4. 本集未涉及的现有 arc → 不输出 (默认 suspended)
+    5. 单集 events 至少产出 2 个 arc, 至多 6 个
+
+    # 字段约束
+    - arc_id: 旧 arc 保留原 id, 新 arc 用 "arc_new_xxx" 临时 id (后续 P5 全局归一)
+    - participants: 用 character_id 或角色名 (与 events 一致)
+    - first_seen_episode: 新 arc = 本集 video_id; 旧 arc 保留原值
+    - last_seen_episode: 始终 = 本集 video_id (因为本集有更新)
+    - related_event_ids: 至少 1 条, 累加旧 arc 的 + 本集匹配的
+
+    # 输出 Schema
+    {
+      "arc_updates": [
+        {
+          "arc_id": "string (旧 id 或 arc_new_xxx)",
+          "update_type": "new|progressing|resolved",
+          "title": "10-20字 arc 标题",
+          "type": "character_growth|relationship|conflict|mystery|goal",
+          "participants": ["character_id 或 角色名"],
+          "status": "open|progressing|resolved|suspended",
+          "first_seen_episode": "video_id",
+          "last_seen_episode": "video_id",
+          "summary": "1-2 句 arc 整体描述 (含本集进展)",
+          "key_milestones": ["里程碑事件描述 1", "..."],
+          "related_event_ids": ["event_id_1", "..."],
+          "outcome": "string (仅 resolved 时填; 否则空)"
+        }
+      ]
+    }
+
+    # 输入
+    - 当前 video_id: {video_id}
+    - 本集 events (按时间序):
+    {events_json}
+
+    - 上游 global_arcs (可能为空 []):
+    {global_arcs_json}
+
+    # 输出 (直接 JSON, 不要其他文字)
+
+# ============================================================
+# Stage 3 P4: Video 单集摘要
+# 输入: 本集 events + arc_updates (P3 产出)
+# 输出: 整集摘要 + character_refs + main_arcs + key_events
+# ============================================================
+stage3_p4_video_summary:
+  user: |
+    你是中文情景剧的 Video 摘要生成系统。
+
+    # 任务
+    输入: 本集 events + arc_updates (P3 产出)
+    输出: 单集整体摘要 video_summary
+
+    # 字段说明
+    - title: 剧集标题 (10-20 字, 含集号或主题)
+    - episode_summary: 3-5 句整集梗概 (含主要冲突 + 转折 + 结局)
+    - character_refs[]: 本集出场角色清单 (用 character_id, 便于全局 characters.json 引用)
+    - main_arcs[]: 本集推进的 arc_id 列表
+    - key_events[]: 本集最重要 3-5 个 event_id (用于检索 / 高亮)
+    - tone: 整集基调 (喜剧/家庭温馨/冲突/悲伤/...), 1-2 词
+    - runtime_estimate: 整集时长 (秒, 从 events 时间戳推算)
+
+    # 摘要要求
+    - episode_summary 必须包含: 主要角色 + 主要冲突 + 关键转折 + 结局走向
+    - 不可逐句复述 events 的 summary, 要做整集视角的语义压缩
+    - key_events 选最具代表性的 3-5 个 (推动剧情的转折点)
+
+    # 输出 Schema
+    {
+      "video_id": "string",
+      "title": "10-20 字",
+      "episode_summary": "3-5 句",
+      "character_refs": ["char_id_1", "..."],
+      "main_arcs": ["arc_id_1", "..."],
+      "key_events": ["event_id_1", "..."],
+      "tone": "1-2 词",
+      "runtime_estimate": 1234.5
+    }
+
+    # 输入
+    - video_id: {video_id}
+    - 本集 events (按时间序):
+    {events_json}
+
+    - 本集 arc_updates (P3 产出):
+    {arc_updates_json}
+
+    # 输出 (直接 JSON)
+
+# ============================================================
+# Stage 3 P5: Global 全局角色表 + Arc 终态
+# 输入: 所有 video_summary + 所有 arc_updates + 现有 characters.json (可能为空)
+# 输出: 更新后的 characters.json (角色归一 + 关系图) + global_arcs 终态
+# ============================================================
+stage3_p5_global:
+  user: |
+    你是中文情景剧的全局知识库维护系统。
+
+    # 任务
+    输入: 累积的所有 video_summary + 所有 arc_updates + 现有 characters.json (首轮可能为空)
+    输出: 更新后的 characters.json (新增角色 + 关系更新) + global_arcs 终态汇总
+
+    # Character 字段
+    - character_id: 全局唯一 (char_xxx), 新角色用 char_new_xxx
+    - name: 标准角色名 (与 events 的 actor 一致)
+    - aliases[]: 别名/称呼 (如 "妈/老妈/刘梅" 都指同一人)
+    - first_seen: 首次出场 video_id
+    - episodes_appeared[]: 出场集数清单
+    - role: 主角 / 配角 / 客串 / 反派 / 路人
+    - description: 1-2 句角色描述 (身份/性格/关系)
+    - relationships[]: 与其他角色的关系 [{target_character_id, relation_type, description}]
+
+    # 关系类型 (relation_type)
+    - family: 家庭关系 (父子/母女/夫妻/兄弟姐妹)
+    - friend: 朋友
+    - rival: 对手/竞争
+    - mentor: 师生
+    - enemy: 敌对
+    - other: 其他
+
+    # 角色归一规则
+    1. 同一角色不同称呼要合并 ("刘梅" + "老妈" + "妈" → 同一 character_id)
+    2. 同名不同人要分开 (若有两个不同的"小明", 各自一个 character_id)
+    3. 跨集出现的同一角色保留同一 character_id
+    4. 新角色用 char_new_xxx 临时 id
+
+    # 全局 Arcs 更新
+    - 合并所有 video 的 arc_updates
+    - 同一主题 arc 跨集的进展时间线
+    - 最终 status (open/resolved/suspended)
+
+    # 输出 Schema
+    {
+      "characters": [
+        {
+          "character_id": "char_xxx",
+          "name": "标准名",
+          "aliases": ["别名1", "..."],
+          "first_seen": "video_id",
+          "episodes_appeared": ["video_id_1", "..."],
+          "role": "主角|配角|客串|反派|路人",
+          "description": "1-2 句",
+          "relationships": [
+            {"target_character_id": "char_yyy", "relation_type": "family|friend|rival|mentor|enemy|other", "description": "关系描述"}
+          ]
+        }
+      ],
+      "global_arcs": [
+        {
+          "arc_id": "string",
+          "title": "...",
+          "type": "...",
+          "participants": ["char_id"],
+          "status": "open|progressing|resolved|suspended",
+          "first_seen_episode": "video_id",
+          "last_seen_episode": "video_id",
+          "summary": "跨集整体描述",
+          "episode_progression": [{"video_id": "...", "progress": "本集推进点"}]
+        }
+      ],
+      "new_characters_count": 0,
+      "total_arcs_count": 0
+    }
+
+    # 输入
+    - 现有 characters.json (首轮为空 []):
+    {existing_characters_json}
+
+    - 所有 video_summary:
+    {video_summaries_json}
+
+    - 所有 arc_updates (按集分组):
+    {all_arc_updates_json}
+
+    # 输出 (直接 JSON)
+
+# ============================================================
+# Stage 3 P6: 角色深度画像 (Character Profile)
+# 输入: characters.json (P5) + 所有集 events + 所有集 actions (P1 完整产出)
+# 输出: character_profiles.json (per-character 性格深层 + 行为模式带例证)
+# 调用方式: all-in-one 单次调用 (不依赖 participants 归一, LLM 用 name+aliases 全局匹配)
+# ============================================================
+stage3_p6_character_profile:
+  user: |
+    你是中文情景剧的角色深度画像系统。
+
+    # 输出硬约束 (最重要, 必须严格遵守)
+    - 直接输出一个 JSON 对象, 严格遵守下方输出 Schema
+    - 禁止任何解释性文字、规则确认、任务复述、思考过程
+    - 第一个字符必须是 `{`, 最后一个字符必须是 `}`
+    - 不要 Markdown 代码块包裹
+
+    # 任务
+    输入: characters.json (角色清单, 含 name + aliases) + 所有集的 events + 所有集的 actions
+    输出: 每个角色的深度画像 — personality (性格深层 6 维) + behavior_patterns (行为模式带 evidence)
+
+    # 角色匹配规则 (关键: participants 字段不可靠)
+    events/actions 里的参与者标识混乱 — 同一角色可能用 char_id / 中文名 / 别名多种写法
+    (因为上游 P2 归一不稳定, 如 "刘梅" 可能写成 char_mei / char_liu_mei / char_liumei / 老妈 / 妈):
+    - 必须依据 characters.json 的 name + aliases 做归一, 把所有写法映射回标准 character_id
+    - 用 events.summary / actions.actor / utterance 里的中文名做主要匹配线索
+    - 不要信任 events.participants 里的 char_id 字段
+    - char_unknown_* / char_passerby_* 这类未归一的路人: 跳过, 不产出画像
+
+    # personality 字段 (性格深层, 6 个维度)
+    - core_motivation: 核心驱动力 (1 句, 如 "维护重组家庭的完整与孩子成长")
+    - values: 价值观清单 (2-4 个短语, 如 ["家庭责任", "孩子教育", "表面和谐"])
+    - strengths: 优点 (2-4 个短语)
+    - weaknesses: 弱点/软肋 (2-4 个短语, 必须有行为证据支撑)
+    - inner_conflict: 内心冲突 (1 句, 呈现张力, 如 "继母身份的边界感 vs 想当亲妈的渴望")
+    - growth_direction: 成长方向 (1 句, "从 X 到 Y")
+
+    # behavior_patterns 字段 (行为模式, 带 evidence)
+    每个 pattern 描述一个具体的、可观察的行为倾向:
+    - pattern: "遇到 X 情境时倾向 Y 反应" (具体到情境 + 反应, 禁止泛化性格词如"性格急躁")
+    - action_type_tendency: 该 pattern 常出现的 action 枚举 (P1 的 11 类: inform/ask/answer/command/refuse/promise/threaten/deceive/argue/invite/react)
+    - evidence: ≥2 条例证, 每条含:
+      * event_id: 事件 id (从输入复制)
+      * action_id: 动作 id (从输入复制)
+      * utterance_snippet: 原话片段 (≤20 字, 直接证明该 pattern)
+
+    # 行为归纳硬约束
+    - 每个 behavior_pattern 必须有 ≥2 条 evidence (禁止孤证)
+    - evidence.event_id / action_id 必须从输入数据里原样复制, 禁止编造
+    - pattern 必须具体到"情境 + 反应", 禁止纯性格形容词
+    - 主角 (role=主角): 产出 3-5 个 behavior_patterns
+    - 配角/客串: 至少 1 个 behavior_pattern
+    - 反派: 至少 2 个 behavior_patterns (突出对抗模式)
+
+    # 性格诚实标注 (硬约束, 抑制幻觉)
+    - weaknesses / inner_conflict 必须有 events/actions 行为支撑, 禁止脑补数据里没体现的心理特征
+      (如 "童年创伤" / "隐性抑郁" 这种没出现在 utterance/summary 里的禁止写)
+    - 若某角色参与的 events < 3 条, 数据不足:
+      * personality 各字段填 "数据不足"
+      * behavior_patterns 留空 []
+      * 仍保留该角色条目 (不删)
+    - growth_direction 只在数据有跨集变化证据时填具体方向, 否则填 "本数据集内无明显变化"
+
+    # 输出 Schema
+    {
+      "profiles": [
+        {
+          "character_id": "char_001 (来自 characters.json, 原样复制)",
+          "name": "标准名 (来自 characters.json)",
+          "role": "主角|配角|客串|反派",
+          "personality": {
+            "core_motivation": "string",
+            "values": ["短语"],
+            "strengths": ["短语"],
+            "weaknesses": ["短语"],
+            "inner_conflict": "string",
+            "growth_direction": "string"
+          },
+          "behavior_patterns": [
+            {
+              "pattern": "遇到 X 情境时倾向 Y 反应",
+              "action_type_tendency": ["inform|ask|answer|command|refuse|promise|threaten|deceive|argue|invite|react"],
+              "evidence": [
+                {"event_id": "原样复制", "action_id": "原样复制", "utterance_snippet": "≤20字原话"}
+              ]
+            }
+          ]
+        }
+      ]
+    }
+
+    # 少样本 (刘梅, 展示具体 pattern + 真实 utterance + 角色匹配)
+    输入假设:
+      characters.json 含 {"character_id": "char_001", "name": "刘梅", "aliases": ["妈","老妈","刘医生"], "role": "主角"}
+      events 含参与者 "char_mei" / "char_liu_mei" / "老妈" (都指刘梅)
+      actions 含 actor="刘梅" 的若干 utterance
+
+    输出示例:
+    {
+      "profiles": [
+        {
+          "character_id": "char_001",
+          "name": "刘梅",
+          "role": "主角",
+          "personality": {
+            "core_motivation": "维护重组家庭的完整与督促孩子成长",
+            "values": ["家庭责任", "孩子教育", "家庭秩序"],
+            "strengths": ["热心行动", "直率不藏", "执行力强"],
+            "weaknesses": ["急躁易怒", "习惯先质问后倾听", "控制欲强"],
+            "inner_conflict": "继母想当亲妈的渴望 vs 孩子抵触时的边界感",
+            "growth_direction": "从急于掌控质问 到 逐渐学会倾听和放权"
+          },
+          "behavior_patterns": [
+            {
+              "pattern": "发现孩子闯祸时第一时间提高音量质问",
+              "action_type_tendency": ["command", "ask"],
+              "evidence": [
+                {"event_id": "家有儿女/第001集_e002", "action_id": "家有儿女/第001集_a0030", "utterance_snippet": "你们仨刚才在这儿干吗呢"},
+                {"event_id": "家有儿女/第001集_e045", "action_id": "家有儿女/第001集_a0xxx", "utterance_snippet": "这是谁干的"}
+              ]
+            },
+            {
+              "pattern": "被夏东海理性劝导后会软化反思",
+              "action_type_tendency": ["answer", "react"],
+              "evidence": [
+                {"event_id": "家有儿女/第001集_e010", "action_id": "家有儿女/第001集_a0xxx", "utterance_snippet": "也许是我太急了"},
+                {"event_id": "家有儿女/第001集_e033", "action_id": "家有儿女/第001集_a0xxx", "utterance_snippet": "你说得对"}
+              ]
+            }
+          ]
+        }
+      ]
+    }
+
+    # 待处理数据
+    ## 角色清单 (characters.json):
+    __INPUT_CHARACTERS_JSON__
+
+    ## 所有 events (按集, 含 summary / participants / motivation / outcome):
+    __INPUT_EVENTS_JSON__
+
+    ## 所有 actions (按集, 含 actor / utterance / action / emotion):
+    __INPUT_ACTIONS_JSON__
+
+    # 输出 (直接 JSON)

@@ -29,6 +29,7 @@ from openai import OpenAI
 from src.core.cost import get_cost_tracker
 from src.core.helpers.text_utils import extract_json_obj
 from src.core.llm.base_client import _report_usage
+from src.core.path_utils import resolve_video_path
 
 if not hasattr(sys.stdout, 'reconfigure'):
     pass
@@ -502,13 +503,13 @@ def run_iflytek(dialogues, audio_path, app_id, api_key, api_secret, group_id, na
 # 输出生成
 # ══════════════════════════════════════════════════════════════
 
-def generate_output(dialogues, iflytek_results, vp_threshold=0.0):
+def generate_output(dialogues, iflytek_results, vp_threshold=0.4):
     """生成 speaker_pred 格式的段列表
 
     Args:
         dialogues: Omni 识别结果
         iflytek_results: 声纹识别结果
-        vp_threshold: 声纹置信度阈值，低于此值的预测标记为 '路人'
+        vp_threshold: 声纹置信度阈值，低于此值统一标记为 '路人' (默认 0.4)
     """
     output = []
     for i, seg in enumerate(dialogues):
@@ -522,8 +523,8 @@ def generate_output(dialogues, iflytek_results, vp_threshold=0.0):
 
         pred = vp["pred"]
         score = vp["score"]
-        # 低分预测标记为路人
-        if pred and vp_threshold > 0 and score < vp_threshold:
+        # 低于阈值一律标路人 (含 no_match 的 pred="" 情况)
+        if vp_threshold > 0 and score < vp_threshold:
             pred = "路人"
 
         output.append({
@@ -545,7 +546,7 @@ def generate_output(dialogues, iflytek_results, vp_threshold=0.0):
 # Stage 1 入口
 # ══════════════════════════════════════════════════════════════
 
-def run_stage1(video_dir: str, output_dir: str, skip_theme: bool = False, chunk_dur: int = 60, vp_threshold: float = 0.0, group_id: str = "", name_map: dict = None) -> dict:
+def run_stage1(video_dir: str, output_dir: str, skip_theme: bool = False, chunk_dur: int = 60, vp_threshold: float = 0.4, group_id: str = "", name_map: dict = None) -> dict:
     """Stage 1: 音频处理
 
     Args:
@@ -553,7 +554,7 @@ def run_stage1(video_dir: str, output_dir: str, skip_theme: bool = False, chunk_
         output_dir: 输出目录
         skip_theme: 是否跳过片头/片尾曲检测
         chunk_dur: Omni chunk 时长 (秒)
-        vp_threshold: 声纹置信度阈值, 低于此值的预测标记为 '路人' (0=不过滤)
+        vp_threshold: 声纹置信度阈值, 低于此值统一标记为 '路人' (默认 0.4, 0=不过滤)
         group_id: 讯飞声纹组 ID (空则跳过声纹识别)
         name_map: 声纹 featureId → 角色名映射
 
@@ -565,7 +566,6 @@ def run_stage1(video_dir: str, output_dir: str, skip_theme: bool = False, chunk_
     load_dotenv()
 
     # 路径
-    from src.pipeline.orchestrator import resolve_video_path
     video_path = resolve_video_path(video_dir)
     audio_path = os.path.join(output_dir, "audio.wav")
     result_path = os.path.join(output_dir, "audio.json")

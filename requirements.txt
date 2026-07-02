@@ -7,13 +7,10 @@ python-dotenv>=1.1.0
 pyyaml>=6.0.2
 numpy>=2.2.5
 opencv-python>=4.11.0.86
-pillow>=11.2.1
 regex>=2024.11.6
-tqdm>=4.67.1
 requests>=2.31.0
 
-# --- Scene Detection ---
-scenedetect[opencv]>=0.6.4
+# --- Scene Detection (回退路径) ---
 onnxruntime>=1.18.0
 
 # --- CLI ---
@@ -21,3 +18,6 @@ typer>=0.15.0
 
 # --- Logging ---
 coloredlogs>=15.0.1
+
+# --- Retrieval Eval ---
+jieba>=0.42.1

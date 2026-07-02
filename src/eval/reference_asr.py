@@ -38,6 +38,7 @@ from src.core.config import get_config
 from src.core.cost import get_cost_tracker
 from src.core.llm.base_client import _report_usage
 from src.core.logging import get_logger
+from src.core.path_utils import resolve_video_path
 
 logger = get_logger()
 
@@ -191,7 +192,6 @@ def run_reference_asr(
         reference_asr 数据 dict, 同时写入 {output_dir}/reference_asr.json
     """
     from concurrent.futures import ThreadPoolExecutor, as_completed
-    from src.pipeline.orchestrator import resolve_video_path
 
     config = get_config()
     model = config.model_omni_plus

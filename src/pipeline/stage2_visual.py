@@ -23,8 +23,9 @@ from src.core.helpers.json_utils import save_json
 from src.core.helpers.prompt_loader import load_prompt
 from src.core.config import get_config
 from src.core.logging import get_logger
+from src.core.path_utils import resolve_video_path
+from src.pipeline.speaker_anchor import Anchor, build_anchors
 from src.scene import create_detector
-from src.scene.speaker_anchor import Anchor, build_anchors
 
 logger = get_logger()
 
@@ -467,7 +468,6 @@ def run_stage2(video_dir: str, output_dir: str, audio_result: dict = None, skip_
         visual.json 数据 (dict)
     """
     config = get_config()
-    from src.pipeline.orchestrator import resolve_video_path
     video_path = resolve_video_path(video_dir)
 
     if not os.path.isfile(video_path):
@@ -503,8 +503,8 @@ def run_stage2(video_dir: str, output_dir: str, audio_result: dict = None, skip_
         total_kf = sum(len(s.get("keyframe_paths", [])) for s in scenes)
         print(f"  写入 {total_kf} 张关键帧 (每锚点 1 帧)")
     else:
-        # ===== 旧路径回退: SBD + 均匀采样 =====
-        print(f"[Stage 2a] 场景检测 ({config.scene_detector}, 回退模式) ...")
+        # ===== 旧路径回退: TransNetV2 + 均匀采样 =====
+        print(f"[Stage 2a] 场景检测 (TransNetV2, 回退模式) ...")
         detector = create_detector(config)
         scene_objs = detector.detect_scenes(video_path)
         scenes = [s.to_dict() for s in scene_objs]

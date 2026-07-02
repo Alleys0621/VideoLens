@@ -52,7 +52,7 @@ def process_episode(
     only_eval: bool,
 ) -> dict:
     """处理单集: Stage1 → Stage2 → ref ASR → eval. 返回结果 dict."""
-    from src.pipeline.orchestrator import resolve_video_path, get_show_name, load_voiceprint_config
+    from src.core.path_utils import resolve_video_path, get_show_name, load_voiceprint_config
 
     output_dir = os.path.join("data", "output", video_dir)
     os.makedirs(output_dir, exist_ok=True)

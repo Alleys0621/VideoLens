@@ -13,13 +13,17 @@ class QwenTextClient(BaseLLMClient):
         model: str = "",
         temperature: float = 0.1,
         stage: str = "",
+        max_tokens: int | None = None,
+        enable_thinking: bool = False,
     ) -> str | None:
         """生成文本回复"""
         messages = [
             {"role": "system", "content": system},
             {"role": "user", "content": prompt},
         ]
-        return self.chat(messages, model=model, temperature=temperature, stage=stage)
+        return self.chat(messages, model=model, temperature=temperature,
+                         stage=stage, max_tokens=max_tokens,
+                         enable_thinking=enable_thinking)
 
     def generate_json(
         self,
@@ -27,9 +31,12 @@ class QwenTextClient(BaseLLMClient):
         system: str = "你是一个专业的影视内容分析师。请以 JSON 格式输出。",
         model: str = "",
         stage: str = "",
+        max_tokens: int | None = None,
+        enable_thinking: bool = False,
     ) -> str | None:
         """生成 JSON 格式回复"""
-        raw = self.generate(prompt, system=system, model=model, stage=stage)
+        raw = self.generate(prompt, system=system, model=model, stage=stage,
+                            max_tokens=max_tokens, enable_thinking=enable_thinking)
         if raw:
             return self.extract_json(raw)
         return None

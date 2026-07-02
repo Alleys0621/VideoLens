@@ -27,12 +27,12 @@ def run(
     stage: int = typer.Option(0, "--stage", "-s", help="运行到哪个 stage (0=全部, 1/2/3)"),
     skip_theme: bool = typer.Option(False, "--skip-theme", help="跳过片头/片尾曲检测"),
     chunk_dur: int = typer.Option(60, "--chunk", "-c", help="Omni chunk 时长 (秒)"),
-    vp_threshold: float = typer.Option(0.0, "--vp-threshold", help="声纹置信度阈值, 低于此值标为 '路人' (0=不过滤)"),
+    vp_threshold: float = typer.Option(0.4, "--vp-threshold", help="声纹置信度阈值, 低于此值统一标为 '路人' (默认 0.4, 0=不过滤)"),
 ):
     """运行 Pipeline"""
     typer.echo(_BANNER)
 
-    from src.pipeline.orchestrator import resolve_video_path
+    from src.core.path_utils import resolve_video_path
     video_path = resolve_video_path(video)
     if not os.path.isfile(video_path):
         typer.echo(f"错误: 视频文件不存在: {video_path}", err=True)

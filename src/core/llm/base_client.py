@@ -74,15 +74,27 @@ class BaseLLMClient:
         model: str = "",
         temperature: float = 0.1,
         stage: str = "",
+        max_tokens: int | None = None,
+        enable_thinking: bool = False,
     ) -> str:
-        """发送聊天请求，返回原始文本"""
+        """发送聊天请求，返回原始文本
+
+        enable_thinking: qwen3.7 系列默认开启 thinking (思考过程 token),
+        会让输出 token 暴涨 3-4 倍且耗时翻倍. 默认关闭, 仅在需要强推理时显式开启.
+        """
         model = model or self.model
+        kwargs = {
+            "model": model,
+            "messages": messages,
+            "temperature": temperature,
+        }
+        if max_tokens is not None:
+            kwargs["max_tokens"] = max_tokens
+        # qwen3.7 系列通过 extra_body 关闭 thinking
+        # 旧模型 (qwen-plus 等) 会忽略此参数, 无副作用
+        kwargs["extra_body"] = {"enable_thinking": enable_thinking}
         t0 = time.time()
-        response = self.client.chat.completions.create(
-            model=model,
-            messages=messages,
-            temperature=temperature,
-        )
+        response = self.client.chat.completions.create(**kwargs)
         latency = time.time() - t0
 
         _report_usage(model, response.usage, latency, stage)

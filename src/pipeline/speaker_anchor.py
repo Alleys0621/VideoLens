@@ -3,7 +3,7 @@
 
 设计动机见 docs/research notes:
   - 已有 Stage 1 的声纹 segment (speaker_pred + 时间戳), 可零成本产出语义对齐的关键帧锚点
-  - TransNetV2 / PySceneDetect 在情景剧 (固定机位 + 长对话镜头) 上过分割, 且完全不利用音频信息
+  - TransNetV2 在情景剧 (固定机位 + 长对话镜头) 上过分割, 且完全不利用音频信息
   - 文献路线: Audio-Guided Keyframe Selection (Iyer 2024), Dialogue-Aligned Sampling (Fu ACL 2023)
 
 锚点类型:
@@ -242,26 +242,3 @@ def build_anchors(
         )
     return dedupe_anchors(anchors, min_gap_s=dedupe_gap)
 
-
-def anchors_summary(anchors: list[Anchor]) -> dict:
-    """返回锚点统计信息, 供调试输出"""
-    from collections import Counter
-
-    by_type = Counter(a.anchor_type for a in anchors)
-    by_speaker = Counter(a.speaker for a in anchors if a.speaker)
-    timestamps = [a.timestamp for a in anchors] or [0.0]
-    gaps = [
-        anchors[i + 1].timestamp - anchors[i].timestamp
-        for i in range(len(anchors) - 1)
-    ]
-    return {
-        "total": len(anchors),
-        "by_type": dict(by_type),
-        "by_speaker": dict(by_speaker),
-        "speaker_coverage": len(by_speaker),
-        "t_min": min(timestamps),
-        "t_max": max(timestamps),
-        "gap_min": min(gaps) if gaps else 0.0,
-        "gap_max": max(gaps) if gaps else 0.0,
-        "gap_mean": (sum(gaps) / len(gaps)) if gaps else 0.0,
-    }

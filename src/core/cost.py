@@ -83,13 +83,10 @@ class ModelPricing:
 #   text_input / audio_input / image_input / text_output / audio_output
 DEFAULT_PRICING: dict[str, dict] = {
     # --- 纯文本模型 ---
-    "qwen-plus":          {"text_input": 0.8, "text_output": 2.0},
-    "qwen-turbo":         {"text_input": 0.3, "text_output": 0.6},
-    "qwen-max":           {"text_input": 2.0, "text_output": 6.0},
+    "qwen3.7-plus":       {"text_input": 1.0, "text_output": 4.0},
 
     # --- 视觉模型 (文本/图片同档输入价) ---
     "qwen-vl-max":        {"text_input": 3.0, "image_input": 3.0, "text_output": 9.0},
-    "qwen-vl-plus":       {"text_input": 1.5, "image_input": 1.5, "text_output": 4.5},
 
     # --- Qwen3-VL (输入便宜, 输出贵, 适合 OCR 这类输入大输出小的任务) ---
     "qwen3-vl-plus":      {"text_input": 1.4, "image_input": 1.4, "text_output": 11.2},
@@ -98,11 +95,6 @@ DEFAULT_PRICING: dict[str, dict] = {
     # --- Omni 模型 (按输入模态分档) ---
     "qwen3.5-omni-plus":  {"text_input": 7.0,  "audio_input": 53.0,  "image_input": 40.0,  "text_output": 213.0},
     "qwen3.5-omni-flash": {"text_input": 2.2,  "audio_input": 18.0,  "image_input": 13.3,  "text_output": 72.0},
-    "qwen3-omni-flash":   {"text_input": 1.8,  "audio_input": 15.8,  "image_input": 3.3,   "text_output": 12.7},
-    "qwen-omni-turbo":    {"text_input": 0.4,  "audio_input": 25.0,  "image_input": 1.5,   "text_output": 4.5},
-
-    # --- ASR ---
-    "qwen3-asr-flash":    {"audio_input": 0.5, "text_output": 1.0},
 }
 
 

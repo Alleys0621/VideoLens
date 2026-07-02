@@ -31,20 +31,10 @@ class AppConfig:
     model_omni_plus: str = "qwen3.5-omni-plus"
     model_omni_flash: str = "qwen3.5-omni-flash"
     model_vlm: str = "qwen-vl-max"
-    model_text: str = "qwen-plus"
+    model_text: str = "qwen3.7-plus"
     model_ocr: str = "qwen3-vl-plus"  # 字幕 OCR 专用 (输入便宜, 适合多帧采样)
 
-    # Stage 1: 音频处理
-    theme_window: int = 120
-    chunk_duration: int = 60
-    silence_db: float = -30.0
-    silence_remove_min: float = 0.3
-    speech_remove_max: float = 0.3
-    name_mapping: dict = field(default_factory=dict)
-
-    # Stage 2: 视觉处理
-    scene_detector: str = "pyscenedetect"
-    content_threshold: float = 27.0
+    # Stage 2: 视觉处理 (Stage 1 参数全部通过 CLI --chunk / 硬编码传入, 不进 config)
     min_scene_len: float = 1.0
     samples_per_scene: int = 8
     transnet_threshold: float = 0.5
@@ -79,7 +69,6 @@ def load_config() -> AppConfig:
             prompts = yaml.safe_load(f) or {}
 
     models = pipeline.get("models", {})
-    s1 = pipeline.get("stage1", {})
     s2 = pipeline.get("stage2", {})
     paths_cfg = pipeline.get("paths", {})
     pricing_cfg = pipeline.get("pricing", {})
@@ -92,18 +81,10 @@ def load_config() -> AppConfig:
         model_omni_plus=models.get("omni_plus", "qwen3.5-omni-plus"),
         model_omni_flash=models.get("omni_flash", "qwen3.5-omni-flash"),
         model_vlm=models.get("vlm", "qwen-vl-max"),
-        model_text=models.get("text", "qwen-plus"),
+        model_text=models.get("text", "qwen3.7-plus"),
         model_ocr=models.get("ocr", "qwen3-vl-plus"),
-        theme_window=s1.get("theme_window", 120),
-        chunk_duration=s1.get("chunk_duration", 60),
-        silence_db=s1.get("silence_db", -30.0),
-        silence_remove_min=s1.get("silence_remove_min", 0.3),
-        speech_remove_max=s1.get("speech_remove_max", 0.3),
-        name_mapping=s1.get("name_mapping", {}),
-        content_threshold=s2.get("content_threshold", 27.0),
         min_scene_len=s2.get("min_scene_len", 1.0),
         samples_per_scene=s2.get("samples_per_scene", 8),
-        scene_detector=s2.get("scene_detector", "pyscenedetect"),
         transnet_threshold=s2.get("transnet_threshold", 0.5),
         transnet_model_path=s2.get("transnet_model_path", "models/transnetv2.onnx"),
         project_root=project_root,
