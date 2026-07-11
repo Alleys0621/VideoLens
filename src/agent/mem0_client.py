@@ -1,9 +1,9 @@
-"""陪看智能体「小影」: 基于 Mem0 的对话记忆 + 陪看人设
+"""陪看智能体「Alleys」: 基于 Mem0 的对话记忆 + 陪看人设
 
 设计:
   - 短期记忆: Streamlit session_state (本会话内)
   - 长期记忆: Mem0 (跨会话持久化, 存到 data/_mem0_qdrant/)
-  - 陪看人设: 「小影」陪看搭子, 25 岁女生, 喜欢看剧
+  - 陪看人设: 「Alleys」陪看搭子, 25 岁女生, 喜欢看剧
 """
 from __future__ import annotations
 
@@ -48,14 +48,18 @@ def get_memory():
             "config": {"model": "qwen3.7-plus", "temperature": 0.1},
         },
         "embedder": {
-            "provider": "huggingface",
-            "config": {"model": "BAAI/bge-small-zh-v1.5"},
+            "provider": "openai",
+            "config": {
+                "model": "text-embedding-v3",
+                "api_key": os.getenv("DASHSCOPE_API_KEY"),
+                "openai_base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+            },
         },
         "vector_store": {
             "provider": "qdrant",
             "config": {
                 "path": str(PROJECT_ROOT / "data" / "_mem0_qdrant"),
-                "embedding_model_dims": 512,
+                "embedding_model_dims": 1024,
             },
         },
         "custom_instructions": (
@@ -109,10 +113,10 @@ def search_relevant_memories(
 
 
 # ============================================================
-# 陪看智能体「小影」人设
+# 陪看智能体「Alleys」人设
 # ============================================================
 
-XIAOYING_SYSTEM_PROMPT = """你是「小影」, 一个陪看搭子智能体, 25 岁女生, 陪伴用户一起看视频、聊剧情.
+_XIAOYING_FALLBACK = """你是「Alleys」, 一个陪看搭子智能体, 25 岁女生, 陪伴用户一起看视频、聊剧情.
 
 ## 性格
 - 活泼温暖, 像朋友聊天, 不端着
@@ -137,6 +141,25 @@ XIAOYING_SYSTEM_PROMPT = """你是「小影」, 一个陪看搭子智能体, 25 
 - 不要任何标题/列表/代码块
 - 用表情但不要堆 (一句话最多 1 个)
 """
+
+
+def _load_xiaoying_prompt() -> str:
+    """从 prompts.yaml::companion_xiaoying_system 加载人设, 失败用 fallback.
+
+    优先用 yaml 版本 (含情绪感知 + 拒答原则), 这样调 prompt 不用改代码.
+    """
+    try:
+        from src.core.config import get_config
+        p = get_config().prompts.get("companion_xiaoying_system", {})
+        if isinstance(p, dict) and p.get("user"):
+            return p["user"]
+    except Exception:
+        pass
+    return _XIAOYING_FALLBACK
+
+
+# 模块级常量: yaml 版本优先, 加载失败回退到上面的 fallback
+XIAOYING_SYSTEM_PROMPT = _load_xiaoying_prompt()
 
 
 # ============================================================
@@ -181,7 +204,7 @@ def build_chat_prompt(
     if chat_history:
         hist_lines = []
         for h in chat_history[-6:]:
-            role = "用户" if h["role"] == "user" else "小影"
+            role = "用户" if h["role"] == "user" else "Alleys"
             hist_lines.append(f"{role}: {h['content']}")
         parts.append(f"## 我们刚才聊到\n" + "\n".join(hist_lines))
 
@@ -200,7 +223,7 @@ def chat_with_xiaoying(
     chat_history: list[dict],
     video_id: str | None = None,
 ) -> tuple[str, list[dict]]:
-    """陪看搭子「小影」回答用户问题.
+    """陪看搭子「Alleys」回答用户问题.
 
     返回 (回答, 检索到的事件)
     """

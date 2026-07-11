@@ -21,3 +21,8 @@ coloredlogs>=15.0.1
 
 # --- Retrieval Eval ---
 jieba>=0.42.1
+
+# --- LangGraph Server (陪看智能体前端 agent-chat-ui 接入, langgraph dev) ---
+langgraph>=0.2.0
+langgraph-api>=0.2.0
+langchain-core>=0.3.0

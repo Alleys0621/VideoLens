@@ -578,8 +578,28 @@ with right_col:
             for msg in st.session_state.chat_history:
                 with st.chat_message(msg["role"]):
                     st.markdown(msg["content"])
-                    if msg.get("refs"):
-                        ref_titles = [r.get("title", "") for r in msg["refs"][:3]]
+                    # 功能 1: 关键帧定位 (展示 evidence 对应的帧)
+                    if msg.get("keyframes"):
+                        for kf in msg["keyframes"]:
+                            if os.path.isfile(kf):
+                                st.image(kf, use_container_width=True)
+                    # 功能 2: 推理过程可视化
+                    if msg.get("reasoning"):
+                        r = msg["reasoning"]
+                        labels = {"kb": "知识库检索", "chitchat": "闲聊", "refuse": "拒答"}
+                        label = labels.get(r["intent"], r["intent"])
+                        with st.expander(f"推理过程 · {label}"):
+                            if r["intent"] == "kb":
+                                st.markdown(f"BM25 检索命中 (top score **{r['top_score']}** >= 阈值 {r['threshold']})")
+                                st.markdown("**检索到的相关事件**:")
+                                for ev in r["retrieved"][:3]:
+                                    st.markdown(f"- {ev['title']} (score: {ev['score']})")
+                            elif r["intent"] == "refuse":
+                                st.markdown(f"知识库里没找到相关情节 (top score {r['top_score']} < {r['threshold']}), 诚实拒答不编造")
+                            else:
+                                st.markdown("识别为闲聊, 不查知识库直接回应")
+                    # 参考事件详情 (KB 模式补充)
+                    if msg.get("refs") and msg.get("reasoning", {}).get("intent") == "kb":
                         with st.expander(f"参考事件 ({len(msg['refs'])} 条)"):
                             for ref in msg["refs"]:
                                 participants = ", ".join(ref.get("participants", [])[:3])
@@ -596,22 +616,20 @@ if "pending_question" in st.session_state:
 if user_q:
     st.session_state.chat_history.append({"role": "user", "content": user_q})
 
-    index = _build_index(events)
-    refs = _retrieve_events(index, events, user_q, top_k=5) if index else []
-
     with st.spinner("小影正在想..."):
-        from src.agent.mem0_client import chat_with_xiaoying
-        answer, _ = chat_with_xiaoying(
+        from src.agent.companion import companion_chat
+        result = companion_chat(
+            query=user_q,
+            video_dir=selected,
             user_id=st.session_state.user_id,
-            user_question=user_q,
-            retrieved_events=refs,
-            video_summary=video_summary,
-            arc_updates=arc_updates,
-            chat_history=st.session_state.chat_history[:-1],  # 不包括刚加的这条
-            video_id=selected,
+            chat_history=st.session_state.chat_history[:-1],
         )
 
     st.session_state.chat_history.append({
-        "role": "assistant", "content": answer, "refs": refs
+        "role": "assistant",
+        "content": result["answer"],
+        "refs": result["reasoning"]["selected"],   # 兼容旧 expander 展示
+        "reasoning": result["reasoning"],          # 推理链
+        "keyframes": result["keyframes"],          # 帧定位
     })
     st.rerun()

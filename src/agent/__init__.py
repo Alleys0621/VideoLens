@@ -1,1 +1,1 @@
-"""VideoLens Agent 模块: 陪看智能体「小影」"""
+"""VideoLens Agent 模块: 陪看智能体「Alleys」"""

@@ -92,7 +92,7 @@ VideoLens/
 │   ├── stage3_p1p2.py             #   Stage 3 P1+P2 单集建库 (薄 CLI)
 │   ├── stage3_p345.py             #   Stage 3 P3+P4+P5 完整 KB (薄 CLI)
 │   ├── stage3_eval.py             #   Stage 3 单集评估编排 (建库 + 建库评估 + 用库)
-│   ├── frontend_app.py            #   陪看智能体「小影」Streamlit 应用
+│   ├── frontend_app.py            #   陪看智能体「Alleys」Streamlit 应用
 │   └── export_for_gt.py           #   导出 Ground Truth
 ├── config/
 │   ├── pipeline.yaml              # Pipeline 参数 + 模型选择 + pricing + voiceprint_groups
