@@ -221,7 +221,7 @@
 /* === Artplayer: B 站风格适配 ===
    1. video 元素 object-contain 防变形 (Artplayer 默认 width/height:100% 会拉伸)
    2. 背景透明, 让外层 bg-zinc-950 透出 (letterbox 黑边统一)
-   3. 控制条无淡出动画 (配合 mouseleave 立即 remove art-hover class) */
+   3. 控制条显示策略按设备分流 (触屏无 hover, 必须用 @media 区分) */
 .art-video-player video {
   width: 100% !important;
   height: 100% !important;
@@ -234,9 +234,24 @@
   transition-duration: 0ms !important;
 }
 
-/* 鼠标在播放器上 → 控制条显示 (纯 CSS :hover, 绕过 Artplayer 的 3s timer 和 art-hover class) */
-.art-video-player:hover .art-bottom {
-  opacity: 1 !important;
+/* 桌面 (鼠标设备): hover 显示控制条, 移出隐藏 */
+@media (hover: hover) {
+  .art-video-player:hover .art-bottom {
+    opacity: 1 !important;
+  }
+}
+
+/* 触屏 (iPad/iPhone): 默认常驻显示 + Artplayer 内置 3s 自动淡出 + 点击重新唤出
+   走 Artplayer 自身的 art-hover class 机制, 不再用 :hover */
+@media (hover: none) {
+  .art-video-player .art-bottom {
+    opacity: 1 !important;
+    transition: opacity 0.3s ease !important;
+  }
+  /* 加载中隐藏避免闪烁 */
+  .art-video-player.art-state-loading .art-bottom {
+    opacity: 0 !important;
+  }
 }
 
 /* 隐藏 Artplayer 顶部 HUD (迷你 header / 通知 / 加载文字提示)
@@ -246,4 +261,44 @@
 .art-video-player .art-info,
 .art-video-player .art-layer-loading {
   display: none !important;
+}
+
+/* === 触屏设备全局优化 (iPad / iPhone Safari) ===
+   - tap-highlight: 去掉点击灰色高亮 (Webkit 默认行为)
+   - touch-action: manipulation 去除 300ms 点击延迟 (双击缩放禁用)
+   - overscroll-behavior: 防止 PWA 模式下拉刷新 + 弹性滚动干扰
+   - user-select: 防止长按视频/按钮触发文本选择 */
+@media (hover: none) and (pointer: coarse) {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button,
+  [role="button"],
+  a {
+    touch-action: manipulation;
+  }
+
+  html,
+  body {
+    overscroll-behavior: none;
+  }
+
+  /* 视频区和图标按钮防止长按选中 */
+  video,
+  .art-video-player,
+  button svg,
+  img {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+}
+
+/* iOS 安全区适配 (刘海/Home indicator), 配合 viewport-fit=cover */
+.safe-area-top {
+  padding-top: env(safe-area-inset-top);
+}
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
 }

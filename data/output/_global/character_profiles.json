@@ -1,0 +1,446 @@
+{
+  "meta": {
+    "n_characters_source": 0,
+    "n_profiles": 5,
+    "n_episodes": 5,
+    "episode_ids": [
+      "家有儿女/第001集",
+      "家有儿女/第一季/第01集",
+      "家有儿女/第一季/第02集",
+      "家有儿女/第一季/第03集",
+      "家有儿女/第二季/第001集"
+    ],
+    "n_events": 301,
+    "n_actions": 1524
+  },
+  "cost": {
+    "total_calls": 1,
+    "total_input_tokens": 168551,
+    "total_output_tokens": 3866,
+    "total_cost_cny": 0.184015,
+    "total_latency_s": 77.32,
+    "by_model": {
+      "qwen3.7-plus": {
+        "calls": 1,
+        "text_in": 168551,
+        "audio_in": 0,
+        "image_in": 0,
+        "text_out": 3866,
+        "audio_out": 0,
+        "input_tokens": 168551,
+        "output_tokens": 3866,
+        "cost": 0.184015,
+        "latency": 77.31654739379883
+      }
+    },
+    "by_stage": {
+      "stage3_p6_profile": {
+        "calls": 1,
+        "text_in": 168551,
+        "audio_in": 0,
+        "image_in": 0,
+        "text_out": 3866,
+        "audio_out": 0,
+        "input_tokens": 168551,
+        "output_tokens": 3866,
+        "cost": 0.184015,
+        "latency": 77.31654739379883
+      }
+    }
+  },
+  "profiles": [
+    {
+      "character_id": "char_001",
+      "name": "刘梅",
+      "role": "主角",
+      "personality": {
+        "core_motivation": "维护重组家庭的完整与秩序，渴望获得继子女的接纳与尊重",
+        "values": [
+          "家庭团圆",
+          "长幼有序",
+          "传统孝道"
+        ],
+        "strengths": [
+          "热情好客",
+          "执行力强",
+          "关爱家人"
+        ],
+        "weaknesses": [
+          "急躁易怒，习惯用命令口吻沟通",
+          "敏感多疑，容易将孩子的行为解读为针对自己",
+          "控制欲强，难以接受非预期的家庭变动"
+        ],
+        "inner_conflict": "渴望成为完美继母/母亲 vs 面对孩子抵触或前夫介入时的无力感与防御心理",
+        "growth_direction": "从急于确立权威和掌控局面，到逐渐学会包容差异、通过协商解决问题"
+      },
+      "behavior_patterns": [
+        {
+          "pattern": "发现家务未完成或孩子行为不当时，第一时间提高音量质问并归咎于具体责任人",
+          "action_type_tendency": [
+            "ask",
+            "command",
+            "argue"
+          ],
+          "evidence": [
+            {
+              "event_id": "家有儿女/第001集_e001",
+              "action_id": "家有儿女/第001集_a0017",
+              "utterance_snippet": "这我都出门一个钟头了...怎么这么慢呢？"
+            },
+            {
+              "event_id": "家有儿女/第一季/第01集_e011",
+              "action_id": "家有儿女/第一季/第01集_a0120",
+              "utterance_snippet": "去去去去，你把姐姐床都给弄乱了。"
+            }
+          ]
+        },
+        {
+          "pattern": "面对夏东海的理性劝导或幽默化解时，情绪迅速软化并转为配合或自嘲",
+          "action_type_tendency": [
+            "answer",
+            "react",
+            "inform"
+          ],
+          "evidence": [
+            {
+              "event_id": "家有儿女/第一季/第03集_e010",
+              "action_id": "家有儿女/第一季/第03集_a0118",
+              "utterance_snippet": "哎哎哎，夏东海，别对他太厉害..."
+            },
+            {
+              "event_id": "家有儿女/第一季/第03集_e051",
+              "action_id": "家有儿女/第一季/第03集_a0429",
+              "utterance_snippet": "得了吧你，你看你，德行去你的吧你。"
+            }
+          ]
+        },
+        {
+          "pattern": "在涉及孩子归属或前夫/前妻介入时，表现出强烈的领地意识和防御性攻击",
+          "action_type_tendency": [
+            "argue",
+            "threaten",
+            "refuse"
+          ],
+          "evidence": [
+            {
+              "event_id": "家有儿女/第001集_e033",
+              "action_id": "家有儿女/第001集_a0265",
+              "utterance_snippet": "夏东海，你别太自私。"
+            },
+            {
+              "event_id": "家有儿女/第一季/第03集_e017",
+              "action_id": "家有儿女/第一季/第03集_a0192",
+              "utterance_snippet": "我不管是谁，你给我收起来。"
+            }
+          ]
+        },
+        {
+          "pattern": "为了营造家庭和谐氛围，倾向于通过物质奖励（食物/红包）或隆重仪式来转移矛盾",
+          "action_type_tendency": [
+            "invite",
+            "inform",
+            "command"
+          ],
+          "evidence": [
+            {
+              "event_id": "家有儿女/第001集_e001",
+              "action_id": "家有儿女/第001集_a0021",
+              "utterance_snippet": "去去去，帮我接一点东西，我买了好多好吃的。"
+            },
+            {
+              "event_id": "家有儿女/第001集_e009",
+              "action_id": "家有儿女/第001集_a0061",
+              "utterance_snippet": "这可是咱们家第一个团圆年，当然得隆重地庆祝一下。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "character_id": "char_002",
+      "name": "夏东海",
+      "role": "主角",
+      "personality": {
+        "core_motivation": "促进重组家庭的融合，以开明和智慧的方式教育子女",
+        "values": [
+          "尊重个性",
+          "理性沟通",
+          "家庭民主"
+        ],
+        "strengths": [
+          "幽默风趣",
+          "善于倾听",
+          "情绪稳定"
+        ],
+        "weaknesses": [
+          "有时过于理想化，回避直接冲突",
+          "在刘梅情绪激动时显得被动或无奈",
+          "偶尔使用小聪明（如“零限制”策略）来规避正面管教责任"
+        ],
+        "inner_conflict": "西方开放式教育理念 vs 中国家庭现实中的规矩与权威需求",
+        "growth_direction": "从试图完全放手和理论化教育，到在实践中寻找平衡点，更主动地承担调解者角色"
+      },
+      "behavior_patterns": [
+        {
+          "pattern": "面对家庭冲突时，倾向于使用幽默、比喻或“冷处理”来化解紧张气氛",
+          "action_type_tendency": [
+            "inform",
+            "argue",
+            "invite"
+          ],
+          "evidence": [
+            {
+              "event_id": "家有儿女/第一季/第03集_e027",
+              "action_id": "家有儿女/第一季/第03集_a0247",
+              "utterance_snippet": "只要现在咱们别去刺激他...很快就过去了。"
+            },
+            {
+              "event_id": "家有儿女/第001集_e010",
+              "action_id": "家有儿女/第001集_a0072",
+              "utterance_snippet": "嘿，你可实在是没当过贵族。"
+            }
+          ]
+        },
+        {
+          "pattern": "在子女教育问题上，主张给予孩子自主权，常以“听孩子的”作为决策依据",
+          "action_type_tendency": [
+            "ask",
+            "inform",
+            "promise"
+          ],
+          "evidence": [
+            {
+              "event_id": "家有儿女/第001集_e036",
+              "action_id": "家有儿女/第001集_a0301",
+              "utterance_snippet": "这样吧，咱们也别争了，这事儿啊，咱们听孩子的，行吗？"
+            },
+            {
+              "event_id": "家有儿女/第一季/第02集_e022",
+              "action_id": "家有儿女/第一季/第02集_a0228",
+              "utterance_snippet": "我们准备对你实行零限制。"
+            }
+          ]
+        },
+        {
+          "pattern": "当刘梅陷入焦虑或愤怒时，主动承担安抚者角色，通过肯定对方价值来平息情绪",
+          "action_type_tendency": [
+            "inform",
+            "command",
+            "promise"
+          ],
+          "evidence": [
+            {
+              "event_id": "家有儿女/第一季/第01集_e041",
+              "action_id": "家有儿女/第一季/第01集_a0341",
+              "utterance_snippet": "你说你这么通情达理善解人意..."
+            },
+            {
+              "event_id": "家有儿女/第一季/第03集_e010",
+              "action_id": "家有儿女/第一季/第03集_a0112",
+              "utterance_snippet": "这个事情包在我身上，我去跟小雪好好谈。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "character_id": "char_003",
+      "name": "夏雪",
+      "role": "主角",
+      "personality": {
+        "core_motivation": "维护原生家庭的情感联结，同时在重组家庭中争取独立地位与尊重",
+        "values": [
+          "个人边界",
+          "学业成就",
+          "亲情忠诚"
+        ],
+        "strengths": [
+          "聪明机智",
+          "有主见",
+          "孝顺长辈"
+        ],
+        "weaknesses": [
+          "防御心强，初期对继母抱有敌意",
+          "善于操纵局势（如雇人假扮男友）",
+          "有时显得冷漠或优越感过强"
+        ],
+        "inner_conflict": "对生母的怀念与忠诚 vs 对新家庭融入的抗拒与试探",
+        "growth_direction": "从尖锐对抗和设立壁垒，到逐渐接受新家庭成员，展现温情与责任感"
+      },
+      "behavior_patterns": [
+        {
+          "pattern": "当感到隐私或边界被侵犯时，引用规则或权利进行强硬反驳，拒绝沟通",
+          "action_type_tendency": [
+            "refuse",
+            "argue",
+            "command"
+          ],
+          "evidence": [
+            {
+              "event_id": "家有儿女/第一季/第01集_e032",
+              "action_id": "家有儿女/第一季/第01集_a0291",
+              "utterance_snippet": "我有权决定自己干什么...在我保持沉默的时候请勿打扰。"
+            },
+            {
+              "event_id": "家有儿女/第一季/第01集_e026",
+              "action_id": "家有儿女/第一季/第01集_a0256",
+              "utterance_snippet": "那恐怕得你们习惯我了，反正我是不会习惯别人的。"
+            }
+          ]
+        },
+        {
+          "pattern": "为了测试父母底线或保护自我，策划戏剧性事件（如假恋爱）并观察反应",
+          "action_type_tendency": [
+            "inform",
+            "deceive",
+            "ask"
+          ],
+          "evidence": [
+            {
+              "event_id": "家有儿女/第一季/第02集_e014",
+              "action_id": "家有儿女/第一季/第02集_a0144",
+              "utterance_snippet": "其实我不是小雪男朋友，是她雇来的一个托儿。"
+            },
+            {
+              "event_id": "家有儿女/第一季/第01集_e055",
+              "action_id": "家有儿女/第一季/第01集_a0443",
+              "utterance_snippet": "这位是我的男朋友，狂野男孩。"
+            }
+          ]
+        },
+        {
+          "pattern": "在确认家庭安全感后，主动展示孝心并融入家庭集体活动",
+          "action_type_tendency": [
+            "inform",
+            "invite",
+            "promise"
+          ],
+          "evidence": [
+            {
+              "event_id": "家有儿女/第001集_e052",
+              "action_id": "家有儿女/第001集_a0466",
+              "utterance_snippet": "我们可不是因为红包回来的，我们是因为想爷爷和姥姥了。"
+            },
+            {
+              "event_id": "家有儿女/第001集_e061",
+              "action_id": "家有儿女/第001集_a0541",
+              "utterance_snippet": "每人呀买一个名牌助听器，让你们的耳朵年轻起来。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "character_id": "char_004",
+      "name": "刘星",
+      "role": "主角",
+      "personality": {
+        "core_motivation": "获取关注与资源（零花钱/自由），在家庭中找到自己的生存空间",
+        "values": [
+          "即时满足",
+          "兄弟义气",
+          "灵活变通"
+        ],
+        "strengths": [
+          "幽默搞笑",
+          "思维活跃",
+          "社交能力强"
+        ],
+        "weaknesses": [
+          "逃避责任，擅长找借口",
+          "贪玩，缺乏长远规划",
+          "喜欢耍小聪明，有时弄巧成拙"
+        ],
+        "inner_conflict": "渴望被认可为男子汉/大人 vs 实际行为上的幼稚与依赖",
+        "growth_direction": "本数据集内无明显变化"
+      },
+      "behavior_patterns": [
+        {
+          "pattern": "面对质问或不利局面时，使用幽默、歪理或转移话题来逃避惩罚",
+          "action_type_tendency": [
+            "argue",
+            "inform",
+            "refuse"
+          ],
+          "evidence": [
+            {
+              "event_id": "家有儿女/第001集_e004",
+              "action_id": "家有儿女/第001集_a0032",
+              "utterance_snippet": "爸，请您不要什么事情都问您的儿子...也需要隐私"
+            },
+            {
+              "event_id": "家有儿女/第一季/第02集_e042",
+              "action_id": "家有儿女/第一季/第02集_a0374",
+              "utterance_snippet": "只许姐姐放火，不许弟弟点灯。"
+            }
+          ]
+        },
+        {
+          "pattern": "为了获取利益（如压岁钱/染发资金），编造理由或提出夸张计划",
+          "action_type_tendency": [
+            "ask",
+            "inform",
+            "invite"
+          ],
+          "evidence": [
+            {
+              "event_id": "家有儿女/第001集_e019",
+              "action_id": "家有儿女/第001集_a0139",
+              "utterance_snippet": "少年儿童的年薪打一经济名词。"
+            },
+            {
+              "event_id": "家有儿女/第一季/第02集_e039",
+              "action_id": "家有儿女/第一季/第02集_a0341",
+              "utterance_snippet": "我想把这玩意儿染成绿。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "character_id": "char_005",
+      "name": "夏雨",
+      "role": "配角",
+      "personality": {
+        "core_motivation": "获得安全感与喜爱，模仿哥哥姐姐的行为",
+        "values": [
+          "家庭归属",
+          "简单快乐"
+        ],
+        "strengths": [
+          "天真可爱",
+          "直率",
+          "适应力强"
+        ],
+        "weaknesses": [
+          "缺乏判断力，易受他人影响",
+          "有时因文化差异产生误解（如美式表白）"
+        ],
+        "inner_conflict": "对生母的依恋 vs 对新家庭环境的适应",
+        "growth_direction": "本数据集内无明显变化"
+      },
+      "behavior_patterns": [
+        {
+          "pattern": "遇到困惑或冲突时，直接表达情绪或寻求父母帮助，偶尔引用国外经历作为理由",
+          "action_type_tendency": [
+            "ask",
+            "inform",
+            "react"
+          ],
+          "evidence": [
+            {
+              "event_id": "家有儿女/第一季/第01集_e003",
+              "action_id": "家有儿女/第一季/第01集_a0051",
+              "utterance_snippet": "为什么蚊子只咬我不咬刘星？是不是这不是我的家？"
+            },
+            {
+              "event_id": "家有儿女/第一季/第01集_e004",
+              "action_id": "家有儿女/第一季/第01集_a0063",
+              "utterance_snippet": "我时差还没倒过来呢。"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

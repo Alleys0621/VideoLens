@@ -1,0 +1,31 @@
+{
+  "name": "Alleys — AI 陪看智能体",
+  "short_name": "AlleysVid",
+  "description": "AI 驱动的视频陪聊智能体系统，边看边聊剧情",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#F0F2F5",
+  "theme_color": "#a78bfa",
+  "lang": "zh-CN",
+  "icons": [
+    {
+      "src": "/alleysvid-logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/alleysvid-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/alleysvid-logo.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "apple touch icon"
+    }
+  ]
+}

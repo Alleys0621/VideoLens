@@ -1,0 +1,2208 @@
+{
+  "video": "家有儿女/第一季/第03集",
+  "model": "qwen3.5-omni-plus",
+  "audio_duration": 1276.01,
+  "chunk_duration": 60.0,
+  "segments": [
+    {
+      "start_time": 60.0,
+      "end_time": 61.28,
+      "text": "吃鸡蛋着了。"
+    },
+    {
+      "start_time": 62.72,
+      "end_time": 65.36,
+      "text": "你说夏东海他噎着了，你给他拍下来干嘛？"
+    },
+    {
+      "start_time": 65.36,
+      "end_time": 66.24,
+      "text": "多好玩啊！"
+    },
+    {
+      "start_time": 66.48,
+      "end_time": 68.64,
+      "text": "等他长大以后看看自己那会儿多傻。"
+    },
+    {
+      "start_time": 68.96,
+      "end_time": 70.0,
+      "text": "真是的。"
+    },
+    {
+      "start_time": 70.48,
+      "end_time": 71.68,
+      "text": "哎呦，那天天真好哈。"
+    },
+    {
+      "start_time": 71.68,
+      "end_time": 73.6,
+      "text": "啊，哇塞，阳光明媚。"
+    },
+    {
+      "start_time": 73.6,
+      "end_time": 75.76,
+      "text": "哎，这是咱们搬到这儿来的第二天吧？"
+    },
+    {
+      "start_time": 75.76,
+      "end_time": 78.72,
+      "text": "对呀，咱当时就是为了庆祝乔迁之喜，"
+    },
+    {
+      "start_time": 78.72,
+      "end_time": 79.84,
+      "text": "咱一块儿出去郊游的嘛。"
+    },
+    {
+      "start_time": 79.84,
+      "end_time": 81.28,
+      "text": "嗯，对对对。"
+    },
+    {
+      "start_time": 81.28,
+      "end_time": 84.0,
+      "text": "哎，以后我觉得咱以后经常没事应该出去玩玩。"
+    },
+    {
+      "start_time": 84.0,
+      "end_time": 84.48,
+      "text": "没错没错。"
+    },
+    {
+      "start_time": 84.48,
+      "end_time": 85.36,
+      "text": "起码每年..."
+    },
+    {
+      "start_time": 88.172,
+      "end_time": 88.972,
+      "text": "小雪怎么了？"
+    },
+    {
+      "start_time": 90.092,
+      "end_time": 90.652,
+      "text": "生气了？"
+    },
+    {
+      "start_time": 92.012,
+      "end_time": 92.972,
+      "text": "肯定生气了。"
+    },
+    {
+      "start_time": 93.612,
+      "end_time": 95.212,
+      "text": "咱们去玩的时候她不在呢。"
+    },
+    {
+      "start_time": 95.452,
+      "end_time": 96.092,
+      "text": "这没她。"
+    },
+    {
+      "start_time": 96.492,
+      "end_time": 97.692,
+      "text": "哦，没事没事。"
+    },
+    {
+      "start_time": 97.852,
+      "end_time": 100.332,
+      "text": "赶明儿我用电脑把她给加里边不就完了吗？"
+    },
+    {
+      "start_time": 100.492,
+      "end_time": 101.692,
+      "text": "哎，加哪儿啊？"
+    },
+    {
+      "start_time": 102.252,
+      "end_time": 102.892,
+      "text": "加哪儿我看看。"
+    },
+    {
+      "start_time": 103.292,
+      "end_time": 104.572,
+      "text": "这这这，加树上？"
+    },
+    {
+      "start_time": 105.532,
+      "end_time": 107.212,
+      "text": "那是猫头鹰待的地方。"
+    },
+    {
+      "start_time": 107.212,
+      "end_time": 109.132,
+      "text": "去，把你加树上你乐意呀？"
+    },
+    {
+      "start_time": 109.292,
+      "end_time": 110.092,
+      "text": "净胡说八道。"
+    },
+    {
+      "start_time": 110.092,
+      "end_time": 111.132,
+      "text": "这孩子。"
+    },
+    {
+      "start_time": 111.612,
+      "end_time": 112.812,
+      "text": "瞧把人家的照片给弄的。"
+    },
+    {
+      "start_time": 113.132,
+      "end_time": 114.732,
+      "text": "我也有美好的瞬间。"
+    },
+    {
+      "start_time": 115.212,
+      "end_time": 117.932,
+      "text": "哼，这是我和爸爸妈妈在一起的时候。"
+    },
+    {
+      "start_time": 118.092,
+      "end_time": 119.692,
+      "text": "你们看，我笑得多灿烂呀！"
+    },
+    {
+      "start_time": 180.04,
+      "end_time": 181.52,
+      "text": "我才不那么爱生气。"
+    },
+    {
+      "start_time": 181.84,
+      "end_time": 184.36,
+      "text": "你以为我气我成小孩了我？"
+    },
+    {
+      "start_time": 184.72,
+      "end_time": 185.04,
+      "text": "真的。"
+    },
+    {
+      "start_time": 185.8,
+      "end_time": 186.4,
+      "text": "真没生气啊？"
+    },
+    {
+      "start_time": 187.16,
+      "end_time": 187.4,
+      "text": "嗯？"
+    },
+    {
+      "start_time": 189.64,
+      "end_time": 191.56,
+      "text": "行了行了，别跟我装了啊。"
+    },
+    {
+      "start_time": 191.96,
+      "end_time": 192.84,
+      "text": "我还不了解你啊？"
+    },
+    {
+      "start_time": 193.32,
+      "end_time": 196.28,
+      "text": "越说没生气的时候，肯定他就真生气了。"
+    },
+    {
+      "start_time": 198.32,
+      "end_time": 200.04,
+      "text": "要真生了气就跟我说一说。"
+    },
+    {
+      "start_time": 200.56,
+      "end_time": 202.16,
+      "text": "别憋在心里头，好不好？"
+    },
+    {
+      "start_time": 203.28,
+      "end_time": 204.08,
+      "text": "嗯？嗯？"
+    },
+    {
+      "start_time": 204.28,
+      "end_time": 205.36,
+      "text": "本来就是。"
+    },
+    {
+      "start_time": 206.52,
+      "end_time": 209.2,
+      "text": "你跟刘星一进门兴高采烈的。"
+    },
+    {
+      "start_time": 209.52,
+      "end_time": 211.72,
+      "text": "那照片咱们那么长时间都没洗。"
+    },
+    {
+      "start_time": 212.2,
+      "end_time": 213.92,
+      "text": "我当然特别想看看了。"
+    },
+    {
+      "start_time": 213.92,
+      "end_time": 215.32,
+      "text": "大伙都挺高兴的。"
+    },
+    {
+      "start_time": 216.16,
+      "end_time": 218.24,
+      "text": "谁知道他就生气了。"
+    },
+    {
+      "start_time": 218.6,
+      "end_time": 220.68,
+      "text": "谁知道生气就冲我来了。"
+    },
+    {
+      "start_time": 220.68,
+      "end_time": 222.36,
+      "text": "我招他惹他了干嘛？"
+    },
+    {
+      "start_time": 225.08,
+      "end_time": 226.72,
+      "text": "还说自己不跟小孩一样。"
+    },
+    {
+      "start_time": 227.24,
+      "end_time": 228.56,
+      "text": "那你干嘛老说小孩话？"
+    },
+    {
+      "start_time": 229.24,
+      "end_time": 231.16,
+      "text": "小雪那哪是冲着你呀？"
+    },
+    {
+      "start_time": 231.44,
+      "end_time": 233.0,
+      "text": "怎么不是冲着我呀？"
+    },
+    {
+      "start_time": 233.48,
+      "end_time": 234.96,
+      "text": "她那样就是冲着我。"
+    },
+    {
+      "start_time": 235.92,
+      "end_time": 239.48,
+      "text": "你想一想，当时啊，你我小雨..."
+    },
+    {
+      "start_time": 240.0,
+      "end_time": 242.56,
+      "text": "刘星，咱们四个围着那照片又说又笑，"
+    },
+    {
+      "start_time": 242.72,
+      "end_time": 244.96,
+      "text": "又说当时天气多么好啦，又吃烧烤了，"
+    },
+    {
+      "start_time": 245.32,
+      "end_time": 248.32,
+      "text": "兴高采烈的，就他一个人跟个局外人似的，"
+    },
+    {
+      "start_time": 248.8,
+      "end_time": 251.04,
+      "text": "孤零零地站在那儿，他能舒服吗？"
+    },
+    {
+      "start_time": 251.76,
+      "end_time": 253.04,
+      "text": "他可不心里不痛快吗？"
+    },
+    {
+      "start_time": 254.32,
+      "end_time": 258.96,
+      "text": "再加上，小雪从小就没有怎么得到过母爱，"
+    },
+    {
+      "start_time": 259.6,
+      "end_time": 261.12,
+      "text": "她就缺乏家庭的温暖。"
+    },
+    {
+      "start_time": 261.84,
+      "end_time": 265.68,
+      "text": "现在又刚刚到咱家，跟你又不太熟悉，"
+    },
+    {
+      "start_time": 266.24,
+      "end_time": 268.88,
+      "text": "所以她就觉得很陌生，很不舒服，"
+    },
+    {
+      "start_time": 269.12,
+      "end_time": 270.64,
+      "text": "本能的就想起她亲妈来了，"
+    },
+    {
+      "start_time": 271.04,
+      "end_time": 272.08,
+      "text": "这不是很正常吗？"
+    },
+    {
+      "start_time": 272.48,
+      "end_time": 274.4,
+      "text": "你怎么跟小孩去计较这个？"
+    },
+    {
+      "start_time": 275.92,
+      "end_time": 277.44,
+      "text": "我说我计较了吗？"
+    },
+    {
+      "start_time": 278.72,
+      "end_time": 279.44,
+      "text": "真是的。"
+    },
+    {
+      "start_time": 280.72,
+      "end_time": 285.68,
+      "text": "行了行了，好了好了，你没计较，是我说的，我冤枉你了，好不好？"
+    },
+    {
+      "start_time": 286.24,
+      "end_time": 290.24,
+      "text": "我就是发愁，她今天这儿摆一张她跟她妈的合影，"
+    },
+    {
+      "start_time": 290.4,
+      "end_time": 293.44,
+      "text": "明天那儿摆一张你们过去三个人的全家福，"
+    },
+    {
+      "start_time": 294.56,
+      "end_time": 296.0,
+      "text": "那算怎么回事啊？"
+    },
+    {
+      "start_time": 297.12,
+      "end_time": 298.56,
+      "text": "就算我看着心里难受，"
+    },
+    {
+      "start_time": 298.96,
+      "end_time": 300.0,
+      "text": "我不往那儿看。"
+    },
+    {
+      "start_time": 300.0,
+      "end_time": 301.64,
+      "text": "看就行，我忍得了。"
+    },
+    {
+      "start_time": 302.8,
+      "end_time": 304.35,
+      "text": "可是那街坊四邻呢？"
+    },
+    {
+      "start_time": 304.52,
+      "end_time": 307.03,
+      "text": "亲戚朋友来咱家看这算怎么回事啊？"
+    },
+    {
+      "start_time": 307.03,
+      "end_time": 309.72,
+      "text": "我怎么跟人解释啊？我成什么了我？"
+    },
+    {
+      "start_time": 311.84,
+      "end_time": 313.29,
+      "text": "你的心情我非常理解。"
+    },
+    {
+      "start_time": 314.14,
+      "end_time": 315.4,
+      "text": "这个事情包在我身上了。"
+    },
+    {
+      "start_time": 316.14,
+      "end_time": 317.84,
+      "text": "我去跟小雪好好谈谈。"
+    },
+    {
+      "start_time": 319.23,
+      "end_time": 321.74,
+      "text": "怎么谈呀？你会谈吗你？"
+    },
+    {
+      "start_time": 322.26,
+      "end_time": 323.82,
+      "text": "你别再给谈出麻烦来。"
+    },
+    {
+      "start_time": 324.46,
+      "end_time": 328.11,
+      "text": "嘿，对你老公就这么不信任啊？"
+    },
+    {
+      "start_time": 328.48,
+      "end_time": 329.85,
+      "text": "多大点事儿啊？"
+    },
+    {
+      "start_time": 330.37,
+      "end_time": 331.37,
+      "text": "我现在就去找他谈。"
+    },
+    {
+      "start_time": 331.51,
+      "end_time": 335.17,
+      "text": "我就不信了，咱们家的权威都出面发话了，他敢不听？"
+    },
+    {
+      "start_time": 337.09,
+      "end_time": 339.88,
+      "text": "哎哎哎，夏东海，别对他太厉害啊。"
+    },
+    {
+      "start_time": 340.41,
+      "end_time": 342.35,
+      "text": "要不然他该以为你是我派去的。"
+    },
+    {
+      "start_time": 343.74,
+      "end_time": 346.4,
+      "text": "哎哎哎，你真的对他态度特别好啊。"
+    },
+    {
+      "start_time": 346.99,
+      "end_time": 349.51,
+      "text": "我觉得确实他也挺可怜的。"
+    },
+    {
+      "start_time": 349.51,
+      "end_time": 352.44,
+      "text": "其实我心里挺心疼他的，真的。"
+    },
+    {
+      "start_time": 355.93,
+      "end_time": 356.4,
+      "text": "说完了？"
+    },
+    {
+      "start_time": 357.38,
+      "end_time": 357.68,
+      "text": "啊。"
+    },
+    {
+      "start_time": 358.64,
+      "end_time": 360.0,
+      "text": "这还有点像亲妈的样。"
+    },
+    {
+      "start_time": 360.479,
+      "end_time": 361.329,
+      "text": "去你讨厌。"
+    },
+    {
+      "start_time": 372.876,
+      "end_time": 373.356,
+      "text": "小雪。"
+    },
+    {
+      "start_time": 373.846,
+      "end_time": 377.076,
+      "text": "亲爱的爸爸，您是来和我一起欣赏老照片的吗？"
+    },
+    {
+      "start_time": 377.926,
+      "end_time": 378.526,
+      "text": "啊，对。"
+    },
+    {
+      "start_time": 379.786,
+      "end_time": 382.396,
+      "text": "我正是准备来和你谈一谈老照片的事。"
+    },
+    {
+      "start_time": 382.956,
+      "end_time": 384.226,
+      "text": "哎，爸爸爸爸，您看。"
+    },
+    {
+      "start_time": 384.776,
+      "end_time": 387.686,
+      "text": "这是以前你和妈妈带我去北海公园照的。"
+    },
+    {
+      "start_time": 387.896,
+      "end_time": 389.796,
+      "text": "哎你看，旁边还有一只小鸭子呢。"
+    },
+    {
+      "start_time": 391.146,
+      "end_time": 392.026,
+      "text": "哎，小雪啊。"
+    },
+    {
+      "start_time": 393.106,
+      "end_time": 398.346,
+      "text": "呃，我觉得这些老照片放在这个老相册里是最合适的。"
+    },
+    {
+      "start_time": 398.476,
+      "end_time": 398.996,
+      "text": "你觉得呢？"
+    },
+    {
+      "start_time": 399.956,
+      "end_time": 404.026,
+      "text": "哦，您是不愿意我把刚才那张照片摆出来。"
+    },
+    {
+      "start_time": 405.946,
+      "end_time": 406.706,
+      "text": "嗯，那倒不是。"
+    },
+    {
+      "start_time": 406.966,
+      "end_time": 410.636,
+      "text": "我只是觉得你刚才的举动好像比较突然。"
+    },
+    {
+      "start_time": 411.266,
+      "end_time": 414.366,
+      "text": "我只是想提醒自己，我有一个家。"
+    },
+    {
+      "start_time": 414.576,
+      "end_time": 416.666,
+      "text": "原装的亲情是不能代替的。"
+    },
+    {
+      "start_time": 416.896,
+      "end_time": 417.446,
+      "text": "那当然。"
+    },
+    {
+      "start_time": 418.076,
+      "end_time": 419.956,
+      "text": "呃，可是你把它摆出来..."
+    },
+    {
+      "start_time": 420.04,
+      "end_time": 422.96,
+      "text": "好像是成了提醒大家了。"
+    },
+    {
+      "start_time": 423.88,
+      "end_time": 427.76,
+      "text": "我觉得啊，一会儿把那个照片收起来，摆在你的床头上。"
+    },
+    {
+      "start_time": 428.12,
+      "end_time": 430.56,
+      "text": "什么时候想看你就可以看一看，比较合适。"
+    },
+    {
+      "start_time": 431.52,
+      "end_time": 434.72,
+      "text": "爸，您是不愿意看到小时候的我吗？"
+    },
+    {
+      "start_time": 435.2,
+      "end_time": 435.92,
+      "text": "那当然不是了。"
+    },
+    {
+      "start_time": 436.32,
+      "end_time": 439.2,
+      "text": "那您就是不愿意看到年轻时候您自己。"
+    },
+    {
+      "start_time": 439.2,
+      "end_time": 440.56,
+      "text": "怎么可能呢？"
+    },
+    {
+      "start_time": 441.04,
+      "end_time": 442.48,
+      "text": "哦，明白了。"
+    },
+    {
+      "start_time": 443.04,
+      "end_time": 446.24,
+      "text": "您一定是不想看到我亲妈，一定是后妈让你来的。"
+    },
+    {
+      "start_time": 446.48,
+      "end_time": 449.68,
+      "text": "啊，绝对不是，这事儿跟你后妈一点关系都没有。"
+    },
+    {
+      "start_time": 450.4,
+      "end_time": 451.76,
+      "text": "那您就是喜新厌旧。"
+    },
+    {
+      "start_time": 452.32,
+      "end_time": 454.16,
+      "text": "没有想到你也犯这种错误。"
+    },
+    {
+      "start_time": 457.964,
+      "end_time": 458.844,
+      "text": "真够冤的。"
+    },
+    {
+      "start_time": 462.924,
+      "end_time": 465.964,
+      "text": "这是我和我爸爸、我妈妈一块照的相。"
+    },
+    {
+      "start_time": 466.124,
+      "end_time": 468.044,
+      "text": "你们看，我笑得多么的灿烂。"
+    },
+    {
+      "start_time": 468.124,
+      "end_time": 470.444,
+      "text": "我的妈妈是多么的年轻，多么的漂亮。"
+    },
+    {
+      "start_time": 470.444,
+      "end_time": 472.124,
+      "text": "我的爸爸是多么的帅气。"
+    },
+    {
+      "start_time": 472.124,
+      "end_time": 476.204,
+      "text": "我呀，我我要把它放在客厅的最显眼的地方。"
+    },
+    {
+      "start_time": 476.604,
+      "end_time": 478.684,
+      "text": "我放到，我放到，我放到，我放到这儿吧。"
+    },
+    {
+      "start_time": 479.164,
+      "end_time": 479.884,
+      "text": "我放到这儿。"
+    },
+    {
+      "start_time": 481.923,
+      "end_time": 483.283,
+      "text": "干嘛呢干嘛呢你刘星？"
+    },
+    {
+      "start_time": 483.873,
+      "end_time": 484.423,
+      "text": "给我收起来。"
+    },
+    {
+      "start_time": 485.103,
+      "end_time": 485.863,
+      "text": "我怎么了？"
+    },
+    {
+      "start_time": 486.403,
+      "end_time": 487.213,
+      "text": "你说怎么了？"
+    },
+    {
+      "start_time": 487.213,
+      "end_time": 488.573,
+      "text": "我让你收起来行吗？"
+    },
+    {
+      "start_time": 489.113,
+      "end_time": 491.513,
+      "text": "您难道就不想看看我小时候什么样吗？"
+    },
+    {
+      "start_time": 491.673,
+      "end_time": 492.513,
+      "text": "我不想看。"
+    },
+    {
+      "start_time": 492.513,
+      "end_time": 493.763,
+      "text": "我知道你小时候什么样。"
+    },
+    {
+      "start_time": 494.473,
+      "end_time": 497.273,
+      "text": "您难道就不想看看您年轻时候有多漂亮吗？"
+    },
+    {
+      "start_time": 497.383,
+      "end_time": 498.153,
+      "text": "我不想看。"
+    },
+    {
+      "start_time": 498.153,
+      "end_time": 499.533,
+      "text": "我知道我过去多漂亮。"
+    },
+    {
+      "start_time": 500.073,
+      "end_time": 502.363,
+      "text": "您难道就不想看看我亲爸爸吗？"
+    },
+    {
+      "start_time": 502.573,
+      "end_time": 503.363,
+      "text": "我不想看。"
+    },
+    {
+      "start_time": 504.423,
+      "end_time": 506.133,
+      "text": "我告诉你，你给我收起来。"
+    },
+    {
+      "start_time": 507.293,
+      "end_time": 508.423,
+      "text": "您这是喜新厌旧。"
+    },
+    {
+      "start_time": 508.963,
+      "end_time": 511.753,
+      "text": "嘿，这帮小孩怎么想的都一样？"
+    },
+    {
+      "start_time": 511.943,
+      "end_time": 513.333,
+      "text": "刚才小雪就是这么说我的。"
+    },
+    {
+      "start_time": 514.423,
+      "end_time": 515.943,
+      "text": "我就喜新厌旧了怎么着吧？"
+    },
+    {
+      "start_time": 516.353,
+      "end_time": 518.833,
+      "text": "我还就告诉你，妈妈我就喜新厌旧了。"
+    },
+    {
+      "start_time": 518.833,
+      "end_time": 519.523,
+      "text": "你给我收起来。"
+    },
+    {
+      "start_time": 519.523,
+      "end_time": 522.673,
+      "text": "我告诉你啊，这照片可是我生活的阴影。"
+    },
+    {
+      "start_time": 522.933,
+      "end_time": 524.593,
+      "text": "可是这阴影是我亲爸爸。"
+    },
+    {
+      "start_time": 526.633,
+      "end_time": 527.383,
+      "text": "我不管是谁。"
+    },
+    {
+      "start_time": 527.473,
+      "end_time": 528.183,
+      "text": "你给我收起来。"
+    },
+    {
+      "start_time": 528.183,
+      "end_time": 528.903,
+      "text": "凭什么呀？"
+    },
+    {
+      "start_time": 529.073,
+      "end_time": 530.993,
+      "text": "凭什么小雪能摆我就不能摆呀？"
+    },
+    {
+      "start_time": 530.993,
+      "end_time": 531.833,
+      "text": "你就不能摆。"
+    },
+    {
+      "start_time": 531.833,
+      "end_time": 532.573,
+      "text": "你给我收起来。"
+    },
+    {
+      "start_time": 533.783,
+      "end_time": 536.023,
+      "text": "嘿，你这孩子干什么你？"
+    },
+    {
+      "start_time": 536.593,
+      "end_time": 537.473,
+      "text": "这孩子。"
+    },
+    {
+      "start_time": 537.473,
+      "end_time": 538.513,
+      "text": "你跟孩子吵什么呀？"
+    },
+    {
+      "start_time": 538.513,
+      "end_time": 539.583,
+      "text": "哎呀行了夏东海。"
+    },
+    {
+      "start_time": 540.417,
+      "end_time": 541.387,
+      "text": "这事不管还行吗？"
+    },
+    {
+      "start_time": 541.837,
+      "end_time": 544.027,
+      "text": "你看这些孩子现在都嚣张成什么样了。"
+    },
+    {
+      "start_time": 544.287,
+      "end_time": 546.017,
+      "text": "我告诉你啊，再不抓就麻烦了。"
+    },
+    {
+      "start_time": 546.297,
+      "end_time": 547.657,
+      "text": "以后都没法教育他们了。"
+    },
+    {
+      "start_time": 549.49,
+      "end_time": 551.5,
+      "text": "我告诉你，我觉得咱们应该从小雪抓起。"
+    },
+    {
+      "start_time": 552.07,
+      "end_time": 553.27,
+      "text": "她是姐姐，又是老大。"
+    },
+    {
+      "start_time": 554.041,
+      "end_time": 555.421,
+      "text": "我看这恐怕不行。"
+    },
+    {
+      "start_time": 555.771,
+      "end_time": 558.431,
+      "text": "刚才刘星的话还真提醒了我了。"
+    },
+    {
+      "start_time": 558.991,
+      "end_time": 561.701,
+      "text": "你想想，你说的那个所谓阴影，"
+    },
+    {
+      "start_time": 562.291,
+      "end_time": 563.731,
+      "text": "那是刘星的亲爸爸。"
+    },
+    {
+      "start_time": 564.421,
+      "end_time": 568.171,
+      "text": "我说的那个阴影是小雨和小雪的亲妈。"
+    },
+    {
+      "start_time": 568.531,
+      "end_time": 571.141,
+      "text": "这是我和我妈咪在美国照的合影。"
+    },
+    {
+      "start_time": 571.141,
+      "end_time": 573.321,
+      "text": "旁边没有爸爸，只有一条沙皮狗。"
+    },
+    {
+      "start_time": 573.791,
+      "end_time": 575.491,
+      "text": "哎呀，放哪儿呢？"
+    },
+    {
+      "start_time": 575.691,
+      "end_time": 577.291,
+      "text": "放一个最显眼的地方。"
+    },
+    {
+      "start_time": 577.291,
+      "end_time": 578.061,
+      "text": "放哪儿呢？"
+    },
+    {
+      "start_time": 578.251,
+      "end_time": 579.691,
+      "text": "就放茶几上吧。"
+    },
+    {
+      "start_time": 581.074,
+      "end_time": 583.034,
+      "text": "哎，凭什么把我的相片挪走？"
+    },
+    {
+      "start_time": 583.034,
+      "end_time": 584.594,
+      "text": "你为什么不把你相片挪走啊？"
+    },
+    {
+      "start_time": 584.674,
+      "end_time": 587.064,
+      "text": "哎，这里风水好。"
+    },
+    {
+      "start_time": 587.064,
+      "end_time": 588.634,
+      "text": "我还想照风水好的地儿呢。"
+    },
+    {
+      "start_time": 588.764,
+      "end_time": 591.394,
+      "text": "哎哎哎哎哎哎，你们俩干嘛呢？"
+    },
+    {
+      "start_time": 594.024,
+      "end_time": 595.334,
+      "text": "我放在中间。"
+    },
+    {
+      "start_time": 595.334,
+      "end_time": 596.754,
+      "text": "凭什么你放中间啊？"
+    },
+    {
+      "start_time": 596.754,
+      "end_time": 597.814,
+      "text": "我先放的。"
+    },
+    {
+      "start_time": 597.814,
+      "end_time": 599.074,
+      "text": "凭什么要分先来后到？"
+    },
+    {
+      "start_time": 599.074,
+      "end_time": 599.804,
+      "text": "我比你大。"
+    },
+    {
+      "start_time": 600.0,
+      "end_time": 605.76,
+      "text": "都别吵了，别吵了，别吵了，别吵了，你们俩别吵了，我还..."
+    },
+    {
+      "start_time": 608.124,
+      "end_time": 609.364,
+      "text": "爸爸是咱们家的权威，"
+    },
+    {
+      "start_time": 609.524,
+      "end_time": 610.084,
+      "text": "听爸爸的。"
+    },
+    {
+      "start_time": 610.484,
+      "end_time": 611.364,
+      "text": "爸爸，说。"
+    },
+    {
+      "start_time": 612.244,
+      "end_time": 612.564,
+      "text": "我说？"
+    },
+    {
+      "start_time": 613.324,
+      "end_time": 614.324,
+      "text": "我我我说什么呀我？"
+    },
+    {
+      "start_time": 615.084,
+      "end_time": 615.884,
+      "text": "你说说什么？"
+    },
+    {
+      "start_time": 615.884,
+      "end_time": 616.844,
+      "text": "现在你赶紧管呐，"
+    },
+    {
+      "start_time": 616.844,
+      "end_time": 618.044,
+      "text": "否则来不及了。"
+    },
+    {
+      "start_time": 618.844,
+      "end_time": 621.004,
+      "text": "爸爸怎么说，咱们就怎么做，啊。"
+    },
+    {
+      "start_time": 621.484,
+      "end_time": 621.724,
+      "text": "说。"
+    },
+    {
+      "start_time": 622.204,
+      "end_time": 622.524,
+      "text": "我说。"
+    },
+    {
+      "start_time": 623.844,
+      "end_time": 624.444,
+      "text": "我说啊，"
+    },
+    {
+      "start_time": 626.204,
+      "end_time": 627.644,
+      "text": "我觉得这件事，"
+    },
+    {
+      "start_time": 629.164,
+      "end_time": 630.124,
+      "text": "还是你们自己看着办吧。"
+    },
+    {
+      "start_time": 630.924,
+      "end_time": 631.804,
+      "text": "我和妈妈还有事。"
+    },
+    {
+      "start_time": 632.684,
+      "end_time": 633.084,
+      "text": "干嘛去？"
+    },
+    {
+      "start_time": 633.084,
+      "end_time": 633.644,
+      "text": "出去一趟。"
+    },
+    {
+      "start_time": 633.884,
+      "end_time": 634.444,
+      "text": "干嘛去啊？"
+    },
+    {
+      "start_time": 637.484,
+      "end_time": 638.604,
+      "text": "我真觉得我得回去。"
+    },
+    {
+      "start_time": 639.284,
+      "end_time": 642.124,
+      "text": "咱们俩都不在，那几个孩子万一要打起来怎么办？"
+    },
+    {
+      "start_time": 642.124,
+      "end_time": 642.764,
+      "text": "哎呀哎呀哎呀。"
+    },
+    {
+      "start_time": 644.044,
+      "end_time": 644.524,
+      "text": "听我说啊，"
+    },
+    {
+      "start_time": 645.204,
+      "end_time": 649.004,
+      "text": "咱们这一走，只能使他们把这问题啊解决得更好。"
+    },
+    {
+      "start_time": 649.804,
+      "end_time": 650.284,
+      "text": "为什么？"
+    },
+    {
+      "start_time": 651.924,
+      "end_time": 653.244,
+      "text": "你忘了我是干什么的了吧？"
+    },
+    {
+      "start_time": 653.564,
+      "end_time": 655.484,
+      "text": "我是儿童剧院的编导。"
+    },
+    {
+      "start_time": 655.924,
+      "end_time": 658.924,
+      "text": "我对儿童心理的研究是不是比你好啊？"
+    },
+    {
+      "start_time": 659.804,
+      "end_time": 660.004,
+      "text": "我告..."
+    },
+    {
+      "start_time": 725.837,
+      "end_time": 726.917,
+      "text": "哦，亲爸爸。"
+    },
+    {
+      "start_time": 726.917,
+      "end_time": 728.087,
+      "text": "哦，亲儿子。"
+    },
+    {
+      "start_time": 728.087,
+      "end_time": 732.327,
+      "text": "爸爸接了你的电话，马不停蹄地把事儿就给办妥了。"
+    },
+    {
+      "start_time": 732.547,
+      "end_time": 734.397,
+      "text": "这就叫血浓于水。"
+    },
+    {
+      "start_time": 735.547,
+      "end_time": 737.387,
+      "text": "哟，这么热闹啊？"
+    },
+    {
+      "start_time": 738.067,
+      "end_time": 740.417,
+      "text": "你妈要知道了，脸还不变绿了。"
+    },
+    {
+      "start_time": 741.137,
+      "end_time": 743.237,
+      "text": "您先别管我妈那脸绿不绿。"
+    },
+    {
+      "start_time": 743.687,
+      "end_time": 744.557,
+      "text": "我要的照片呢？"
+    },
+    {
+      "start_time": 745.077,
+      "end_time": 745.517,
+      "text": "带来了。"
+    },
+    {
+      "start_time": 745.947,
+      "end_time": 748.237,
+      "text": "我还加急加快的给放大了几张。"
+    },
+    {
+      "start_time": 748.667,
+      "end_time": 749.837,
+      "text": "这怎么样？记住了。"
+    },
+    {
+      "start_time": 750.157,
+      "end_time": 751.427,
+      "text": "儿子，咱不能输。"
+    },
+    {
+      "start_time": 752.817,
+      "end_time": 754.907,
+      "text": "就这一张，就顶他八张。"
+    },
+    {
+      "start_time": 755.157,
+      "end_time": 756.917,
+      "text": "哇塞，谢谢你爸。"
+    },
+    {
+      "start_time": 756.917,
+      "end_time": 758.747,
+      "text": "哎，谢什么谢什么谢什么呀？"
+    },
+    {
+      "start_time": 759.197,
+      "end_time": 761.227,
+      "text": "父子之间不言谢，啊。"
+    },
+    {
+      "start_time": 761.227,
+      "end_time": 762.207,
+      "text": "记住了。"
+    },
+    {
+      "start_time": 762.677,
+      "end_time": 764.667,
+      "text": "有亲爹给你撑腰呢。"
+    },
+    {
+      "start_time": 765.397,
+      "end_time": 765.997,
+      "text": "不能输。"
+    },
+    {
+      "start_time": 766.277,
+      "end_time": 766.847,
+      "text": "听见没有？"
+    },
+    {
+      "start_time": 767.387,
+      "end_time": 771.027,
+      "text": "必要的时候，我可以给你来个真人秀。"
+    },
+    {
+      "start_time": 780.768,
+      "end_time": 781.328,
+      "text": "你看看。"
+    },
+    {
+      "start_time": 782.438,
+      "end_time": 784.598,
+      "text": "这剧情不光没按着你说的发展，"
+    },
+    {
+      "start_time": 784.988,
+      "end_time": 786.498,
+      "text": "情节还越来越复杂了。"
+    },
+    {
+      "start_time": 786.728,
+      "end_time": 788.068,
+      "text": "什么呀这是？"
+    },
+    {
+      "start_time": 789.528,
+      "end_time": 791.908,
+      "text": "呃，嗨，没事。"
+    },
+    {
+      "start_time": 792.358,
+      "end_time": 793.588,
+      "text": "这就是发泄嘛。"
+    },
+    {
+      "start_time": 793.958,
+      "end_time": 795.068,
+      "text": "让他们发泄出来也好。"
+    },
+    {
+      "start_time": 795.258,
+      "end_time": 795.938,
+      "text": "发泄完就完了。"
+    },
+    {
+      "start_time": 797.068,
+      "end_time": 799.348,
+      "text": "刘星、小雨、小雪，出来。"
+    },
+    {
+      "start_time": 799.468,
+      "end_time": 801.058,
+      "text": "出来出来，三人都出来。"
+    },
+    {
+      "start_time": 803.068,
+      "end_time": 805.388,
+      "text": "哎，刘星和小雪呢？"
+    },
+    {
+      "start_time": 805.708,
+      "end_time": 806.918,
+      "text": "啊，他们三个人出去了。"
+    },
+    {
+      "start_time": 807.338,
+      "end_time": 810.258,
+      "text": "有的去放大照片，有的去买胶条了。"
+    },
+    {
+      "start_time": 810.748,
+      "end_time": 811.948,
+      "text": "嗯？三个人？"
+    },
+    {
+      "start_time": 811.948,
+      "end_time": 813.388,
+      "text": "三个人？还有谁呀？"
+    },
+    {
+      "start_time": 813.388,
+      "end_time": 815.148,
+      "text": "刘星、小雪，第三个人是谁啊？"
+    },
+    {
+      "start_time": 815.318,
+      "end_time": 817.228,
+      "text": "呃，还有刘星他亲爸爸。"
+    },
+    {
+      "start_time": 818.518,
+      "end_time": 819.318,
+      "text": "怎么来了？"
+    },
+    {
+      "start_time": 820.168,
+      "end_time": 820.348,
+      "text": "啊？"
+    },
+    {
+      "start_time": 822.798,
+      "end_time": 824.278,
+      "text": "刘星的亲爸爸来干嘛来了？"
+    },
+    {
+      "start_time": 824.428,
+      "end_time": 825.768,
+      "text": "他来帮助刘星的。"
+    },
+    {
+      "start_time": 826.108,
+      "end_time": 829.388,
+      "text": "有亲爹给你撑腰，不能输，耶！"
+    },
+    {
+      "start_time": 841.523,
+      "end_time": 843.953,
+      "text": "刘梅女士，这么急把我叫来什么事啊？"
+    },
+    {
+      "start_time": 845.478,
+      "end_time": 846.018,
+      "text": "胡一统。"
+    },
+    {
+      "start_time": 847.128,
+      "end_time": 847.728,
+      "text": "不要这样。"
+    },
+    {
+      "start_time": 848.088,
+      "end_time": 850.988,
+      "text": "作为前夫能够招之即来的有几个呀？"
+    },
+    {
+      "start_time": 852.631,
+      "end_time": 853.841,
+      "text": "今天上我们家干嘛去了你？"
+    },
+    {
+      "start_time": 855.224,
+      "end_time": 856.074,
+      "text": "没干什么呀。"
+    },
+    {
+      "start_time": 856.684,
+      "end_time": 858.154,
+      "text": "嘿，你还不承认。"
+    },
+    {
+      "start_time": 858.154,
+      "end_time": 859.064,
+      "text": "哎，没没没没没没。"
+    },
+    {
+      "start_time": 859.214,
+      "end_time": 859.814,
+      "text": "干什么你？"
+    },
+    {
+      "start_time": 859.814,
+      "end_time": 860.654,
+      "text": "怎么这样啊？"
+    },
+    {
+      "start_time": 860.864,
+      "end_time": 861.794,
+      "text": "你怎么这样啊？"
+    },
+    {
+      "start_time": 862.334,
+      "end_time": 863.624,
+      "text": "他以后也会对你这样的。"
+    },
+    {
+      "start_time": 863.824,
+      "end_time": 864.464,
+      "text": "你说什么呢？"
+    },
+    {
+      "start_time": 864.914,
+      "end_time": 865.624,
+      "text": "你大声点说。"
+    },
+    {
+      "start_time": 865.844,
+      "end_time": 866.834,
+      "text": "你少趴他耳朵上。"
+    },
+    {
+      "start_time": 867.084,
+      "end_time": 867.844,
+      "text": "干什么你？"
+    },
+    {
+      "start_time": 867.844,
+      "end_time": 868.814,
+      "text": "你少污蔑我啊。"
+    },
+    {
+      "start_time": 868.814,
+      "end_time": 870.184,
+      "text": "好了好了，梅梅，别生气啊。"
+    },
+    {
+      "start_time": 871.416,
+      "end_time": 873.206,
+      "text": "老胡啊，跟你说点正事。"
+    },
+    {
+      "start_time": 873.656,
+      "end_time": 875.936,
+      "text": "你今天到我们家的做法确实欠妥当。"
+    },
+    {
+      "start_time": 878.376,
+      "end_time": 879.826,
+      "text": "你少来搅和我们的生活。"
+    },
+    {
+      "start_time": 880.356,
+      "end_time": 881.966,
+      "text": "我搅和你什么生活了？"
+    },
+    {
+      "start_time": 882.356,
+      "end_time": 886.166,
+      "text": "我只不过教育我儿子从小学做男子汉，不能输。"
+    },
+    {
+      "start_time": 886.776,
+      "end_time": 887.656,
+      "text": "我告诉你胡一统。"
+    },
+    {
+      "start_time": 888.226,
+      "end_time": 891.846,
+      "text": "你得对你自己做出的这种事造成的后果负责任。"
+    },
+    {
+      "start_time": 892.539,
+      "end_time": 894.259,
+      "text": "我造成什么后果了？"
+    },
+    {
+      "start_time": 894.619,
+      "end_time": 897.949,
+      "text": "哎，等真造成后果的时候你再找我也不迟。"
+    },
+    {
+      "start_time": 904.563,
+      "end_time": 906.283,
+      "text": "这是我和我爸在香山的。"
+    },
+    {
+      "start_time": 906.283,
+      "end_time": 907.813,
+      "text": "这是我和我妈在北海的。"
+    },
+    {
+      "start_time": 907.813,
+      "end_time": 909.113,
+      "text": "这是五年前我和我爸的。"
+    },
+    {
+      "start_time": 909.113,
+      "end_time": 910.513,
+      "text": "这是七年前我和我妈的。"
+    },
+    {
+      "start_time": 911.313,
+      "end_time": 912.213,
+      "text": "这是骑马的。"
+    },
+    {
+      "start_time": 912.413,
+      "end_time": 913.213,
+      "text": "这是划船的。"
+    },
+    {
+      "start_time": 913.213,
+      "end_time": 914.013,
+      "text": "这是游泳的。"
+    },
+    {
+      "start_time": 914.013,
+      "end_time": 915.013,
+      "text": "这是喂鸭子的。"
+    },
+    {
+      "start_time": 915.413,
+      "end_time": 917.213,
+      "text": "我的合影嘛都贴完了，"
+    },
+    {
+      "start_time": 917.213,
+      "end_time": 919.213,
+      "text": "再贴就该贴我自己的了。"
+    },
+    {
+      "start_time": 921.413,
+      "end_time": 922.813,
+      "text": "我还有一张大的呢。"
+    },
+    {
+      "start_time": 922.813,
+      "end_time": 924.213,
+      "text": "我也有一张大的。"
+    },
+    {
+      "start_time": 930.213,
+      "end_time": 931.813,
+      "text": "那你说，"
+    },
+    {
+      "start_time": 931.813,
+      "end_time": 933.813,
+      "text": "我的照片能在你们家造成什么后果呀？"
+    },
+    {
+      "start_time": 934.013,
+      "end_time": 935.813,
+      "text": "你连我本人都不在乎，"
+    },
+    {
+      "start_time": 935.813,
+      "end_time": 938.213,
+      "text": "还能在乎我的写真？"
+    },
+    {
+      "start_time": 938.813,
+      "end_time": 940.013,
+      "text": "写真？"
+    },
+    {
+      "start_time": 940.813,
+      "end_time": 941.813,
+      "text": "老胡，话不能这么说啊。"
+    },
+    {
+      "start_time": 942.413,
+      "end_time": 945.413,
+      "text": "这事恐怕会在孩子中间造成连锁反应。"
+    },
+    {
+      "start_time": 946.013,
+      "end_time": 947.613,
+      "text": "那就不是我的问题了。"
+    },
+    {
+      "start_time": 948.013,
+      "end_time": 950.213,
+      "text": "谁让你们孩子一块养呢？"
+    },
+    {
+      "start_time": 951.213,
+      "end_time": 952.213,
+      "text": "你说什么呢你？"
+    },
+    {
+      "start_time": 952.213,
+      "end_time": 953.813,
+      "text": "哎，不要这么凶，"
+    },
+    {
+      "start_time": 954.213,
+      "end_time": 954.813,
+      "text": "不要这么凶。"
+    },
+    {
+      "start_time": 955.613,
+      "end_time": 958.813,
+      "text": "敢情你们是呃夫唱妇随，儿女双全，"
+    },
+    {
+      "start_time": 959.213,
+      "end_time": 959.613,
+      "text": "我一个..."
+    },
+    {
+      "start_time": 960.0,
+      "end_time": 961.28,
+      "text": "一个人还孤独着呢。"
+    },
+    {
+      "start_time": 961.6,
+      "end_time": 964.16,
+      "text": "对孤独的人应该学会宽容。"
+    },
+    {
+      "start_time": 965.6,
+      "end_time": 966.72,
+      "text": "少在这装可怜。"
+    },
+    {
+      "start_time": 967.2,
+      "end_time": 968.64,
+      "text": "谁装可怜了？"
+    },
+    {
+      "start_time": 969.12,
+      "end_time": 970.48,
+      "text": "我本来就可怜。"
+    },
+    {
+      "start_time": 971.04,
+      "end_time": 972.72,
+      "text": "一个孤独的人。"
+    },
+    {
+      "start_time": 973.28,
+      "end_time": 974.4,
+      "text": "走走走，咱们走吧走吧。"
+    },
+    {
+      "start_time": 974.72,
+      "end_time": 975.52,
+      "text": "哎哎哎！"
+    },
+    {
+      "start_time": 976.0,
+      "end_time": 977.04,
+      "text": "什么事儿啊？"
+    },
+    {
+      "start_time": 977.44,
+      "end_time": 978.72,
+      "text": "让我来的是你，"
+    },
+    {
+      "start_time": 979.04,
+      "end_time": 980.0,
+      "text": "轰我走的还是你。"
+    },
+    {
+      "start_time": 980.88,
+      "end_time": 982.96,
+      "text": "行，招之即来，挥之即去。"
+    },
+    {
+      "start_time": 983.76,
+      "end_time": 984.8,
+      "text": "作为前夫都这样啊。"
+    },
+    {
+      "start_time": 988.64,
+      "end_time": 989.6,
+      "text": "气死我了。"
+    },
+    {
+      "start_time": 990.08,
+      "end_time": 991.28,
+      "text": "我本来还想跟他谈谈呢，"
+    },
+    {
+      "start_time": 991.68,
+      "end_time": 993.44,
+      "text": "我一看见他气儿就不打一处来，"
+    },
+    {
+      "start_time": 993.6,
+      "end_time": 994.72,
+      "text": "跟他什么也谈不出来。"
+    },
+    {
+      "start_time": 994.96,
+      "end_time": 995.6,
+      "text": "走走走，回家。"
+    },
+    {
+      "start_time": 995.84,
+      "end_time": 997.04,
+      "text": "哎哎哎，妹妹。"
+    },
+    {
+      "start_time": 998.24,
+      "end_time": 999.36,
+      "text": "这事儿还没过去呢啊，"
+    },
+    {
+      "start_time": 999.52,
+      "end_time": 1001.2,
+      "text": "咱一会儿回去可必须得冷静。"
+    },
+    {
+      "start_time": 1003.92,
+      "end_time": 1006.96,
+      "text": "你说这事儿怎么办呢？"
+    },
+    {
+      "start_time": 1008.32,
+      "end_time": 1009.36,
+      "text": "兵来将挡水来土掩，"
+    },
+    {
+      "start_time": 1009.68,
+      "end_time": 1010.64,
+      "text": "车到山前必有路。"
+    },
+    {
+      "start_time": 1014.72,
+      "end_time": 1017.12,
+      "text": "哎呀，你们不会换个房间，"
+    },
+    {
+      "start_time": 1017.12,
+      "end_time": 1019.6,
+      "text": "像爸爸妈妈的房间，地方大的是呢。"
+    },
+    {
+      "start_time": 1026.109,
+      "end_time": 1026.579,
+      "text": "哇"
+    },
+    {
+      "start_time": 1027.829,
+      "end_time": 1028.209,
+      "text": "嗯？"
+    },
+    {
+      "start_time": 1029.439,
+      "end_time": 1029.769,
+      "text": "你瞧。"
+    },
+    {
+      "start_time": 1031.239,
+      "end_time": 1031.519,
+      "text": "嘿！"
+    },
+    {
+      "start_time": 1033.029,
+      "end_time": 1035.119,
+      "text": "咱们家呀，这下可真变照相馆了。"
+    },
+    {
+      "start_time": 1035.399,
+      "end_time": 1036.559,
+      "text": "你太客气了。"
+    },
+    {
+      "start_time": 1036.999,
+      "end_time": 1040.279,
+      "text": "咱这儿挂的照片密度可比照相馆大多了。"
+    },
+    {
+      "start_time": 1041.909,
+      "end_time": 1044.379,
+      "text": "这都是让那个胡一统给刺激出来的。"
+    },
+    {
+      "start_time": 1044.819,
+      "end_time": 1047.539,
+      "text": "哎哎，咱可不能再刺激他们了啊。"
+    },
+    {
+      "start_time": 1048.779,
+      "end_time": 1049.669,
+      "text": "那咱们怎么着啊？"
+    },
+    {
+      "start_time": 1049.949,
+      "end_time": 1052.669,
+      "text": "哎，咱俩全变瞎子，假装什么也没看见。"
+    },
+    {
+      "start_time": 1052.759,
+      "end_time": 1053.399,
+      "text": "没态度。"
+    },
+    {
+      "start_time": 1055.029,
+      "end_time": 1055.779,
+      "text": "真是。"
+    },
+    {
+      "start_time": 1056.129,
+      "end_time": 1059.619,
+      "text": "哎，哎你说他们从哪儿弄这么多老照片啊？"
+    },
+    {
+      "start_time": 1059.779,
+      "end_time": 1060.939,
+      "text": "真行啊他们。"
+    },
+    {
+      "start_time": 1061.549,
+      "end_time": 1064.709,
+      "text": "嘿，哎这刘星这照片什么时候照的？"
+    },
+    {
+      "start_time": 1064.709,
+      "end_time": 1065.809,
+      "text": "我怎么不记得呀？"
+    },
+    {
+      "start_time": 1066.889,
+      "end_time": 1068.589,
+      "text": "这孩子当时也就两岁多。"
+    },
+    {
+      "start_time": 1069.409,
+      "end_time": 1070.279,
+      "text": "呵，梅梅。"
+    },
+    {
+      "start_time": 1070.429,
+      "end_time": 1070.659,
+      "text": "嗯？"
+    },
+    {
+      "start_time": 1071.039,
+      "end_time": 1072.359,
+      "text": "你那会儿头发这么长呢。"
+    },
+    {
+      "start_time": 1072.439,
+      "end_time": 1072.659,
+      "text": "嗯。"
+    },
+    {
+      "start_time": 1072.739,
+      "end_time": 1074.659,
+      "text": "瞧这俩大辫子，这个漂亮啊。"
+    },
+    {
+      "start_time": 1076.219,
+      "end_time": 1078.519,
+      "text": "哎呦，可惜那时候我不认识你。"
+    },
+    {
+      "start_time": 1080.123,
+      "end_time": 1080.563,
+      "text": "哎行。"
+    },
+    {
+      "start_time": 1081.493,
+      "end_time": 1083.873,
+      "text": "呵，你看你多帅呀，这也就二十多岁吧？"
+    },
+    {
+      "start_time": 1083.953,
+      "end_time": 1084.423,
+      "text": "二十四。"
+    },
+    {
+      "start_time": 1085.813,
+      "end_time": 1088.133,
+      "text": "呵，真够帅的。"
+    },
+    {
+      "start_time": 1089.133,
+      "end_time": 1090.343,
+      "text": "可惜当时不属于我。"
+    },
+    {
+      "start_time": 1094.091,
+      "end_time": 1094.791,
+      "text": "呦呦呦。"
+    },
+    {
+      "start_time": 1095.581,
+      "end_time": 1099.541,
+      "text": "哎呀，看你们俩这勾肩搭背手牵手的样，海誓山盟啊。"
+    },
+    {
+      "start_time": 1101.945,
+      "end_time": 1102.465,
+      "text": "德行。"
+    },
+    {
+      "start_time": 1102.755,
+      "end_time": 1103.625,
+      "text": "你看你们俩。"
+    },
+    {
+      "start_time": 1104.095,
+      "end_time": 1106.505,
+      "text": "呵，你看他这含情脉脉那样儿。"
+    },
+    {
+      "start_time": 1107.025,
+      "end_time": 1108.575,
+      "text": "好像能白头偕老啊。"
+    },
+    {
+      "start_time": 1111.93,
+      "end_time": 1114.46,
+      "text": "哎呦喂，你看你看他这眼神儿。"
+    },
+    {
+      "start_time": 1114.81,
+      "end_time": 1115.79,
+      "text": "哎，你承认不承认？"
+    },
+    {
+      "start_time": 1116.25,
+      "end_time": 1118.13,
+      "text": "你从来就没这眼神看过我。"
+    },
+    {
+      "start_time": 1119.193,
+      "end_time": 1122.263,
+      "text": "谁说的？我现在天天拿这种眼神在看着你。"
+    },
+    {
+      "start_time": 1122.333,
+      "end_time": 1123.133,
+      "text": "得了吧你。"
+    },
+    {
+      "start_time": 1126.293,
+      "end_time": 1127.933,
+      "text": "德行，去你的吧你。"
+    },
+    {
+      "start_time": 1129.143,
+      "end_time": 1130.303,
+      "text": "孩子，注意影响。"
+    },
+    {
+      "start_time": 1130.773,
+      "end_time": 1131.383,
+      "text": "走，回屋。"
+    },
+    {
+      "start_time": 1134.799,
+      "end_time": 1135.159,
+      "text": "来点。"
+    },
+    {
+      "start_time": 1140.24,
+      "end_time": 1141.59,
+      "text": "就等着尖叫吧。"
+    },
+    {
+      "start_time": 1146.18,
+      "end_time": 1148.03,
+      "text": "哎呦怎么办呢？"
+    },
+    {
+      "start_time": 1148.03,
+      "end_time": 1150.75,
+      "text": "这咱这咱俩怎么睡得着觉啊，夏东海。"
+    },
+    {
+      "start_time": 1150.75,
+      "end_time": 1151.39,
+      "text": "摘了摘了。"
+    },
+    {
+      "start_time": 1155.34,
+      "end_time": 1157.15,
+      "text": "哎，妈，你们这干嘛呢？"
+    },
+    {
+      "start_time": 1157.84,
+      "end_time": 1163.71,
+      "text": "呃，我和妈妈觉得这些照片挂在这不太合适，"
+    },
+    {
+      "start_time": 1163.71,
+      "end_time": 1165.59,
+      "text": "想给它找一个更好的地方挂起来。"
+    },
+    {
+      "start_time": 1165.59,
+      "end_time": 1165.79,
+      "text": "对。"
+    },
+    {
+      "start_time": 1166.63,
+      "end_time": 1167.51,
+      "text": "是吗？"
+    },
+    {
+      "start_time": 1167.51,
+      "end_time": 1168.43,
+      "text": "啊？"
+    },
+    {
+      "start_time": 1168.43,
+      "end_time": 1168.63,
+      "text": "对。"
+    },
+    {
+      "start_time": 1182.72,
+      "end_time": 1183.2,
+      "text": "行了吧？"
+    },
+    {
+      "start_time": 1183.52,
+      "end_time": 1183.76,
+      "text": "可以了。"
+    },
+    {
+      "start_time": 1185.6,
+      "end_time": 1187.44,
+      "text": "刘星、小雨、小雪出来。"
+    },
+    {
+      "start_time": 1187.6,
+      "end_time": 1188.96,
+      "text": "都出来了，出来了。"
+    },
+    {
+      "start_time": 1190.72,
+      "end_time": 1192.4,
+      "text": "来来来，站好队。"
+    },
+    {
+      "start_time": 1193.6,
+      "end_time": 1194.48,
+      "text": "我告诉你们啊，"
+    },
+    {
+      "start_time": 1194.64,
+      "end_time": 1199.2,
+      "text": "看，这是咱们家新建的照片陈列处。"
+    },
+    {
+      "start_time": 1200.643,
+      "end_time": 1204.373,
+      "text": "你们谁喜欢的照片，想摆在这儿就都摆在这儿吧。"
+    },
+    {
+      "start_time": 1204.373,
+      "end_time": 1205.283,
+      "text": "大家可以一块看。"
+    },
+    {
+      "start_time": 1205.796,
+      "end_time": 1206.186,
+      "text": "真的？"
+    },
+    {
+      "start_time": 1206.506,
+      "end_time": 1206.936,
+      "text": "对呀。"
+    },
+    {
+      "start_time": 1206.936,
+      "end_time": 1209.926,
+      "text": "你们呀可以把你们每一个时期的照片，"
+    },
+    {
+      "start_time": 1209.926,
+      "end_time": 1215.046,
+      "text": "包括你们跟你们的爸爸妈妈、爷爷奶奶、姥姥姥爷的合影都可以摆上，"
+    },
+    {
+      "start_time": 1215.226,
+      "end_time": 1216.036,
+      "text": "只要你们喜欢。"
+    },
+    {
+      "start_time": 1216.578,
+      "end_time": 1218.428,
+      "text": "哇塞，大家快看看我看看。"
+    },
+    {
+      "start_time": 1218.428,
+      "end_time": 1219.468,
+      "text": "哎，这是我的。"
+    },
+    {
+      "start_time": 1219.468,
+      "end_time": 1220.418,
+      "text": "这是我爸的。"
+    },
+    {
+      "start_time": 1224.238,
+      "end_time": 1225.598,
+      "text": "哦，都在啊。"
+    },
+    {
+      "start_time": 1226.398,
+      "end_time": 1227.568,
+      "text": "你来干嘛来了？"
+    },
+    {
+      "start_time": 1228.329,
+      "end_time": 1232.259,
+      "text": "作为一个负责任的男人，我想看看我造成什么严重后果了。"
+    },
+    {
+      "start_time": 1232.539,
+      "end_time": 1233.849,
+      "text": "这不挺好吗？"
+    },
+    {
+      "start_time": 1234.219,
+      "end_time": 1235.769,
+      "text": "忠实地记录了历史。"
+    },
+    {
+      "start_time": 1237.471,
+      "end_time": 1239.111,
+      "text": "可我觉得好像还缺了点什么。"
+    },
+    {
+      "start_time": 1239.491,
+      "end_time": 1241.071,
+      "text": "没错，还缺一张照片。"
+    },
+    {
+      "start_time": 1241.381,
+      "end_time": 1242.781,
+      "text": "不缺呀。"
+    },
+    {
+      "start_time": 1243.231,
+      "end_time": 1245.091,
+      "text": "你看，我的照片也在那儿呢。"
+    },
+    {
+      "start_time": 1245.371,
+      "end_time": 1245.861,
+      "text": "我看见了。"
+    },
+    {
+      "start_time": 1247.583,
+      "end_time": 1250.583,
+      "text": "缺我们现在这个家的全家福。"
+    },
+    {
+      "start_time": 1250.893,
+      "end_time": 1251.223,
+      "text": "对。"
+    },
+    {
+      "start_time": 1252.363,
+      "end_time": 1255.473,
+      "text": "嗯，你们的全家福，那我就别跟着哄了。"
+    },
+    {
+      "start_time": 1255.623,
+      "end_time": 1255.953,
+      "text": "告辞。"
+    },
+    {
+      "start_time": 1257.533,
+      "end_time": 1258.333,
+      "text": "别走啊。"
+    },
+    {
+      "start_time": 1258.333,
+      "end_time": 1258.623,
+      "text": "去吧。"
+    },
+    {
+      "start_time": 1258.903,
+      "end_time": 1260.003,
+      "text": "哦，你们拍。"
+    },
+    {
+      "start_time": 1260.0,
+      "end_time": 1261.37,
+      "text": "拍全家福也带着我哈。"
+    },
+    {
+      "start_time": 1262.86,
+      "end_time": 1263.95,
+      "text": "去去去，帮我们拍一个。"
+    },
+    {
+      "start_time": 1264.78,
+      "end_time": 1266.5,
+      "text": "来来来，别动别动啊。"
+    },
+    {
+      "start_time": 1268.33,
+      "end_time": 1269.91,
+      "text": "我数一二三咱们茄子啊。"
+    },
+    {
+      "start_time": 1269.91,
+      "end_time": 1272.78,
+      "text": "一二三，茄子！"
+    }
+  ]
+}

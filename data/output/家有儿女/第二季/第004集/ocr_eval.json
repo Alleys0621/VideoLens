@@ -1,0 +1,111 @@
+{
+  "video": "S2E4",
+  "metrics": {
+    "n_scenes": 400,
+    "n_midpoint": 246,
+    "n_switch": 125,
+    "n_silence": 29,
+    "n_ocr_hit": 350,
+    "n_ocr_hit_nonsilence": 350,
+    "hit_rate": 0.875,
+    "hit_rate_nonsilence": 0.9434,
+    "n_ref_segments": 331,
+    "n_ref_matched": 147,
+    "recall": 0.4441,
+    "char_precision": 0.8238,
+    "char_recall": 0.7474,
+    "char_f1": 0.7837,
+    "n_miss_candidates": 11,
+    "miss_rate": 0.0296
+  },
+  "miss_candidates": [
+    {
+      "index": 164,
+      "anchor_type": "midpoint",
+      "timestamp": 530.498,
+      "speaker_ref": null,
+      "ref_text": "什么呀？那个乖乖仔好像醒了。",
+      "anchor_text": "啊！"
+    },
+    {
+      "index": 203,
+      "anchor_type": "midpoint",
+      "timestamp": 733.774,
+      "speaker_ref": null,
+      "ref_text": "嗯，我也是小狗。",
+      "anchor_text": "嗯，我也是小狗。"
+    },
+    {
+      "index": 303,
+      "anchor_type": "switch",
+      "timestamp": 1081.212,
+      "speaker_ref": null,
+      "ref_text": "哎，您借我这鸭子用用。",
+      "anchor_text": ""
+    },
+    {
+      "index": 304,
+      "anchor_type": "midpoint",
+      "timestamp": 1086.012,
+      "speaker_ref": null,
+      "ref_text": "看看，你看哎。",
+      "anchor_text": "看看，你看哎，看看看看。"
+    },
+    {
+      "index": 307,
+      "anchor_type": "midpoint",
+      "timestamp": 1110.951,
+      "speaker_ref": null,
+      "ref_text": "哟，睡着了？",
+      "anchor_text": "睡着了。"
+    },
+    {
+      "index": 313,
+      "anchor_type": "switch",
+      "timestamp": 1128.811,
+      "speaker_ref": null,
+      "ref_text": "睡着了。",
+      "anchor_text": ""
+    },
+    {
+      "index": 314,
+      "anchor_type": "midpoint",
+      "timestamp": 1129.923,
+      "speaker_ref": null,
+      "ref_text": "睡着了。",
+      "anchor_text": "睡着了。"
+    },
+    {
+      "index": 320,
+      "anchor_type": "switch",
+      "timestamp": 1141.502,
+      "speaker_ref": null,
+      "ref_text": "哎呦喂，怎么回事？你这怎么了？",
+      "anchor_text": ""
+    },
+    {
+      "index": 321,
+      "anchor_type": "midpoint",
+      "timestamp": 1145.043,
+      "speaker_ref": null,
+      "ref_text": "哎呦喂，怎么回事？你这怎么了？",
+      "anchor_text": "哎呦喂，哎不是你这怎么了？哎呀，我要我要我要死了。小点声，睡着呢。"
+    },
+    {
+      "index": 359,
+      "anchor_type": "midpoint",
+      "timestamp": 1229.139,
+      "speaker_ref": null,
+      "ref_text": "呃，说吧，你们想要什么？",
+      "anchor_text": "啊耶！"
+    },
+    {
+      "index": 391,
+      "anchor_type": "switch",
+      "timestamp": 1282.781,
+      "speaker_ref": null,
+      "ref_text": "现在怎么变成蓝色的了？",
+      "anchor_text": ""
+    }
+  ]
+}

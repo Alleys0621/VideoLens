@@ -1,0 +1,29 @@
+{
+  "video_id": "家有儿女/第二季/第001集",
+  "title": "重组家庭首个团圆年的冲突与温情",
+  "episode_summary": "春节将至，夏东海与刘梅的前配偶分别登门欲接走孩子，导致重组家庭的第一个团圆年面临分裂危机。与此同时，三兄妹秘密策划“CC计划”筹集资金，引发父母对压岁钱去向的猜疑。在双方长辈到访的压力下，孩子们最终选择留下陪伴家人，并揭晓“CC计划”实为给祖辈购买助听器的孝心举动。全家在欢笑与感动中化解了矛盾，共同度过了一个温馨热闹的除夕夜。",
+  "character_refs": [
+    "char_xue",
+    "char_mei",
+    "char_xing",
+    "char_yu",
+    "char_donghai",
+    "char_liu_mei_ex_husband",
+    "char_unknown_grandpa",
+    "char_unknown_grandma"
+  ],
+  "main_arcs": [
+    "arc_new_001",
+    "arc_new_002",
+    "arc_new_003",
+    "arc_new_004"
+  ],
+  "key_events": [
+    "家有儿女/第二季/第001集_e022",
+    "家有儿女/第二季/第001集_e031",
+    "家有儿女/第二季/第001集_e050",
+    "家有儿女/第二季/第001集_e059"
+  ],
+  "tone": "家庭温馨",
+  "runtime_estimate": 1800.0
+}

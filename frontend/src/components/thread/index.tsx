@@ -38,7 +38,11 @@ import {
   TooltipTrigger,
 } from "../ui/tooltip";
 import { useFileUpload } from "@/hooks/use-file-upload";
-import { useAudioRecorder } from "@/hooks/useAudioRecorder";
+import { useStreamingASR } from "@/hooks/useStreamingASR";
+import { useAuth } from "@/providers/Auth";
+import { useTTSContext } from "@/providers/TTS";
+import { getContentString } from "./utils";
+import { Volume2 } from "lucide-react";
 
 function StickyToBottomContent(props: {
   content: ReactNode;
@@ -82,7 +86,19 @@ function ScrollToBottom(props: { className?: string }) {
 }
 
 
-export function Thread() {
+export function Thread({
+  videoTimeRef,
+  videoControlRef,
+}: {
+  videoTimeRef?: { current: number };
+  videoControlRef?: {
+    current: {
+      pause: () => void;
+      resume: () => void;
+      isPaused: () => boolean;
+    } | null;
+  };
+}) {
   const [threadId, _setThreadId] = useQueryState("threadId");
   // 当前陪看视频目录 (从 URL query 读, page.tsx 的 VideoPlayer 设置)
   const [videoDir] = useQueryState("videoDir", { defaultValue: "" });
@@ -93,18 +109,59 @@ export function Thread() {
   const [input, setInput] = useState("");
   // 联网模式 toggle: 开启后 refuse 意图 (KB 没相关内容) 时 LLM 自动联网搜索 (DashScope enable_search)
   const [webSearch, setWebSearch] = useState(false);
+  // 自动朗读 toggle: AI 回复完成后自动 TTS 播放. 默认开, 持久化到 localStorage.
+  const [autoSpeak, setAutoSpeak] = useState(() => {
+    if (typeof window === "undefined") return true;
+    const stored = window.localStorage.getItem("vl_auto_speak");
+    return stored === null ? true : stored === "1";
+  });
+  const toggleAutoSpeak = () => {
+    setAutoSpeak((prev) => {
+      const next = !prev;
+      if (typeof window !== "undefined") {
+        window.localStorage.setItem("vl_auto_speak", next ? "1" : "0");
+      }
+      return next;
+    });
+  };
   // 拖拽文件时的视觉反馈 (覆盖层), 替代 toast — 保证两屏都看得见
   const [dragOver, setDragOver] = useState(false);
   // useFileUpload 保留 hook (代码不删), 但 UI 不显示上传控件;
   // 拖拽/粘贴文件时弹 toast 提示不支持, contentBlocks 仅用于 submit 兼容
   const { contentBlocks, setContentBlocks } = useFileUpload();
   const [firstTokenReceived, setFirstTokenReceived] = useState(false);
-  const recorder = useAudioRecorder();
-  const isLargeScreen = useMediaQuery("(min-width: 1024px)");
 
   const stream = useStreamContext();
   const messages = stream.messages;
   const isLoading = stream.isLoading;
+  // 登录用户的 user_id, 透传给后端 agent (用于 Mem0 记忆按用户隔离)
+  const { user } = useAuth();
+  // TTS 自动播放: 发送时打"刚发过"标记, 回复完成 (isLoading true→false) 时触发
+  // 用 TTSProvider 单例, 跟 ai.tsx 喇叭按钮共享同一个实例
+  // (必须在 recorder 之前定义, recorder 的 onPauseOthers 用到它)
+  const tts = useTTSContext();
+
+  // 流式 ASR: 边录边识别, 边显示文本
+  // 录音开始时停 TTS + 暂停视频 (浏览器 AEC 对媒体回声不可靠)
+  // 录音结束时恢复视频
+  const recorder = useStreamingASR({
+    onPauseOthers: () => {
+      tts.stop();
+      videoControlRef?.current?.pause();
+    },
+    onResumeOthers: () => {
+      videoControlRef?.current?.resume();
+    },
+  });
+
+  const isLargeScreen = useMediaQuery("(min-width: 1024px)");
+
+  const justSentRef = useRef(false);
+  const lastSpokenIdRef = useRef<string | null>(null);
+  // 已喂给 TTS 的字符位置 (按 message id 重置; 防同一消息被重复喂)
+  const lastSpokenLenRef = useRef(0);
+  // form ref: ASR 录音停止后自动 submit 用 (避开 setTimeout 后事件 stale 问题)
+  const formRef = useRef<HTMLFormElement>(null);
 
   const lastError = useRef<string | undefined>(undefined);
 
@@ -154,11 +211,70 @@ export function Thread() {
     prevMessageLength.current = messages.length;
   }, [messages]);
 
+  // ============================================================================
+  // 边推边 TTS (MSE 流式): LLM stream 期间, 每个 token 让 messages 变化
+  //   → 把新增的 delta 喂给 tts.feedText → ws 推给 tts_server → DashScope
+  //   流式合成 → mp3 chunk 流回 → MediaSource 边收边播
+  //
+  // 预热: handleSubmit 时调 tts.start() (建立 ws + run-task), LLM 出第一个
+  //      token 时 ready 已回来, feedText 直接推 DashScope, 首字延迟 ~400ms.
+  //
+  // 注意: 本 effect 不再 stop + start (会跟 handleSubmit 的 start 冲突 →
+  //      "WebSocket closed before connection established"). handleSubmit
+  //      已经预热, 这里只负责 feedText + finish.
+  //
+  // 防误触: 只在 justSentRef=true 时触发 (切 thread / 加载历史不会播)
+  // ============================================================================
+  useEffect(() => {
+    if (!justSentRef.current) return;
+    if (!autoSpeak) {
+      if (!isLoading) {
+        justSentRef.current = false;
+        tts.stop();
+      }
+      return;
+    }
+
+    // 找最后一条 AI 消息
+    const lastAi = [...messages].reverse().find((m) => m.type === "ai");
+    if (!lastAi) return;
+
+    // 新 AI 消息 → 重置已喂位置 (但不 stop/start, handleSubmit 已预热)
+    if (lastSpokenIdRef.current !== lastAi.id) {
+      lastSpokenIdRef.current = lastAi.id ?? null;
+      lastSpokenLenRef.current = 0;
+    }
+
+    // 喂增量文本 (hook 内部走 ws 推给后端, 未 ready 时自动缓存)
+    const fullText = getContentString(lastAi.content);
+    const delta = fullText.slice(lastSpokenLenRef.current);
+    lastSpokenLenRef.current = fullText.length;
+    if (delta) {
+      tts.feedText(delta);
+    }
+
+    // LLM stream 结束 → 发 finish, 等合成完成 + 保存缓存
+    if (!isLoading) {
+      justSentRef.current = false;
+      tts.finish().catch((e) => console.warn("[autoTTS] finish failed", e));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages, isLoading, autoSpeak]);
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if ((input.trim().length === 0 && contentBlocks.length === 0) || isLoading)
       return;
     setFirstTokenReceived(false);
+    // 标记"刚发过消息" — stream 完成时据此触发自动 TTS
+    justSentRef.current = true;
+    // 预热 TTS task: 立即建立 ws + run-task, LLM 出 token 时 ready 已回来
+    // 实测省 ~700ms 固定开销, 首字延迟从 ~1.2s 降到 ~400ms
+    if (autoSpeak) {
+      tts.start().catch((e) => console.warn("[TTS] preheat failed", e));
+    } else {
+      tts.stop();
+    }
 
     const newHumanMessage: Message = {
       id: uuidv4(),
@@ -182,8 +298,13 @@ export function Thread() {
           configurable: {
             video_dir: videoDir,
             web_search: webSearch,
+            video_time: videoTimeRef?.current ?? 0,
+            user_id: user?.id ?? "default",
           },
         },
+        // thread metadata: 打 user_id 标记, 让 getThreads 能按用户过滤
+        // (SDK 在 threadId 为 null 时自动 threads.create({ metadata }) 创建新 thread)
+        metadata: { user_id: user?.id ?? "default" },
         optimisticValues: (prev) => ({
           ...prev,
           messages: [
@@ -416,11 +537,21 @@ export function Thread() {
                       </div>
                     )}
                     <form
+                      ref={formRef}
                       onSubmit={handleSubmit}
                       className="mx-auto grid max-w-3xl grid-rows-[1fr_auto] gap-2"
                     >
                       <textarea
-                        value={input}
+                        value={
+                          recorder.isRecording
+                            ? (
+                                recorder.finalText +
+                                " " +
+                                recorder.partialText
+                              ).trim()
+                            : input
+                        }
+                        readOnly={recorder.isRecording}
                         onChange={(e) => setInput(e.target.value)}
                         onPaste={(e) => {
                           if (e.clipboardData.files?.length > 0) {
@@ -441,37 +572,59 @@ export function Thread() {
                             form?.requestSubmit();
                           }
                         }}
+                        enterKeyHint="send"
                         placeholder="给Alleys说点什么..."
-                        className="field-sizing-content resize-none border-none bg-transparent px-4 py-3 pb-0 text-[15px] shadow-none ring-0 outline-none placeholder:text-zinc-400 focus:ring-0 focus:outline-none"
+                        className="field-sizing-content resize-none border-none bg-transparent px-4 py-3 pb-0 text-[16px] shadow-none ring-0 outline-none placeholder:text-zinc-400 focus:ring-0 focus:outline-none"
                       />
 
                       <div className="flex items-center justify-between p-2 pt-3">
-                        {/* 联网模式 toggle: 开启后 KB 检索不相关时 LLM 自动联网 (DashScope enable_search) */}
-                        <button
-                          type="button"
-                          onClick={() => setWebSearch((p) => !p)}
-                          className={cn(
-                            "flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all",
-                            webSearch
-                              ? "bg-emerald-500 text-white shadow-sm hover:bg-emerald-600"
-                              : "bg-zinc-100 text-zinc-600 ring-1 ring-zinc-200 hover:bg-zinc-200 hover:text-zinc-900",
-                          )}
-                          title={
-                            webSearch
-                              ? "联网模式已开启: KB 没相关内容时自动联网搜索"
-                              : "联网模式关闭"
-                          }
-                        >
-                          <Globe className="h-3.5 w-3.5" />
-                          联网
-                        </button>
+                        <div className="flex items-center gap-2">
+                          {/* 联网模式 toggle: 开启后 KB 检索不相关时 LLM 自动联网 (DashScope enable_search) */}
+                          <button
+                            type="button"
+                            onClick={() => setWebSearch((p) => !p)}
+                            className={cn(
+                              "flex min-h-[40px] items-center gap-1.5 rounded-full px-4 py-2 text-xs font-medium transition-all",
+                              webSearch
+                                ? "bg-emerald-500 text-white shadow-sm hover:bg-emerald-600"
+                                : "bg-zinc-100 text-zinc-600 ring-1 ring-zinc-200 hover:bg-zinc-200 hover:text-zinc-900",
+                            )}
+                            title={
+                              webSearch
+                                ? "联网模式已开启: KB 没相关内容时自动联网搜索"
+                                : "联网模式关闭"
+                            }
+                          >
+                            <Globe className="h-3.5 w-3.5" />
+                            联网
+                          </button>
+                          {/* 自动朗读 toggle: AI 回复完成后自动 TTS 播放 */}
+                          <button
+                            type="button"
+                            onClick={toggleAutoSpeak}
+                            className={cn(
+                              "flex min-h-[40px] items-center gap-1.5 rounded-full px-4 py-2 text-xs font-medium transition-all",
+                              autoSpeak
+                                ? "bg-indigo-500 text-white shadow-sm hover:bg-indigo-600"
+                                : "bg-zinc-100 text-zinc-600 ring-1 ring-zinc-200 hover:bg-zinc-200 hover:text-zinc-900",
+                            )}
+                            title={
+                              autoSpeak
+                                ? "自动朗读已开启: AI 回复完成后自动播语音"
+                                : "自动朗读关闭 (仍可手动点喇叭按钮)"
+                            }
+                          >
+                            <Volume2 className="h-3.5 w-3.5" />
+                            朗读
+                          </button>
+                        </div>
                         {stream.isLoading ? (
                           <button
                             type="button"
                             onClick={() => stream.stop()}
-                            className="flex h-9 items-center gap-1.5 rounded-full bg-zinc-900 px-4 text-sm font-medium text-white shadow-sm transition-all hover:bg-zinc-700"
+                            className="flex h-11 items-center gap-1.5 rounded-full bg-zinc-900 px-5 text-sm font-medium text-white shadow-sm transition-all hover:bg-zinc-700"
                           >
-                            <LoaderCircle className="h-3.5 w-3.5 animate-spin" />
+                            <LoaderCircle className="h-4 w-4 animate-spin" />
                             停止
                           </button>
                         ) : (
@@ -483,23 +636,35 @@ export function Thread() {
                                   .closest("form")
                                   ?.requestSubmit();
                               } else if (recorder.isRecording) {
-                                const blob = await recorder.stopRecording();
-                                if (blob) {
-                                  const text = await recorder.transcribe(blob);
-                                  if (text) setInput(text);
+                                // 停止录音: 拿识别结果 → 自动 submit 发给 LLM
+                                const text = await recorder.stop();
+                                if (text.trim()) {
+                                  setInput(text);
+                                  // setInput 异步, 等 React re-render 让
+                                  // handleSubmit 闭包 capture 到最新 input
+                                  setTimeout(() => {
+                                    formRef.current?.requestSubmit();
+                                  }, 0);
+                                } else {
+                                  toast.error("没识别到内容, 请重试");
                                 }
                               } else {
-                                await recorder.startRecording();
+                                // 开始流式录音 (边录边识别, 边显示)
+                                await recorder.start();
                               }
                             }}
-                            disabled={recorder.isTranscribing}
-                            className="flex h-9 w-9 items-center justify-center rounded-full bg-zinc-900 text-white shadow-sm transition-all hover:bg-zinc-700 disabled:cursor-not-allowed disabled:opacity-40"
+                            disabled={
+                              recorder.status === "starting" ||
+                              recorder.status === "stopping"
+                            }
+                            className="flex h-11 w-11 items-center justify-center rounded-full bg-zinc-900 text-white shadow-sm transition-all hover:bg-zinc-700 disabled:cursor-not-allowed disabled:opacity-40"
                           >
                             {input.trim() && !recorder.isRecording ? (
                               <ArrowUp className="h-4 w-4" />
                             ) : recorder.isRecording ? (
                               <Square className="h-4 w-4" fill="currentColor" />
-                            ) : recorder.isTranscribing ? (
+                            ) : recorder.status === "starting" ||
+                              recorder.status === "stopping" ? (
                               <LoaderCircle className="h-4 w-4 animate-spin" />
                             ) : (
                               <Mic className="h-4 w-4" />

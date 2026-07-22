@@ -11,7 +11,7 @@ import { useQueryState, parseAsBoolean } from "nuqs";
 import { ReasoningCard } from "../ReasoningCard";
 import { TooltipIconButton } from "../tooltip-icon-button";
 import { Volume2, LoaderCircle, Square } from "lucide-react";
-import { useTTS } from "@/hooks/useTTS";
+import { useTTSContext } from "@/providers/TTS";
 
 function parseAnthropicStreamedToolCalls(
   content: MessageContentComplex[],
@@ -55,7 +55,7 @@ export function AssistantMessage({
 
   const thread = useStreamContext();
   const meta = message ? thread.getMessagesMetadata(message) : undefined;
-  const tts = useTTS();
+  const tts = useTTSContext();
 
   const parentCheckpoint = meta?.firstSeenState?.parent_checkpoint;
   const anthropicStreamedToolCalls = Array.isArray(content)

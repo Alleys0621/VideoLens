@@ -126,6 +126,56 @@ def _warmup():
         print("[warmup] LLM client 预热完成", flush=True)
     except Exception as e:
         print(f"[warmup] LLM client 预热失败: {e}", flush=True)
+    # 2.5 LLM 意图理解预热 (消除首次 dashscope 连接冷启动 2.4s → 0.8s)
+    try:
+        from src.agent.intent_router import llm_route_intent
+        llm_route_intent("预热", None)
+        print("[warmup] 意图理解预热完成", flush=True)
+    except Exception as e:
+        print(f"[warmup] 意图理解预热失败 (非致命): {e}", flush=True)
+    # 3. embedding 缓存 (扫描所有已建库视频, 提前建向量索引到 .npz)
+    try:
+        _warmup_embeddings()
+    except Exception as e:
+        print(f"[warmup] embedding 预热失败 (非致命): {e}", flush=True)
+
+
+def _warmup_embeddings():
+    """扫描 data/output/ 下所有已建库视频, 预建 embedding 缓存.
+
+    有缓存的秒加载 (.npz), 没缓存的建 (首次 ~40s/集, 后续启动都快).
+    新增集 (重新建库后) 自动补建.
+    """
+    import os
+    from src.core.config import get_config
+
+    cfg = get_config()
+    output_root = cfg.output_root
+    if not os.path.isdir(output_root):
+        return
+
+    # 扫描所有有 stage3_dryrun.json + audio.json 的视频目录
+    episodes: list[str] = []
+    for root, _dirs, files in os.walk(output_root):
+        if "stage3_dryrun.json" in files and "audio.json" in files:
+            rel = os.path.relpath(root, output_root).replace("\\", "/")
+            # 跳过 _global / _batch_reports 等非视频目录
+            if not rel.startswith("_") and not rel.startswith("."):
+                episodes.append(rel)
+
+    if not episodes:
+        print("[warmup] 没有已建库视频, 跳过 embedding 预热", flush=True)
+        return
+
+    from src.agent.retriever import build_or_load_embeddings
+
+    print(f"[warmup] 预热 embedding: 发现 {len(episodes)} 集", flush=True)
+    for i, ep in enumerate(episodes, 1):
+        try:
+            build_or_load_embeddings(ep)
+            print(f"[warmup] embedding {i}/{len(episodes)}: {ep} OK", flush=True)
+        except Exception as e:
+            print(f"[warmup] embedding {i}/{len(episodes)}: {ep} 失败: {e}", flush=True)
 
 
 def companion_node(state: State, config: RunnableConfig) -> dict:
@@ -174,6 +224,7 @@ def companion_node(state: State, config: RunnableConfig) -> dict:
             chat_history=chat_history,
             llm=_get_streaming_llm(),  # LangGraph 自动拦截 token → 前端逐字渲染
             web_search=bool(configurable.get("web_search", False)),  # 联网模式 toggle
+            video_time=configurable.get("video_time"),  # 当前播放时间戳 (邻域对白检索)
         )
     except Exception as e:
         # 兜底: 任何异常都返回友好消息, 不让前端看到 raw error

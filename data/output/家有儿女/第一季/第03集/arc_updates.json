@@ -1,0 +1,177 @@
+[
+  {
+    "arc_id": "arc_new_003",
+    "update_type": "progressing",
+    "title": "夏雪融入新家庭的心理转变",
+    "type": "character_growth",
+    "participants": [
+      "char_xue",
+      "char_donghai",
+      "char_mei"
+    ],
+    "status": "progressing",
+    "first_seen_episode": "家有儿女/第一季/第01集",
+    "last_seen_episode": "家有儿女/第一季/第03集",
+    "summary": "夏雪通过展示旧照片强调原生家庭纽带，对继母刘梅表现出明显的排斥与防御。夏东海试图调解但引发夏雪更深的误解（认为父亲喜新厌旧），显示其融入过程仍充满心理隔阂与试探。",
+    "key_milestones": [
+      "夏雪展示生母合影并宣称不可替代的亲情",
+      "夏雪误解父亲收起照片是受继母指使",
+      "夏雪指责父亲喜新厌旧"
+    ],
+    "related_event_ids": [
+      "家有儿女/第一季/第03集_e005",
+      "家有儿女/第一季/第03集_e006",
+      "家有儿女/第一季/第03集_e012",
+      "家有儿女/第一季/第03集_e013",
+      "家有儿女/第一季/第03集_e014"
+    ],
+    "outcome": ""
+  },
+  {
+    "arc_id": "arc_new_006",
+    "update_type": "progressing",
+    "title": "刘梅适应继母角色的焦虑与努力",
+    "type": "character_growth",
+    "participants": [
+      "char_mei",
+      "char_xue",
+      "char_donghai"
+    ],
+    "status": "progressing",
+    "first_seen_episode": "家有儿女/第一季/第01集",
+    "last_seen_episode": "家有儿女/第一季/第03集",
+    "summary": "刘梅因夏雪摆放前妻照片及冷淡态度感到被针对和委屈，与夏东海发生激烈争执。她担心外界误解，表现出强烈的不安全感，但在夏东海承诺调解后暂时妥协，显示出其在处理复杂家庭关系时的焦虑与被动。",
+    "key_milestones": [
+      "刘梅因照片问题感到被小雪针对而生气",
+      "刘梅担忧邻居亲戚产生误解",
+      "刘梅默许夏东海去调解但保持怀疑"
+    ],
+    "related_event_ids": [
+      "家有儿女/第一季/第03集_e007",
+      "家有儿女/第一季/第03集_e008",
+      "家有儿女/第一季/第03集_e009",
+      "家有儿女/第一季/第03集_e010"
+    ],
+    "outcome": ""
+  },
+  {
+    "arc_id": "arc_new_011",
+    "update_type": "progressing",
+    "title": "刘星对家庭双重标准的抗议与博弈",
+    "type": "conflict",
+    "participants": [
+      "char_xing",
+      "char_mei",
+      "char_xue",
+      "char_yu"
+    ],
+    "status": "progressing",
+    "first_seen_episode": "家有儿女/第一季/第02集",
+    "last_seen_episode": "家有儿女/第一季/第03集",
+    "summary": "刘星因母亲禁止其摆放照片而愤怒，指责母亲“喜新厌旧”及区别对待。在夏东海介入支持后，刘星获得底气，与夏雪、夏雨展开客厅地盘争夺战，矛盾从母子冲突升级为兄弟姐妹间的资源竞争。",
+    "key_milestones": [
+      "刘星被刘梅禁止摆放全家福并指责其双标",
+      "夏东海为刘星提供加急照片并撑腰",
+      "三兄妹争夺客厅风水宝地摆放照片"
+    ],
+    "related_event_ids": [
+      "家有儿女/第一季/第03集_e015",
+      "家有儿女/第一季/第03集_e016",
+      "家有儿女/第一季/第03集_e018",
+      "家有儿女/第一季/第03集_e021",
+      "家有儿女/第一季/第03集_e022",
+      "家有儿女/第一季/第03集_e032",
+      "家有儿女/第一季/第03集_e033"
+    ],
+    "outcome": ""
+  },
+  {
+    "arc_id": "arc_new_009",
+    "update_type": "progressing",
+    "title": "夏东海协调家庭矛盾的缓冲角色",
+    "type": "relationship",
+    "participants": [
+      "char_donghai",
+      "char_mei",
+      "char_xue",
+      "char_xing"
+    ],
+    "status": "progressing",
+    "first_seen_episode": "家有儿女/第一季/第01集",
+    "last_seen_episode": "家有儿女/第一季/第03集",
+    "summary": "夏东海在刘梅的焦虑与孩子们的叛逆之间周旋。他一方面安抚刘梅，分析孩子心理；另一方面采取“冷处理”策略应对孩子间的争执，并暗中支持刘星以平衡家庭权力结构，最终通过建立共享照片墙化解了部分冲突。",
+    "key_milestones": [
+      "夏东海分析小雪心理并安抚刘梅",
+      "夏东海主张冷处理孩子争执并成功说服刘梅",
+      "夏东海建立全家共享照片墙以平息争端"
+    ],
+    "related_event_ids": [
+      "家有儿女/第一季/第03集_e009",
+      "家有儿女/第一季/第03集_e010",
+      "家有儿女/第一季/第03集_e019",
+      "家有儿女/第一季/第03集_e027",
+      "家有儿女/第一季/第03集_e053",
+      "家有儿女/第一季/第03集_e054"
+    ],
+    "outcome": ""
+  },
+  {
+    "arc_id": "arc_new_007",
+    "update_type": "progressing",
+    "title": "夏雨对家庭归属感的早期探索",
+    "type": "relationship",
+    "participants": [
+      "char_yu",
+      "char_mei",
+      "char_donghai"
+    ],
+    "status": "progressing",
+    "first_seen_episode": "家有儿女/第一季/第01集",
+    "last_seen_episode": "家有儿女/第一季/第03集",
+    "summary": "夏雨通过展示与生母的合影及抱怨房间拥挤来表达存在感。他在照片风波中成为刘梅发泄情绪的对象（被强行要求收起生父照片），显示出其在重组家庭中尚未完全稳固的地位及内心的不安全感。",
+    "key_milestones": [
+      "夏雨展示与生母在美国的合影",
+      "夏雨被刘梅强行命令收起生父照片",
+      "夏雨抱怨房间拥挤并要求换房"
+    ],
+    "related_event_ids": [
+      "家有儿女/第一季/第03集_e004",
+      "家有儿女/第一季/第03集_e017",
+      "家有儿女/第一季/第03集_e020",
+      "家有儿女/第一季/第03集_e043",
+      "家有儿女/第一季/第03集_e048"
+    ],
+    "outcome": ""
+  },
+  {
+    "arc_id": "arc_new_013",
+    "update_type": "new",
+    "title": "刘星生父胡一统介入引发的家庭震荡",
+    "type": "conflict",
+    "participants": [
+      "char_huyitong",
+      "char_mei",
+      "char_donghai",
+      "char_xing"
+    ],
+    "status": "open",
+    "first_seen_episode": "家有儿女/第一季/第03集",
+    "last_seen_episode": "家有儿女/第一季/第03集",
+    "summary": "刘星生父胡一统突然现身并为刘星撑腰，打破了夏东海建立的平衡。刘梅对此感到极度愤怒和威胁，与胡一统发生正面冲突，夏东海则批评老胡做法欠妥。这一外部变量的引入加剧了家庭内部的紧张局势。",
+    "key_milestones": [
+      "夏雨透露刘星生父来访并为刘星撑腰",
+      "刘梅质问胡一统并发生激烈争执",
+      "夏东海批评胡一统搅和生活"
+    ],
+    "related_event_ids": [
+      "家有儿女/第一季/第03集_e035",
+      "家有儿女/第一季/第03集_e036",
+      "家有儿女/第一季/第03集_e038",
+      "家有儿女/第一季/第03集_e041",
+      "家有儿女/第一季/第03集_e042",
+      "家有儿女/第一季/第03集_e046",
+      "家有儿女/第一季/第03集_e047"
+    ],
+    "outcome": ""
+  }
+]

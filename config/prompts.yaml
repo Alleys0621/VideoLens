@@ -321,7 +321,7 @@ stage3_p1_action_extract:
 # 输入: 同集按时间序排列的若干 Action (P1 产出, target 为空)
 # 输出: 若干 Event, 每个 Event 含 actions (target 已补齐) + motivation + motivation_confidence + outcome + summary + retrieval_text + keywords
 # ------------------------------------------------------------
-stage3_p2_event_aggregate:
+stage3_:
   user: |
     你是中文情景剧 Event 聚合 + target 推理系统。
 

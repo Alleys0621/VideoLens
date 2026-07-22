@@ -1,0 +1,135 @@
+{
+  "video": "S1E1",
+  "metrics": {
+    "n_scenes": 444,
+    "n_midpoint": 273,
+    "n_switch": 154,
+    "n_silence": 17,
+    "n_ocr_hit": 406,
+    "n_ocr_hit_nonsilence": 406,
+    "hit_rate": 0.9144,
+    "hit_rate_nonsilence": 0.9508,
+    "n_ref_segments": 415,
+    "n_ref_matched": 204,
+    "recall": 0.4916,
+    "char_precision": 0.8487,
+    "char_recall": 0.7812,
+    "char_f1": 0.8135,
+    "n_miss_candidates": 14,
+    "miss_rate": 0.0328
+  },
+  "miss_candidates": [
+    {
+      "index": 80,
+      "anchor_type": "midpoint",
+      "timestamp": 285.994,
+      "speaker_ref": null,
+      "ref_text": "哎哎哎哎，夏东海。",
+      "anchor_text": "哎哎哎哎，行了。"
+    },
+    {
+      "index": 81,
+      "anchor_type": "switch",
+      "timestamp": 288.334,
+      "speaker_ref": null,
+      "ref_text": "你跟小雪说，就说我真心地欢迎她来，",
+      "anchor_text": ""
+    },
+    {
+      "index": 82,
+      "anchor_type": "midpoint",
+      "timestamp": 289.243,
+      "speaker_ref": null,
+      "ref_text": "你跟小雪说，就说我真心地欢迎她来，",
+      "anchor_text": "呃，你跟小雪说。"
+    },
+    {
+      "index": 124,
+      "anchor_type": "switch",
+      "timestamp": 395.566,
+      "speaker_ref": null,
+      "ref_text": "我对你们两个人，我一点都不信任。",
+      "anchor_text": ""
+    },
+    {
+      "index": 125,
+      "anchor_type": "midpoint",
+      "timestamp": 396.699,
+      "speaker_ref": null,
+      "ref_text": "我对你们两个人，我一点都不信任。",
+      "anchor_text": "诶，荔枝啊。"
+    },
+    {
+      "index": 311,
+      "anchor_type": "switch",
+      "timestamp": 867.837,
+      "speaker_ref": null,
+      "ref_text": "哎，要不然，我替她向你道歉，就不哭了吧？",
+      "anchor_text": ""
+    },
+    {
+      "index": 312,
+      "anchor_type": "midpoint",
+      "timestamp": 869.017,
+      "speaker_ref": null,
+      "ref_text": "还想哭。",
+      "anchor_text": "还想哭。"
+    },
+    {
+      "index": 359,
+      "anchor_type": "midpoint",
+      "timestamp": 1047.906,
+      "speaker_ref": null,
+      "ref_text": "你们难道不想问点什么吗？",
+      "anchor_text": "你们难道不想问点什么吗？比如说我刚才干嘛去了？"
+    },
+    {
+      "index": 398,
+      "anchor_type": "switch",
+      "timestamp": 1150.19,
+      "speaker_ref": null,
+      "ref_text": "慢点啊。",
+      "anchor_text": ""
+    },
+    {
+      "index": 399,
+      "anchor_type": "midpoint",
+      "timestamp": 1153.624,
+      "speaker_ref": null,
+      "ref_text": "好了，我们家到了。",
+      "anchor_text": "我们家到了，把帽子摘下来。"
+    },
+    {
+      "index": 406,
+      "anchor_type": "switch",
+      "timestamp": 1172.513,
+      "speaker_ref": null,
+      "ref_text": "洗不掉我再帮你染成黑色的嘛。",
+      "anchor_text": ""
+    },
+    {
+      "index": 407,
+      "anchor_type": "midpoint",
+      "timestamp": 1173.694,
+      "speaker_ref": null,
+      "ref_text": "洗不掉我再帮你染成黑色的嘛。",
+      "anchor_text": "非去不可啊？"
+    },
+    {
+      "index": 418,
+      "anchor_type": "switch",
+      "timestamp": 1198.807,
+      "speaker_ref": null,
+      "ref_text": "我怎么可能急呢？",
+      "anchor_text": ""
+    },
+    {
+      "index": 419,
+      "anchor_type": "midpoint",
+      "timestamp": 1200.68,
+      "speaker_ref": null,
+      "ref_text": "呃，介绍一下。",
+      "anchor_text": "呃，介绍一下，这位。"
+    }
+  ]
+}

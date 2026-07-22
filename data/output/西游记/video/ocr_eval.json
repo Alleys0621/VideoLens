@@ -1,0 +1,223 @@
+{
+  "video": "西游记",
+  "metrics": {
+    "n_scenes": 434,
+    "n_midpoint": 434,
+    "n_switch": 0,
+    "n_silence": 0,
+    "n_ocr_hit": 175,
+    "n_ocr_hit_nonsilence": 175,
+    "hit_rate": 0.4032,
+    "hit_rate_nonsilence": 0.4032,
+    "n_ref_segments": 302,
+    "n_ref_matched": 106,
+    "recall": 0.351,
+    "char_precision": 0.8892,
+    "char_recall": 0.7307,
+    "char_f1": 0.8022,
+    "n_miss_candidates": 25,
+    "miss_rate": 0.0576
+  },
+  "miss_candidates": [
+    {
+      "index": 21,
+      "anchor_type": "midpoint",
+      "timestamp": 78.75,
+      "speaker_ref": null,
+      "ref_text": "下界是何声响？",
+      "anchor_text": null
+    },
+    {
+      "index": 24,
+      "anchor_type": "midpoint",
+      "timestamp": 87.683,
+      "speaker_ref": null,
+      "ref_text": "千里眼、顺风耳。",
+      "anchor_text": null
+    },
+    {
+      "index": 38,
+      "anchor_type": "midpoint",
+      "timestamp": 122.583,
+      "speaker_ref": null,
+      "ref_text": "不必管他。",
+      "anchor_text": null
+    },
+    {
+      "index": 88,
+      "anchor_type": "midpoint",
+      "timestamp": 280.65,
+      "speaker_ref": null,
+      "ref_text": "谁敢进去？",
+      "anchor_text": null
+    },
+    {
+      "index": 90,
+      "anchor_type": "midpoint",
+      "timestamp": 284.4,
+      "speaker_ref": null,
+      "ref_text": "我敢进去！",
+      "anchor_text": null
+    },
+    {
+      "index": 107,
+      "anchor_type": "midpoint",
+      "timestamp": 372.633,
+      "speaker_ref": null,
+      "ref_text": "石猴怕是出不来了。",
+      "anchor_text": null
+    },
+    {
+      "index": 184,
+      "anchor_type": "midpoint",
+      "timestamp": 788.9,
+      "speaker_ref": null,
+      "ref_text": "看这个啊",
+      "anchor_text": null
+    },
+    {
+      "index": 195,
+      "anchor_type": "midpoint",
+      "timestamp": 840.2,
+      "speaker_ref": null,
+      "ref_text": "慢点慢点。",
+      "anchor_text": null
+    },
+    {
+      "index": 200,
+      "anchor_type": "midpoint",
+      "timestamp": 857.75,
+      "speaker_ref": null,
+      "ref_text": "成精了！",
+      "anchor_text": null
+    },
+    {
+      "index": 202,
+      "anchor_type": "midpoint",
+      "timestamp": 862.733,
+      "speaker_ref": null,
+      "ref_text": "太好笑了。",
+      "anchor_text": null
+    },
+    {
+      "index": 205,
+      "anchor_type": "midpoint",
+      "timestamp": 873.05,
+      "speaker_ref": null,
+      "ref_text": "走，看看去。",
+      "anchor_text": null
+    },
+    {
+      "index": 214,
+      "anchor_type": "midpoint",
+      "timestamp": 931.083,
+      "speaker_ref": null,
+      "ref_text": "您每次起来这鱼就可新鲜了啊。",
+      "anchor_text": null
+    },
+    {
+      "index": 218,
+      "anchor_type": "midpoint",
+      "timestamp": 967.7,
+      "speaker_ref": null,
+      "ref_text": "来来来。",
+      "anchor_text": null
+    },
+    {
+      "index": 219,
+      "anchor_type": "midpoint",
+      "timestamp": 971.55,
+      "speaker_ref": null,
+      "ref_text": "喝喝喝。",
+      "anchor_text": null
+    },
+    {
+      "index": 254,
+      "anchor_type": "midpoint",
+      "timestamp": 1194.883,
+      "speaker_ref": null,
+      "ref_text": "老神仙",
+      "anchor_text": null
+    },
+    {
+      "index": 292,
+      "anchor_type": "midpoint",
+      "timestamp": 1417.817,
+      "speaker_ref": null,
+      "ref_text": "我看你相貌举止像个猢狲。",
+      "anchor_text": null
+    },
+    {
+      "index": 307,
+      "anchor_type": "midpoint",
+      "timestamp": 1479.733,
+      "speaker_ref": null,
+      "ref_text": "哈哈哈，你打我呀",
+      "anchor_text": null
+    },
+    {
+      "index": 341,
+      "anchor_type": "midpoint",
+      "timestamp": 1643.883,
+      "speaker_ref": null,
+      "ref_text": "弟子听到妙处，喜不自生，嗯，望师傅恕罪。",
+      "anchor_text": null
+    },
+    {
+      "index": 351,
+      "anchor_type": "midpoint",
+      "timestamp": 1733.95,
+      "speaker_ref": null,
+      "ref_text": "嗯，什么叫做水中捞月？嗯？",
+      "anchor_text": null
+    },
+    {
+      "index": 359,
+      "anchor_type": "midpoint",
+      "timestamp": 1803.1,
+      "speaker_ref": null,
+      "ref_text": "哼，你这猴子，竟敢冲撞师傅。",
+      "anchor_text": null
+    },
+    {
+      "index": 374,
+      "anchor_type": "midpoint",
+      "timestamp": 1918.683,
+      "speaker_ref": null,
+      "ref_text": "念你虔诚好学，就传些道术给你。",
+      "anchor_text": null
+    },
+    {
+      "index": 397,
+      "anchor_type": "midpoint",
+      "timestamp": 2085.483,
+      "speaker_ref": null,
+      "ref_text": "嗯。一个筋斗就是十万八千里呀。",
+      "anchor_text": null
+    },
+    {
+      "index": 400,
+      "anchor_type": "midpoint",
+      "timestamp": 2092.7,
+      "speaker_ref": null,
+      "ref_text": "嗯。一个筋斗就是十万八千里呀。",
+      "anchor_text": null
+    },
+    {
+      "index": 413,
+      "anchor_type": "midpoint",
+      "timestamp": 2135.783,
+      "speaker_ref": null,
+      "ref_text": "为什么在此喧哗？",
+      "anchor_text": null
+    },
+    {
+      "index": 423,
+      "anchor_type": "midpoint",
+      "timestamp": 2182.383,
+      "speaker_ref": null,
+      "ref_text": "从今往后，不准你说是我的徒弟。",
+      "anchor_text": null
+    }
+  ]
+}

@@ -1,0 +1,111 @@
+{
+  "video": "S1E3",
+  "metrics": {
+    "n_scenes": 424,
+    "n_midpoint": 264,
+    "n_switch": 139,
+    "n_silence": 21,
+    "n_ocr_hit": 384,
+    "n_ocr_hit_nonsilence": 384,
+    "hit_rate": 0.9057,
+    "hit_rate_nonsilence": 0.9529,
+    "n_ref_segments": 440,
+    "n_ref_matched": 160,
+    "recall": 0.3636,
+    "char_precision": 0.8501,
+    "char_recall": 0.7156,
+    "char_f1": 0.7771,
+    "n_miss_candidates": 11,
+    "miss_rate": 0.0273
+  },
+  "miss_candidates": [
+    {
+      "index": 205,
+      "anchor_type": "switch",
+      "timestamp": 588.956,
+      "speaker_ref": null,
+      "ref_text": "哎哎哎哎哎哎，你们俩干嘛呢？",
+      "anchor_text": ""
+    },
+    {
+      "index": 206,
+      "anchor_type": "midpoint",
+      "timestamp": 589.936,
+      "speaker_ref": null,
+      "ref_text": "哎哎哎哎哎哎，你们俩干嘛呢？",
+      "anchor_text": "哎哎哎哎哎，你们俩干嘛呢？"
+    },
+    {
+      "index": 269,
+      "anchor_type": "switch",
+      "timestamp": 801.272,
+      "speaker_ref": null,
+      "ref_text": "出来出来，三人都出来。",
+      "anchor_text": ""
+    },
+    {
+      "index": 270,
+      "anchor_type": "midpoint",
+      "timestamp": 803.125,
+      "speaker_ref": null,
+      "ref_text": "哎，刘星和小雪呢？",
+      "anchor_text": "哎，刘星和小雪呢？"
+    },
+    {
+      "index": 293,
+      "anchor_type": "midpoint",
+      "timestamp": 857.278,
+      "speaker_ref": null,
+      "ref_text": "哎，没没没没没没。",
+      "anchor_text": "嘿，你还不承认。"
+    },
+    {
+      "index": 355,
+      "anchor_type": "switch",
+      "timestamp": 1053.686,
+      "speaker_ref": null,
+      "ref_text": "哎，咱俩全变瞎子，假装什么也没看见。",
+      "anchor_text": ""
+    },
+    {
+      "index": 356,
+      "anchor_type": "midpoint",
+      "timestamp": 1056.87,
+      "speaker_ref": null,
+      "ref_text": "哎，哎你说他们从哪儿弄这么多老照片啊？",
+      "anchor_text": "哎，你说他们从哪儿弄这么多老照片啊？真行啊他们。"
+    },
+    {
+      "index": 366,
+      "anchor_type": "switch",
+      "timestamp": 1090.449,
+      "speaker_ref": null,
+      "ref_text": "可惜当时不属于我。",
+      "anchor_text": ""
+    },
+    {
+      "index": 367,
+      "anchor_type": "midpoint",
+      "timestamp": 1094.509,
+      "speaker_ref": null,
+      "ref_text": "哎呀，看你们俩这勾肩搭背手牵手的样，海誓山盟啊。",
+      "anchor_text": "呦呦呦，哎呦，看你们俩这勾肩搭背手牵手的样儿，海誓山盟啊。"
+    },
+    {
+      "index": 412,
+      "anchor_type": "switch",
+      "timestamp": 1256.606,
+      "speaker_ref": null,
+      "ref_text": "嗯，你们的全家福，那我就别跟着哄了。",
+      "anchor_text": ""
+    },
+    {
+      "index": 413,
+      "anchor_type": "midpoint",
+      "timestamp": 1257.266,
+      "speaker_ref": null,
+      "ref_text": "别走啊。",
+      "anchor_text": "哎哎哎，别走啊。"
+    }
+  ]
+}

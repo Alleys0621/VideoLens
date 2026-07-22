@@ -1,0 +1,151 @@
+{
+  "video": "S2E2",
+  "metrics": {
+    "n_scenes": 525,
+    "n_midpoint": 346,
+    "n_switch": 162,
+    "n_silence": 17,
+    "n_ocr_hit": 487,
+    "n_ocr_hit_nonsilence": 487,
+    "hit_rate": 0.9276,
+    "hit_rate_nonsilence": 0.9587,
+    "n_ref_segments": 403,
+    "n_ref_matched": 204,
+    "recall": 0.5062,
+    "char_precision": 0.7966,
+    "char_recall": 0.7146,
+    "char_f1": 0.7534,
+    "n_miss_candidates": 16,
+    "miss_rate": 0.0315
+  },
+  "miss_candidates": [
+    {
+      "index": 189,
+      "anchor_type": "switch",
+      "timestamp": 506.104,
+      "speaker_ref": null,
+      "ref_text": "就因为今天过年，所以要出去。",
+      "anchor_text": ""
+    },
+    {
+      "index": 190,
+      "anchor_type": "midpoint",
+      "timestamp": 507.635,
+      "speaker_ref": null,
+      "ref_text": "就因为今天过年，所以要出去。",
+      "anchor_text": "就因为今天过年，所以要出去。"
+    },
+    {
+      "index": 212,
+      "anchor_type": "midpoint",
+      "timestamp": 568.583,
+      "speaker_ref": null,
+      "ref_text": "哎，人就是聪明。",
+      "anchor_text": "哎，人就是聪明。"
+    },
+    {
+      "index": 236,
+      "anchor_type": "switch",
+      "timestamp": 648.428,
+      "speaker_ref": null,
+      "ref_text": "过年呢。",
+      "anchor_text": ""
+    },
+    {
+      "index": 237,
+      "anchor_type": "midpoint",
+      "timestamp": 649.394,
+      "speaker_ref": null,
+      "ref_text": "行行行行行。",
+      "anchor_text": "过年呢。"
+    },
+    {
+      "index": 254,
+      "anchor_type": "midpoint",
+      "timestamp": 685.871,
+      "speaker_ref": null,
+      "ref_text": "我走了啊。",
+      "anchor_text": "哎哎，啊？"
+    },
+    {
+      "index": 323,
+      "anchor_type": "switch",
+      "timestamp": 853.739,
+      "speaker_ref": null,
+      "ref_text": "哎，藏好了。",
+      "anchor_text": ""
+    },
+    {
+      "index": 324,
+      "anchor_type": "midpoint",
+      "timestamp": 854.891,
+      "speaker_ref": null,
+      "ref_text": "五、四、三、二、一。",
+      "anchor_text": "哎，放放放。"
+    },
+    {
+      "index": 343,
+      "anchor_type": "switch",
+      "timestamp": 911.243,
+      "speaker_ref": null,
+      "ref_text": "你说话呀。",
+      "anchor_text": ""
+    },
+    {
+      "index": 344,
+      "anchor_type": "midpoint",
+      "timestamp": 911.823,
+      "speaker_ref": null,
+      "ref_text": "警…黑猫警长！",
+      "anchor_text": "啊！啊！"
+    },
+    {
+      "index": 354,
+      "anchor_type": "midpoint",
+      "timestamp": 932.217,
+      "speaker_ref": null,
+      "ref_text": "快来看这小品多好玩。",
+      "anchor_text": "我们做的广告啊。"
+    },
+    {
+      "index": 355,
+      "anchor_type": "midpoint",
+      "timestamp": 934.032,
+      "speaker_ref": null,
+      "ref_text": "这上到天文下到地理。",
+      "anchor_text": "上到天安门下到地。"
+    },
+    {
+      "index": 360,
+      "anchor_type": "midpoint",
+      "timestamp": 947.933,
+      "speaker_ref": null,
+      "ref_text": "你让刘星接下电话。",
+      "anchor_text": "啊？"
+    },
+    {
+      "index": 476,
+      "anchor_type": "switch",
+      "timestamp": 1210.629,
+      "speaker_ref": null,
+      "ref_text": "哦，他在，你等一下啊。",
+      "anchor_text": ""
+    },
+    {
+      "index": 477,
+      "anchor_type": "midpoint",
+      "timestamp": 1214.109,
+      "speaker_ref": null,
+      "ref_text": "喂，谁呀？",
+      "anchor_text": "什么？"
+    },
+    {
+      "index": 487,
+      "anchor_type": "midpoint",
+      "timestamp": 1240.676,
+      "speaker_ref": null,
+      "ref_text": "哎呀，姥姥，他已经报警了。",
+      "anchor_text": "哈哈哈哈。"
+    }
+  ]
+}

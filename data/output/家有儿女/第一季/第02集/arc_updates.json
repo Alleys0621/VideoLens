@@ -1,0 +1,142 @@
+[
+  {
+    "arc_id": "arc_new_010",
+    "update_type": "resolved",
+    "title": "夏雪假扮男友风波与父母信任重建",
+    "type": "mystery",
+    "participants": [
+      "char_xia_xue",
+      "char_xia_donghai",
+      "char_liu_mei"
+    ],
+    "status": "resolved",
+    "first_seen_episode": "家有儿女/第一季/第02集",
+    "last_seen_episode": "家有儿女/第一季/第02集",
+    "summary": "夏雪雇佣路人假扮男友以测试父母反应并确立边界，引发家庭剧烈冲突。真相大白后，父母反思教育方式，宣布对夏雪实行“零限制”政策，双方达成初步信任和解。",
+    "key_milestones": [
+      "夏东海激烈反对夏雪带‘男友’回家并发生争吵",
+      "刘梅从路人处得知‘男友’实为雇来换讲题的托儿",
+      "父母向夏雪道歉并承诺不再干涉其隐私与社交自由"
+    ],
+    "related_event_ids": [
+      "家有儿女/第一季/第02集_e000",
+      "家有儿女/第一季/第02集_e005",
+      "家有儿女/第一季/第02集_e006",
+      "家有儿女/第一季/第02集_e014",
+      "家有儿女/第一季/第02集_e015",
+      "家有儿女/第一季/第02集_e021",
+      "家有儿女/第一季/第02集_e022"
+    ],
+    "outcome": "误会消除，父母给予夏雪充分信任与自由，家庭关系缓和。"
+  },
+  {
+    "arc_id": "arc_new_009",
+    "update_type": "progressing",
+    "title": "夏东海与刘梅教育理念碰撞与融合",
+    "type": "relationship",
+    "participants": [
+      "char_xia_donghai",
+      "char_liu_mei"
+    ],
+    "status": "progressing",
+    "first_seen_episode": "家有儿女/第一季/第02集",
+    "last_seen_episode": "家有儿女/第一季/第02集",
+    "summary": "面对夏雪的叛逆，夏东海主张宽容理解，刘梅初期焦虑强硬。经过争论与事件验证，两人最终在育儿成果上达成共识，确认了‘理智与情感结合’的教育方向。",
+    "key_milestones": [
+      "夫妻二人就如何处理夏雪早恋问题产生分歧与误会",
+      "夏东海提出‘智取’策略而非暴力压制",
+      "事后夫妻夜谈，共同肯定宽容教育的有效性"
+    ],
+    "related_event_ids": [
+      "家有儿女/第一季/第02集_e007",
+      "家有儿女/第一季/第02集_e008",
+      "家有儿女/第一季/第02集_e010",
+      "家有儿女/第一季/第02集_e036"
+    ],
+    "outcome": ""
+  },
+  {
+    "arc_id": "arc_new_005",
+    "update_type": "progressing",
+    "title": "夏雪在新家庭的边界试探与自我防御",
+    "type": "character_growth",
+    "participants": [
+      "char_xia_xue",
+      "char_xia_donghai",
+      "char_liu_mei"
+    ],
+    "status": "progressing",
+    "first_seen_episode": "家有儿女/第一季/第02集",
+    "last_seen_episode": "家有儿女/第一季/第02集",
+    "summary": "夏雪通过制造‘早恋’假象来反抗继父母的管束，以此测试家庭底线。在获得‘零限制’承诺后，她开始重新评估与新家庭成员的关系，防御心理略有松动但仍保持警惕。",
+    "key_milestones": [
+      "夏雪利用‘狂野男孩’作为挡箭牌对抗父亲权威",
+      "夏雪拒绝沟通并指责继母双标",
+      "获得自由承诺后，夏雪仍对家人保持距离感"
+    ],
+    "related_event_ids": [
+      "家有儿女/第一季/第02集_e005",
+      "家有儿女/第一季/第02集_e006",
+      "家有儿女/第一季/第02集_e024",
+      "家有儿女/第一季/第02集_e035"
+    ],
+    "outcome": ""
+  },
+  {
+    "arc_id": "arc_new_011",
+    "update_type": "new",
+    "title": "刘星对家庭双重标准的抗议与博弈",
+    "type": "conflict",
+    "participants": [
+      "char_liu_xing",
+      "char_xia_donghai",
+      "char_liu_mei",
+      "char_xia_xue"
+    ],
+    "status": "open",
+    "first_seen_episode": "家有儿女/第一季/第02集",
+    "last_seen_episode": "家有儿女/第一季/第02集",
+    "summary": "刘星目睹姐姐因‘早恋’未受罚反而获自由，感到极度不公。他试图模仿姐姐的行为（染发、见女友）来挑战父母权威，并引用‘只许州官放火’讽刺家庭双重标准。",
+    "key_milestones": [
+      "刘星预言姐姐受罚落空，感到困惑",
+      "刘星提出染发和见野蛮女友的要求被拒",
+      "刘星向夏雨灌输家庭不公观念并怂恿路人"
+    ],
+    "related_event_ids": [
+      "家有儿女/第一季/第02集_e018",
+      "家有儿女/第一季/第02集_e029",
+      "家有儿女/第一季/第02集_e039",
+      "家有儿女/第一季/第02集_e042",
+      "家有儿女/第一季/第02集_e043"
+    ],
+    "outcome": ""
+  },
+  {
+    "arc_id": "arc_new_012",
+    "update_type": "new",
+    "title": "夏雨的文化适应困境与社交误会",
+    "type": "character_growth",
+    "participants": [
+      "char_xia_yu",
+      "char_xia_donghai",
+      "char_liu_mei"
+    ],
+    "status": "open",
+    "first_seen_episode": "家有儿女/第一季/第02集",
+    "last_seen_episode": "家有儿女/第一季/第02集",
+    "summary": "刚回国的夏雨因美式直白表达方式（如直接表白、送戒指）在中国社交语境中引发严重误会，被误认为性骚扰。父母需不断为其文化差异造成的冲突进行善后与解释。",
+    "key_milestones": [
+      "夏雨向女孩多多直接表白引发对方家长愤怒",
+      "夏东海被指控管教不力，双方发生激烈冲突",
+      "父母努力向路人解释夏雨的文化背景与无心之失"
+    ],
+    "related_event_ids": [
+      "家有儿女/第一季/第02集_e045",
+      "家有儿女/第一季/第02集_e046",
+      "家有儿女/第一季/第02集_e047",
+      "家有儿女/第一季/第02集_e048",
+      "家有儿女/第一季/第02集_e050"
+    ],
+    "outcome": ""
+  }
+]

@@ -1,0 +1,168 @@
+[
+  {
+    "arc_id": "arc_new_005",
+    "update_type": "new",
+    "title": "夏雪初入重组家庭的抗拒与边界确立",
+    "type": "character_growth",
+    "participants": [
+      "char_xiaxue",
+      "char_liumei",
+      "char_xiadonghai"
+    ],
+    "status": "progressing",
+    "first_seen_episode": "家有儿女/第一季/第01集",
+    "last_seen_episode": "家有儿女/第一季/第01集",
+    "summary": "夏雪搬入新家，通过强调隐私权、拒绝过度照顾及展示优越感来确立自我边界，与刘梅的期待产生冲突，表现出明显的疏离与防御心理。",
+    "key_milestones": [
+      "夏雪提出进房间需敲门等独立条款",
+      "餐桌上拒绝刘梅夹菜并坚持自我习惯",
+      "以沉默和权利声明对抗父母的追问"
+    ],
+    "related_event_ids": [
+      "家有儿女/第一季/第01集_e020",
+      "家有儿女/第一季/第01集_e026",
+      "家有儿女/第一季/第01集_e031",
+      "家有儿女/第一季/第01集_e032",
+      "家有儿女/第一季/第01集_e034"
+    ],
+    "outcome": ""
+  },
+  {
+    "arc_id": "arc_new_006",
+    "update_type": "new",
+    "title": "刘梅适应继母角色的焦虑与努力",
+    "type": "character_growth",
+    "participants": [
+      "char_liumei",
+      "char_xiadonghai",
+      "char_xiaxue"
+    ],
+    "status": "progressing",
+    "first_seen_episode": "家有儿女/第一季/第01集",
+    "last_seen_episode": "家有儿女/第一季/第01集",
+    "summary": "刘梅面对突然增加的抚养压力感到震惊和恐惧，试图通过精心准备和热情招待来赢得继女认可，但在遭遇冷遇后感到委屈，最终在丈夫安抚下调整心态。",
+    "key_milestones": [
+      "得知要接小雪同住时震惊且身体虚弱",
+      "精心准备欢迎仪式和晚餐却遭冷遇",
+      "因小雪的态度感到委屈并在卧室哭泣"
+    ],
+    "related_event_ids": [
+      "家有儿女/第一季/第01集_e000",
+      "家有儿女/第一季/第01集_e002",
+      "家有儿女/第一季/第01集_e008",
+      "家有儿女/第一季/第01集_e025",
+      "家有儿女/第一季/第01集_e037",
+      "家有儿女/第一季/第01集_e041"
+    ],
+    "outcome": ""
+  },
+  {
+    "arc_id": "arc_new_007",
+    "update_type": "new",
+    "title": "夏雨对家庭归属感的早期探索",
+    "type": "relationship",
+    "participants": [
+      "char_xiaoyu",
+      "char_liumei",
+      "char_xiaxue"
+    ],
+    "status": "open",
+    "first_seen_episode": "家有儿女/第一季/第01集",
+    "last_seen_episode": "家有儿女/第一季/第01集",
+    "summary": "刚回国的夏雨因文化差异和生活习惯（如时差、蚊子咬）产生不安全感，怀疑自己是否被家庭接纳，通过与母亲和新姐姐的互动寻求确认。",
+    "key_milestones": [
+      "因蚊子只咬自己而怀疑身世",
+      "以时差为由拒绝上学引发父母争论",
+      "向夏雪确认在家是否受尊重"
+    ],
+    "related_event_ids": [
+      "家有儿女/第一季/第01集_e003",
+      "家有儿女/第一季/第01集_e004",
+      "家有儿女/第一季/第01集_e005",
+      "家有儿女/第一季/第01集_e024"
+    ],
+    "outcome": ""
+  },
+  {
+    "arc_id": "arc_new_008",
+    "update_type": "new",
+    "title": "刘星与夏雪的初次接触与试探",
+    "type": "relationship",
+    "participants": [
+      "char_liuxing",
+      "char_xiaxue"
+    ],
+    "status": "open",
+    "first_seen_episode": "家有儿女/第一季/第01集",
+    "last_seen_episode": "家有儿女/第一季/第01集",
+    "summary": "刘星对即将到来的姐姐既好奇又警惕，通过抢占床铺、表演欢迎节目等方式试探新成员，并在餐桌上因夏雪的优越感而感到地位受威胁。",
+    "key_milestones": [
+      "与夏雨抢占夏雪床铺",
+      "编排夸张欢迎节目被制止",
+      "因夏雪炫耀作文成绩而感到落差"
+    ],
+    "related_event_ids": [
+      "家有儿女/第一季/第01集_e010",
+      "家有儿女/第一季/第01集_e013",
+      "家有儿女/第一季/第01集_e030",
+      "家有儿女/第一季/第01集_e051"
+    ],
+    "outcome": ""
+  },
+  {
+    "arc_id": "arc_new_009",
+    "update_type": "new",
+    "title": "夏东海协调家庭矛盾的缓冲角色",
+    "type": "relationship",
+    "participants": [
+      "char_xiadonghai",
+      "char_liumei",
+      "char_xiaxue"
+    ],
+    "status": "progressing",
+    "first_seen_episode": "家有儿女/第一季/第01集",
+    "last_seen_episode": "家有儿女/第一季/第01集",
+    "summary": "夏东海在妻子刘梅的焦虑和女儿夏雪的冷漠之间充当调停者，通过幽默、赞美和承诺教育来缓解紧张气氛，努力维持家庭平衡。",
+    "key_milestones": [
+      "用诗意语言化解刘梅的育儿恐惧",
+      "在餐桌上提议干杯缓和尴尬气氛",
+      "承诺教育女儿并安抚委屈的刘梅"
+    ],
+    "related_event_ids": [
+      "家有儿女/第一季/第01集_e002",
+      "家有儿女/第一季/第01集_e008",
+      "家有儿女/第一季/第01集_e028",
+      "家有儿女/第一季/第01集_e037",
+      "家有儿女/第一季/第01集_e038"
+    ],
+    "outcome": ""
+  },
+  {
+    "arc_id": "arc_new_010",
+    "update_type": "new",
+    "title": "夏雪的神秘社交与早恋疑云",
+    "type": "mystery",
+    "participants": [
+      "char_xiaxue",
+      "char_xiadonghai",
+      "char_liumei"
+    ],
+    "status": "open",
+    "first_seen_episode": "家有儿女/第一季/第01集",
+    "last_seen_episode": "家有儿女/第一季/第01集",
+    "summary": "夏雪离家出走后迅速返回，并与神秘男孩进行染发暗号对接，随后带回家中介绍为男友，引发父母的高度紧张和猜测，埋下青春期叛逆伏笔。",
+    "key_milestones": [
+      "夏雪未告知家人独自离家",
+      "与路人男孩确认染发暗号",
+      "带'狂野男孩'回家并介绍为男友"
+    ],
+    "related_event_ids": [
+      "家有儿女/第一季/第01集_e042",
+      "家有儿女/第一季/第01集_e048",
+      "家有儿女/第一季/第01集_e053",
+      "家有儿女/第一季/第01集_e055",
+      "家有儿女/第一季/第01集_e056"
+    ],
+    "outcome": ""
+  }
+]

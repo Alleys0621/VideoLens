@@ -1,0 +1,1663 @@
+{
+  "video": "家有儿女/第二季/第004集",
+  "model": "qwen3.5-omni-plus",
+  "audio_duration": 1307.03,
+  "chunk_duration": 60.0,
+  "segments": [
+    {
+      "start_time": 6.483,
+      "end_time": 7.513,
+      "text": "我们家孩子也是。"
+    },
+    {
+      "start_time": 16.209,
+      "end_time": 19.469,
+      "text": "哎，您好，请问一下这是你们谁丢的鸭子啊？"
+    },
+    {
+      "start_time": 19.629,
+      "end_time": 20.589,
+      "text": "哎，这是我丢的。"
+    },
+    {
+      "start_time": 29.293,
+      "end_time": 30.133,
+      "text": "听话听话听话。"
+    },
+    {
+      "start_time": 36.707,
+      "end_time": 40.677,
+      "text": "妈妈的同事小蚂蚁来了，还推着一车礼物。"
+    },
+    {
+      "start_time": 41.347,
+      "end_time": 42.347,
+      "text": "一车礼物？"
+    },
+    {
+      "start_time": 42.847,
+      "end_time": 44.847,
+      "text": "对，可能还是好吃的。"
+    },
+    {
+      "start_time": 45.787,
+      "end_time": 46.707,
+      "text": "就知道吃。"
+    },
+    {
+      "start_time": 47.147,
+      "end_time": 49.547,
+      "text": "那怎么了？人家正是长身体的时候。"
+    },
+    {
+      "start_time": 49.547,
+      "end_time": 53.027,
+      "text": "刘姐，你看这临时通知加班，我又找不到人看他。"
+    },
+    {
+      "start_time": 53.507,
+      "end_time": 54.987,
+      "text": "所以啊，只好麻烦你了啊。"
+    },
+    {
+      "start_time": 54.987,
+      "end_time": 57.307,
+      "text": "哎呦，你放心吧，我特别喜欢带小孩。"
+    },
+    {
+      "start_time": 57.307,
+      "end_time": 57.787,
+      "text": "真的？"
+    },
+    {
+      "start_time": 59.147,
+      "end_time": 59.947,
+      "text": "好久都没带了。"
+    },
+    {
+      "start_time": 127.836,
+      "end_time": 129.836,
+      "text": "妈妈一会儿就回来。"
+    },
+    {
+      "start_time": 132.756,
+      "end_time": 133.836,
+      "text": "今儿你可有事干了啊。"
+    },
+    {
+      "start_time": 134.956,
+      "end_time": 136.156,
+      "text": "你看这孩子多好玩。"
+    },
+    {
+      "start_time": 137.516,
+      "end_time": 139.356,
+      "text": "小乖乖，叫爸爸。"
+    },
+    {
+      "start_time": 139.916,
+      "end_time": 140.636,
+      "text": "爸爸。"
+    },
+    {
+      "start_time": 142.076,
+      "end_time": 144.156,
+      "text": "哎呦，现在看着好家伙。"
+    },
+    {
+      "start_time": 144.636,
+      "end_time": 146.796,
+      "text": "弄这么个孩子可真够费劲的。"
+    },
+    {
+      "start_time": 146.796,
+      "end_time": 148.236,
+      "text": "这哪天能长大？"
+    },
+    {
+      "start_time": 149.116,
+      "end_time": 151.676,
+      "text": "替人看半天，你操这心干嘛？"
+    },
+    {
+      "start_time": 152.556,
+      "end_time": 154.316,
+      "text": "哎，想想咱家那仨。"
+    },
+    {
+      "start_time": 154.796,
+      "end_time": 158.236,
+      "text": "好家伙，都是从这么大一天一天弄起来的。"
+    },
+    {
+      "start_time": 158.636,
+      "end_time": 161.116,
+      "text": "多费劲呢，幸亏长大喽。"
+    },
+    {
+      "start_time": 161.756,
+      "end_time": 164.316,
+      "text": "幸亏长大喽，睡觉觉啊。"
+    },
+    {
+      "start_time": 170.553,
+      "end_time": 170.873,
+      "text": "喂。"
+    },
+    {
+      "start_time": 170.953,
+      "end_time": 171.353,
+      "text": "喂。"
+    },
+    {
+      "start_time": 171.593,
+      "end_time": 172.073,
+      "text": "啊是我。"
+    },
+    {
+      "start_time": 172.233,
+      "end_time": 172.953,
+      "text": "啊我是。"
+    },
+    {
+      "start_time": 173.193,
+      "end_time": 174.793,
+      "text": "是吗？好好好，我知道了。"
+    },
+    {
+      "start_time": 175.113,
+      "end_time": 176.073,
+      "text": "哦好，明白了。"
+    },
+    {
+      "start_time": 176.073,
+      "end_time": 177.033,
+      "text": "我马上来马上来。"
+    },
+    {
+      "start_time": 177.113,
+      "end_time": 177.833,
+      "text": "啊我这就来。"
+    },
+    {
+      "start_time": 178.633,
+      "end_time": 179.273,
+      "text": "我团里有事。"
+    },
+    {
+      "start_time": 179.273,
+      "end_time": 179.913,
+      "text": "哎呦我又。"
+    },
+    {
+      "start_time": 180.0,
+      "end_time": 180.81,
+      "text": "你找我？"
+    },
+    {
+      "start_time": 180.95,
+      "end_time": 181.76,
+      "text": "赶紧赶紧赶紧。"
+    },
+    {
+      "start_time": 191.324,
+      "end_time": 192.394,
+      "text": "我和妈妈有急事。"
+    },
+    {
+      "start_time": 192.434,
+      "end_time": 193.434,
+      "text": "现在我们要出去。"
+    },
+    {
+      "start_time": 193.514,
+      "end_time": 194.284,
+      "text": "拜拜。"
+    },
+    {
+      "start_time": 194.604,
+      "end_time": 196.894,
+      "text": "嘿，拜什么拜，我这还没说完呢。"
+    },
+    {
+      "start_time": 197.064,
+      "end_time": 198.974,
+      "text": "哎呀，您就放心吧。"
+    },
+    {
+      "start_time": 199.164,
+      "end_time": 201.994,
+      "text": "我们三个人经常自己在家，别担心别担心。"
+    },
+    {
+      "start_time": 201.994,
+      "end_time": 203.654,
+      "text": "就是的，有什么可担心的。"
+    },
+    {
+      "start_time": 204.384,
+      "end_time": 205.544,
+      "text": "我是担心你们吗？"
+    },
+    {
+      "start_time": 206.024,
+      "end_time": 207.384,
+      "text": "我是担心他。"
+    },
+    {
+      "start_time": 208.234,
+      "end_time": 209.994,
+      "text": "啊，原来是他呀。"
+    },
+    {
+      "start_time": 210.034,
+      "end_time": 211.154,
+      "text": "嗯，不就是他嘛。"
+    },
+    {
+      "start_time": 211.234,
+      "end_time": 213.384,
+      "text": "哎，你们谁爱推走谁推走，我没意见。"
+    },
+    {
+      "start_time": 215.194,
+      "end_time": 216.414,
+      "text": "嘿，瞧你说的。"
+    },
+    {
+      "start_time": 216.524,
+      "end_time": 218.474,
+      "text": "爸妈出去办事哪能带着他呀。"
+    },
+    {
+      "start_time": 218.514,
+      "end_time": 219.524,
+      "text": "就是。"
+    },
+    {
+      "start_time": 219.524,
+      "end_time": 221.004,
+      "text": "你看还是小雪懂事吧。"
+    },
+    {
+      "start_time": 221.004,
+      "end_time": 222.354,
+      "text": "大几岁就是不一样。"
+    },
+    {
+      "start_time": 222.834,
+      "end_time": 224.194,
+      "text": "那您想把他送哪去啊？"
+    },
+    {
+      "start_time": 224.234,
+      "end_time": 225.874,
+      "text": "您给我地址我帮您送也行啊。"
+    },
+    {
+      "start_time": 226.204,
+      "end_time": 226.514,
+      "text": "可以。"
+    },
+    {
+      "start_time": 227.244,
+      "end_time": 229.234,
+      "text": "哪儿也不能去，就在咱们家。"
+    },
+    {
+      "start_time": 229.964,
+      "end_time": 232.584,
+      "text": "他爸爸出差了，妈妈今天加班没办法。"
+    },
+    {
+      "start_time": 233.084,
+      "end_time": 233.714,
+      "text": "就在咱们家。"
+    },
+    {
+      "start_time": 234.664,
+      "end_time": 236.184,
+      "text": "那送给姥姥家呢？"
+    },
+    {
+      "start_time": 236.834,
+      "end_time": 237.794,
+      "text": "姥姥没在家。"
+    },
+    {
+      "start_time": 238.424,
+      "end_time": 239.674,
+      "text": "那送爷爷家呢？"
+    },
+    {
+      "start_time": 240.0,
+      "end_time": 241.24,
+      "text": "爷爷出门了。"
+    },
+    {
+      "start_time": 241.68,
+      "end_time": 242.52,
+      "text": "那我们就..."
+    },
+    {
+      "start_time": 242.08,
+      "end_time": 243.2,
+      "text": "什么也甭想了。"
+    },
+    {
+      "start_time": 243.68,
+      "end_time": 245.76,
+      "text": "孩子必须留在咱们家，明白吗？"
+    },
+    {
+      "start_time": 245.76,
+      "end_time": 246.88,
+      "text": "我和妈妈必须出门。"
+    },
+    {
+      "start_time": 247.52,
+      "end_time": 250.64,
+      "text": "嗨，说了半天不就是让我们看着他吗？"
+    },
+    {
+      "start_time": 251.12,
+      "end_time": 252.32,
+      "text": "没问题，交给我们。"
+    },
+    {
+      "start_time": 252.64,
+      "end_time": 254.08,
+      "text": "我们仨看一个，白玩儿。"
+    },
+    {
+      "start_time": 256.0,
+      "end_time": 257.12,
+      "text": "看孩子能叫玩吗？"
+    },
+    {
+      "start_time": 257.36,
+      "end_time": 259.92,
+      "text": "我告诉你啊，你们可不能乱玩，知道吗？"
+    },
+    {
+      "start_time": 260.16,
+      "end_time": 262.08,
+      "text": "看小孩这个事责任重大。"
+    },
+    {
+      "start_time": 262.4,
+      "end_time": 265.28,
+      "text": "你们呀，必须不能把他磕着碰着。"
+    },
+    {
+      "start_time": 265.28,
+      "end_time": 267.44,
+      "text": "哎呀呀呀呀，妈妈妈妈，行了行了。"
+    },
+    {
+      "start_time": 267.68,
+      "end_time": 269.68,
+      "text": "他连道都不会走呢，摔不着他。"
+    },
+    {
+      "start_time": 271.12,
+      "end_time": 271.36,
+      "text": "是。"
+    },
+    {
+      "start_time": 272.72,
+      "end_time": 273.04,
+      "text": "那成。"
+    },
+    {
+      "start_time": 273.76,
+      "end_time": 274.64,
+      "text": "那你们记住了啊。"
+    },
+    {
+      "start_time": 275.04,
+      "end_time": 277.76,
+      "text": "如果他要是哭，就说明饿了。"
+    },
+    {
+      "start_time": 277.76,
+      "end_time": 278.64,
+      "text": "给点奶吃就行了。"
+    },
+    {
+      "start_time": 279.6,
+      "end_time": 281.84,
+      "text": "如果吃完奶还哭，再给他点奶吃。"
+    },
+    {
+      "start_time": 282.4,
+      "end_time": 283.84,
+      "text": "如果他还哭，再吃。"
+    },
+    {
+      "start_time": 285.12,
+      "end_time": 285.84,
+      "text": "哭了就喂。"
+    },
+    {
+      "start_time": 286.4,
+      "end_time": 287.44,
+      "text": "喂了还哭还喂。"
+    },
+    {
+      "start_time": 287.6,
+      "end_time": 288.56,
+      "text": "喂了还哭还喂。"
+    },
+    {
+      "start_time": 289.68,
+      "end_time": 291.04,
+      "text": "那你不把他给撑死啊？"
+    },
+    {
+      "start_time": 292.24,
+      "end_time": 292.8,
+      "text": "能吗？"
+    },
+    {
+      "start_time": 296.56,
+      "end_time": 297.36,
+      "text": "哎，宝贝，快。"
+    },
+    {
+      "start_time": 297.92,
+      "end_time": 298.8,
+      "text": "哎哎，夏东海。"
+    },
+    {
+      "start_time": 299.6,
+      "end_time": 299.92,
+      "text": "你说..."
+    },
+    {
+      "start_time": 360.089,
+      "end_time": 363.119,
+      "text": "哎，小雨，看。"
+    },
+    {
+      "start_time": 363.659,
+      "end_time": 365.449,
+      "text": "是不是看这个很亲切呀？"
+    },
+    {
+      "start_time": 365.769,
+      "end_time": 367.829,
+      "text": "是不是去年还在用啊？"
+    },
+    {
+      "start_time": 376.149,
+      "end_time": 377.619,
+      "text": "哎呀，别闹了。"
+    },
+    {
+      "start_time": 377.799,
+      "end_time": 379.589,
+      "text": "你看你们都把他吵醒了。"
+    },
+    {
+      "start_time": 383.239,
+      "end_time": 384.869,
+      "text": "这这这这这怎么办啊？"
+    },
+    {
+      "start_time": 385.589,
+      "end_time": 386.819,
+      "text": "我哪知道啊？"
+    },
+    {
+      "start_time": 387.029,
+      "end_time": 389.089,
+      "text": "我只见大人抱着他哄呢。"
+    },
+    {
+      "start_time": 389.769,
+      "end_time": 391.549,
+      "text": "这这怎么抱啊？"
+    },
+    {
+      "start_time": 394.939,
+      "end_time": 395.849,
+      "text": "行行行行。"
+    },
+    {
+      "start_time": 396.979,
+      "end_time": 398.559,
+      "text": "可是拍多大劲儿啊？"
+    },
+    {
+      "start_time": 399.579,
+      "end_time": 400.299,
+      "text": "不知道。"
+    },
+    {
+      "start_time": 401.219,
+      "end_time": 401.639,
+      "text": "小东西。"
+    },
+    {
+      "start_time": 406.329,
+      "end_time": 409.049,
+      "text": "刘星，你想要铁砂掌拍他呀？"
+    },
+    {
+      "start_time": 409.379,
+      "end_time": 410.259,
+      "text": "你想拍死他。"
+    },
+    {
+      "start_time": 411.789,
+      "end_time": 413.139,
+      "text": "那怎么办呀这？"
+    },
+    {
+      "start_time": 413.629,
+      "end_time": 415.249,
+      "text": "哎呀，还是让我来吧。"
+    },
+    {
+      "start_time": 415.249,
+      "end_time": 416.409,
+      "text": "我来我来。"
+    },
+    {
+      "start_time": 418.259,
+      "end_time": 419.919,
+      "text": "我见到你很高兴。"
+    },
+    {
+      "start_time": 420.0,
+      "end_time": 422.16,
+      "text": "没反应吧。"
+    },
+    {
+      "start_time": 422.16,
+      "end_time": 423.95,
+      "text": "耐心耐心，等会儿。"
+    },
+    {
+      "start_time": 425.872,
+      "end_time": 428.312,
+      "text": "我是海龟靓仔夏雨。"
+    },
+    {
+      "start_time": 428.752,
+      "end_time": 433.232,
+      "text": "虽说海龟很多，靓仔也很多，"
+    },
+    {
+      "start_time": 433.792,
+      "end_time": 438.752,
+      "text": "但是像我这样又海龟又靓仔的人是很少的。"
+    },
+    {
+      "start_time": 440.496,
+      "end_time": 442.256,
+      "text": "认识我是你的荣幸。"
+    },
+    {
+      "start_time": 443.936,
+      "end_time": 446.416,
+      "text": "哼，这叫误导零岁儿童。"
+    },
+    {
+      "start_time": 448.496,
+      "end_time": 448.816,
+      "text": "嗯？"
+    },
+    {
+      "start_time": 451.216,
+      "end_time": 451.696,
+      "text": "嗯？"
+    },
+    {
+      "start_time": 453.216,
+      "end_time": 455.856,
+      "text": "哈哈，怎么样？睡着了吧？"
+    },
+    {
+      "start_time": 456.256,
+      "end_time": 460.656,
+      "text": "是我带磁性的声音让他进入了甜美的梦乡。"
+    },
+    {
+      "start_time": 465.936,
+      "end_time": 470.336,
+      "text": "嘿！我说怎么找不着你们俩了呢，"
+    },
+    {
+      "start_time": 470.336,
+      "end_time": 472.096,
+      "text": "原来跑这儿休闲来了。"
+    },
+    {
+      "start_time": 473.456,
+      "end_time": 477.456,
+      "text": "哎哟，小孩都吃饱喝足了，我们大人也应该歇会儿。"
+    },
+    {
+      "start_time": 477.456,
+      "end_time": 480.016,
+      "text": "就是，都吃饱喝..."
+    },
+    {
+      "start_time": 480.043,
+      "end_time": 481.893,
+      "text": "喝足睡着了还让我们看呢。"
+    },
+    {
+      "start_time": 483.863,
+      "end_time": 485.813,
+      "text": "你们觉得自己挺有理是不是啊？"
+    },
+    {
+      "start_time": 486.673,
+      "end_time": 487.723,
+      "text": "那是。"
+    },
+    {
+      "start_time": 488.573,
+      "end_time": 490.513,
+      "text": "你看人小孩多容易呀。"
+    },
+    {
+      "start_time": 491.233,
+      "end_time": 491.833,
+      "text": "真是。"
+    },
+    {
+      "start_time": 493.113,
+      "end_time": 494.113,
+      "text": "吃饱了就睡，"
+    },
+    {
+      "start_time": 494.493,
+      "end_time": 497.653,
+      "text": "也不吵着出去玩，也不闹着让咱给他讲故事。"
+    },
+    {
+      "start_time": 497.853,
+      "end_time": 498.253,
+      "text": "对呀。"
+    },
+    {
+      "start_time": 499.463,
+      "end_time": 502.183,
+      "text": "哎呀，可能我小时候就是这样，"
+    },
+    {
+      "start_time": 502.493,
+      "end_time": 504.473,
+      "text": "这么乖，哼，不让家长操心。"
+    },
+    {
+      "start_time": 505.383,
+      "end_time": 507.953,
+      "text": "我小时候也是这样，是个乖乖仔。"
+    },
+    {
+      "start_time": 509.533,
+      "end_time": 512.023,
+      "text": "就你俩现在这样，还还乖乖仔呢？"
+    },
+    {
+      "start_time": 513.403,
+      "end_time": 518.183,
+      "text": "要说我小时候嘛，是个乖乖女倒差不多。"
+    },
+    {
+      "start_time": 523.613,
+      "end_time": 524.513,
+      "text": "小青蛙在叫。"
+    },
+    {
+      "start_time": 525.543,
+      "end_time": 529.683,
+      "text": "什么呀？那个乖乖仔好像醒了。"
+    },
+    {
+      "start_time": 601.523,
+      "end_time": 606.083,
+      "text": "刘星，我觉得吧，这种事还是你比较合适。"
+    },
+    {
+      "start_time": 606.083,
+      "end_time": 606.403,
+      "text": "来来来，你来。"
+    },
+    {
+      "start_time": 606.403,
+      "end_time": 608.323,
+      "text": "我一男人我没干过这个。"
+    },
+    {
+      "start_time": 608.793,
+      "end_time": 612.643,
+      "text": "刘星，我一直以为你是一个心灵手巧的男生。"
+    },
+    {
+      "start_time": 612.643,
+      "end_time": 614.083,
+      "text": "所以我觉得还是你比较合适。"
+    },
+    {
+      "start_time": 614.083,
+      "end_time": 615.043,
+      "text": "来来来，你比较合适。"
+    },
+    {
+      "start_time": 615.043,
+      "end_time": 615.683,
+      "text": "来来来来来。"
+    },
+    {
+      "start_time": 617.363,
+      "end_time": 619.203,
+      "text": "哎呀，不就换块破尿布吗？"
+    },
+    {
+      "start_time": 622.083,
+      "end_time": 624.003,
+      "text": "换就换，拿个新的来。"
+    },
+    {
+      "start_time": 624.003,
+      "end_time": 625.443,
+      "text": "来来来，这个这个。"
+    },
+    {
+      "start_time": 632.483,
+      "end_time": 638.403,
+      "text": "哎哎，那个，呃，在你换新的之前，是不是先把那个旧的给换下来呀？"
+    },
+    {
+      "start_time": 640.083,
+      "end_time": 642.323,
+      "text": "我这不是正准备换呢吗？帮我拿着。"
+    },
+    {
+      "start_time": 649.603,
+      "end_time": 651.843,
+      "text": "这玩意儿，这放哪儿啊？"
+    },
+    {
+      "start_time": 653.283,
+      "end_time": 654.803,
+      "text": "啊，放放放放桌子上，放这儿。"
+    },
+    {
+      "start_time": 654.803,
+      "end_time": 656.243,
+      "text": "来来来，放那儿放那儿。"
+    },
+    {
+      "start_time": 701.533,
+      "end_time": 702.063,
+      "text": "哎？"
+    },
+    {
+      "start_time": 704.273,
+      "end_time": 705.833,
+      "text": "着了。"
+    },
+    {
+      "start_time": 709.833,
+      "end_time": 711.523,
+      "text": "啊，累死了。"
+    },
+    {
+      "start_time": 720.573,
+      "end_time": 721.073,
+      "text": "你醒了。"
+    },
+    {
+      "start_time": 722.223,
+      "end_time": 725.673,
+      "text": "就你现在这个模样，可真不怎么好看。"
+    },
+    {
+      "start_time": 728.063,
+      "end_time": 729.683,
+      "text": "像累坏的小狗。"
+    },
+    {
+      "start_time": 732.143,
+      "end_time": 733.253,
+      "text": "嗯，我也是小狗。"
+    },
+    {
+      "start_time": 736.293,
+      "end_time": 739.463,
+      "text": "啊，这孩子太难看了。"
+    },
+    {
+      "start_time": 740.453,
+      "end_time": 741.713,
+      "text": "这哪是小孩啊？"
+    },
+    {
+      "start_time": 742.043,
+      "end_time": 745.323,
+      "text": "简直就是一个小魔鬼。"
+    },
+    {
+      "start_time": 745.623,
+      "end_time": 748.983,
+      "text": "难道咱们小时候也是小魔鬼吗？"
+    },
+    {
+      "start_time": 749.913,
+      "end_time": 750.953,
+      "text": "不知道。"
+    },
+    {
+      "start_time": 751.693,
+      "end_time": 754.693,
+      "text": "但我知道他终于睡着了。"
+    },
+    {
+      "start_time": 773.135,
+      "end_time": 774.205,
+      "text": "怎么又醒了？"
+    },
+    {
+      "start_time": 774.205,
+      "end_time": 776.965,
+      "text": "小祖宗你别哭了。"
+    },
+    {
+      "start_time": 777.775,
+      "end_time": 779.275,
+      "text": "拜托您了。"
+    },
+    {
+      "start_time": 780.0,
+      "end_time": 781.234,
+      "text": "吃也吃了，喝也喝了"
+    },
+    {
+      "start_time": 781.234,
+      "end_time": 783.89,
+      "text": "拉也拉了，尿也尿了"
+    },
+    {
+      "start_time": 783.89,
+      "end_time": 786.546,
+      "text": "还弄我一手粑粑"
+    },
+    {
+      "start_time": 786.546,
+      "end_time": 788.762,
+      "text": "哎呀，特别臭"
+    },
+    {
+      "start_time": 788.762,
+      "end_time": 790.978,
+      "text": "你就别哭了，我求求你了"
+    },
+    {
+      "start_time": 790.978,
+      "end_time": 793.194,
+      "text": "哄哄他，快哄哄他"
+    },
+    {
+      "start_time": 793.194,
+      "end_time": 795.41,
+      "text": "哎呦，快点儿"
+    },
+    {
+      "start_time": 795.41,
+      "end_time": 797.626,
+      "text": "笑一个，笑一个"
+    },
+    {
+      "start_time": 797.626,
+      "end_time": 799.842,
+      "text": "别哭了，笑一个"
+    },
+    {
+      "start_time": 799.842,
+      "end_time": 802.058,
+      "text": "别哭了，你看呀"
+    },
+    {
+      "start_time": 802.058,
+      "end_time": 804.274,
+      "text": "笑笑在这给你磕头了"
+    },
+    {
+      "start_time": 804.274,
+      "end_time": 806.49,
+      "text": "给你磕了，磕头了"
+    },
+    {
+      "start_time": 806.49,
+      "end_time": 808.706,
+      "text": "磕了，磕了"
+    },
+    {
+      "start_time": 808.706,
+      "end_time": 810.922,
+      "text": "笑一个，笑一个"
+    },
+    {
+      "start_time": 810.922,
+      "end_time": 813.138,
+      "text": "笑一个，笑一个"
+    },
+    {
+      "start_time": 813.138,
+      "end_time": 815.354,
+      "text": "别哭了，笑一个"
+    },
+    {
+      "start_time": 815.354,
+      "end_time": 817.57,
+      "text": "我抱不动了"
+    },
+    {
+      "start_time": 817.57,
+      "end_time": 819.786,
+      "text": "哎呀我的妈呀"
+    },
+    {
+      "start_time": 819.786,
+      "end_time": 822.002,
+      "text": "怎么办呀"
+    },
+    {
+      "start_time": 822.002,
+      "end_time": 824.218,
+      "text": "哎，谁会唱摇篮曲"
+    },
+    {
+      "start_time": 845.728,
+      "end_time": 846.918,
+      "text": "这都可以改编呀。"
+    },
+    {
+      "start_time": 850.948,
+      "end_time": 854.338,
+      "text": "请你快快睡吧。"
+    },
+    {
+      "start_time": 854.838,
+      "end_time": 857.918,
+      "text": "求你快快睡吧。"
+    },
+    {
+      "start_time": 858.668,
+      "end_time": 862.258,
+      "text": "请你快快睡吧。"
+    },
+    {
+      "start_time": 862.568,
+      "end_time": 866.548,
+      "text": "请你快快睡吧。"
+    },
+    {
+      "start_time": 878.94,
+      "end_time": 880.4,
+      "text": "救命啊！"
+    },
+    {
+      "start_time": 884.54,
+      "end_time": 886.26,
+      "text": "早知道我就不干了。"
+    },
+    {
+      "start_time": 887.38,
+      "end_time": 888.5,
+      "text": "怎么办怎么办？"
+    },
+    {
+      "start_time": 889.94,
+      "end_time": 892.18,
+      "text": "有了，橡皮鸭子。"
+    },
+    {
+      "start_time": 894.18,
+      "end_time": 895.54,
+      "text": "橡皮鸭子橡皮鸭子。"
+    },
+    {
+      "start_time": 961.644,
+      "end_time": 962.504,
+      "text": "我也得哭。"
+    },
+    {
+      "start_time": 963.204,
+      "end_time": 965.774,
+      "text": "哎，啊，你们回来呀！"
+    },
+    {
+      "start_time": 969.772,
+      "end_time": 971.832,
+      "text": "男人就是靠不住。"
+    },
+    {
+      "start_time": 981.485,
+      "end_time": 984.235,
+      "text": "哎呦，可算逃出来了。"
+    },
+    {
+      "start_time": 985.445,
+      "end_time": 986.965,
+      "text": "外面真清静。"
+    },
+    {
+      "start_time": 988.135,
+      "end_time": 990.975,
+      "text": "哇，鸟叫声真动听啊。"
+    },
+    {
+      "start_time": 991.615,
+      "end_time": 995.055,
+      "text": "是啊，真动听啊。"
+    },
+    {
+      "start_time": 997.933,
+      "end_time": 1003.613,
+      "text": "哎，咱把小雪和那娃儿娃儿娃儿娃儿搁一块儿，是不是有点不够意思呀？"
+    },
+    {
+      "start_time": 1004.413,
+      "end_time": 1009.293,
+      "text": "我实在受不了那娃儿娃儿娃儿娃儿，不逃出来也得拿脑袋撞墙。"
+    },
+    {
+      "start_time": 1010.413,
+      "end_time": 1014.413,
+      "text": "我跟你有同感，那娃儿娃儿娃儿简直简简直能让人发疯。"
+    },
+    {
+      "start_time": 1016.336,
+      "end_time": 1019.696,
+      "text": "走喽，菲菲玩去喽，妈妈带着玩去喽。"
+    },
+    {
+      "start_time": 1020.32,
+      "end_time": 1021.07,
+      "text": "走喽。"
+    },
+    {
+      "start_time": 1023.36,
+      "end_time": 1024.58,
+      "text": "啊，真乖。"
+    },
+    {
+      "start_time": 1031.391,
+      "end_time": 1035.541,
+      "text": "人家的小孩儿怎么都不哇哇哇啊？"
+    },
+    {
+      "start_time": 1036.131,
+      "end_time": 1039.161,
+      "text": "这怎么一个哇哇哇都没有啊？"
+    },
+    {
+      "start_time": 1040.291,
+      "end_time": 1041.191,
+      "text": "哦，我明白了。"
+    },
+    {
+      "start_time": 1041.971,
+      "end_time": 1043.741,
+      "text": "这个小孩儿啊就跟小狗一样，"
+    },
+    {
+      "start_time": 1043.741,
+      "end_time": 1045.541,
+      "text": "每天都得都得出来溜达溜达。"
+    },
+    {
+      "start_time": 1047.061,
+      "end_time": 1048.851,
+      "text": "哎呀，你就听我的吧，"
+    },
+    {
+      "start_time": 1048.851,
+      "end_time": 1049.431,
+      "text": "绝对没错。"
+    },
+    {
+      "start_time": 1049.831,
+      "end_time": 1051.911,
+      "text": "走，咱赶紧把咱那哇哇给推出去。"
+    },
+    {
+      "start_time": 1056.889,
+      "end_time": 1057.649,
+      "text": "快快快快快。"
+    },
+    {
+      "start_time": 1059.349,
+      "end_time": 1061.369,
+      "text": "这我们家孩子，他老哭。"
+    },
+    {
+      "start_time": 1061.659,
+      "end_time": 1062.589,
+      "text": "抱起来哄哄他。"
+    },
+    {
+      "start_time": 1062.949,
+      "end_time": 1064.439,
+      "text": "抱起来哄哄哄他。"
+    },
+    {
+      "start_time": 1065.339,
+      "end_time": 1066.409,
+      "text": "怎么抱啊？"
+    },
+    {
+      "start_time": 1066.859,
+      "end_time": 1068.309,
+      "text": "托他脖子轻轻地抱起来。"
+    },
+    {
+      "start_time": 1068.439,
+      "end_time": 1070.039,
+      "text": "啊，慢一点，托脖子。"
+    },
+    {
+      "start_time": 1070.239,
+      "end_time": 1071.399,
+      "text": "哎，托他的脖子。"
+    },
+    {
+      "start_time": 1074.289,
+      "end_time": 1075.139,
+      "text": "慢点慢点。"
+    },
+    {
+      "start_time": 1076.339,
+      "end_time": 1077.639,
+      "text": "哎，拍拍他哄哄他。"
+    },
+    {
+      "start_time": 1077.989,
+      "end_time": 1079.779,
+      "text": "哎，您借我这鸭子用用。"
+    },
+    {
+      "start_time": 1080.0,
+      "end_time": 1081.43,
+      "text": "啊谢谢，咱回家了啊。"
+    },
+    {
+      "start_time": 1080.67,
+      "end_time": 1081.28,
+      "text": "咱回家了啊。"
+    },
+    {
+      "start_time": 1087.41,
+      "end_time": 1089.35,
+      "text": "看看，你看哎。"
+    },
+    {
+      "start_time": 1089.35,
+      "end_time": 1090.91,
+      "text": "看看，看看。"
+    },
+    {
+      "start_time": 1092.11,
+      "end_time": 1092.87,
+      "text": "看看哎。"
+    },
+    {
+      "start_time": 1107.953,
+      "end_time": 1108.693,
+      "text": "回来啦。"
+    },
+    {
+      "start_time": 1109.503,
+      "end_time": 1110.583,
+      "text": "哟，睡着了？"
+    },
+    {
+      "start_time": 1110.693,
+      "end_time": 1111.153,
+      "text": "睡着了。"
+    },
+    {
+      "start_time": 1119.815,
+      "end_time": 1120.995,
+      "text": "我的小乖宝贝们啊。"
+    },
+    {
+      "start_time": 1120.995,
+      "end_time": 1122.545,
+      "text": "怎么样啊？小宝宝乖不乖？"
+    },
+    {
+      "start_time": 1122.795,
+      "end_time": 1126.075,
+      "text": "嘘，睡着了。"
+    },
+    {
+      "start_time": 1128.446,
+      "end_time": 1129.706,
+      "text": "睡着了。"
+    },
+    {
+      "start_time": 1132.727,
+      "end_time": 1134.597,
+      "text": "哎呦喂，睡得真香哎。"
+    },
+    {
+      "start_time": 1135.027,
+      "end_time": 1136.497,
+      "text": "干得不错，应该表扬啊。"
+    },
+    {
+      "start_time": 1136.587,
+      "end_time": 1137.397,
+      "text": "真是的。"
+    },
+    {
+      "start_time": 1139.498,
+      "end_time": 1140.008,
+      "text": "他是不是..."
+    },
+    {
+      "start_time": 1140.0,
+      "end_time": 1140.48,
+      "text": "特别乖。"
+    },
+    {
+      "start_time": 1141.04,
+      "end_time": 1141.28,
+      "text": "啊？"
+    },
+    {
+      "start_time": 1141.76,
+      "end_time": 1143.92,
+      "text": "哎呦喂，怎么回事？你这怎么了？"
+    },
+    {
+      "start_time": 1143.92,
+      "end_time": 1145.28,
+      "text": "闹了！哎呀！"
+    },
+    {
+      "start_time": 1147.92,
+      "end_time": 1149.28,
+      "text": "小点声，睡着呢。"
+    },
+    {
+      "start_time": 1150.0,
+      "end_time": 1151.6,
+      "text": "哎，妈妈妈妈妈妈妈妈妈。"
+    },
+    {
+      "start_time": 1151.84,
+      "end_time": 1152.32,
+      "text": "干嘛呀？"
+    },
+    {
+      "start_time": 1152.56,
+      "end_time": 1154.16,
+      "text": "哎，爸爸爸爸爸爸爸爸爸。"
+    },
+    {
+      "start_time": 1154.32,
+      "end_time": 1154.96,
+      "text": "干嘛干嘛？"
+    },
+    {
+      "start_time": 1155.6,
+      "end_time": 1158.56,
+      "text": "嘿，就就就他，整个一男高音。"
+    },
+    {
+      "start_time": 1158.56,
+      "end_time": 1160.16,
+      "text": "整个一猫王。"
+    },
+    {
+      "start_time": 1160.8,
+      "end_time": 1162.88,
+      "text": "我小时候也也也这么招人烦。"
+    },
+    {
+      "start_time": 1163.28,
+      "end_time": 1165.2,
+      "text": "爸，我小时候也这样吗？"
+    },
+    {
+      "start_time": 1165.44,
+      "end_time": 1167.04,
+      "text": "你小时候比他还淘。"
+    },
+    {
+      "start_time": 1167.28,
+      "end_time": 1167.68,
+      "text": "知道吗？"
+    },
+    {
+      "start_time": 1168.0,
+      "end_time": 1169.44,
+      "text": "爸，您可不知道啊。"
+    },
+    {
+      "start_time": 1169.52,
+      "end_time": 1173.12,
+      "text": "就因为他，我们几个这精神就差点崩溃了。"
+    },
+    {
+      "start_time": 1173.44,
+      "end_time": 1175.44,
+      "text": "这刘星和小雨还当了一段逃兵呢。"
+    },
+    {
+      "start_time": 1176.48,
+      "end_time": 1177.36,
+      "text": "哦，怎么回事？"
+    },
+    {
+      "start_time": 1178.08,
+      "end_time": 1180.96,
+      "text": "不过我又将功补过，想出了一个好点子。"
+    },
+    {
+      "start_time": 1181.2,
+      "end_time": 1183.2,
+      "text": "对对对对，后来我们又挺过来了。"
+    },
+    {
+      "start_time": 1184.4,
+      "end_time": 1185.44,
+      "text": "找到了一个诀窍。"
+    },
+    {
+      "start_time": 1185.68,
+      "end_time": 1187.04,
+      "text": "嗯？什么诀窍？"
+    },
+    {
+      "start_time": 1187.68,
+      "end_time": 1190.88,
+      "text": "我发现呀，这个小不点需要和同龄人亲密接触。"
+    },
+    {
+      "start_time": 1190.88,
+      "end_time": 1191.84,
+      "text": "对对对对对对对。"
+    },
+    {
+      "start_time": 1192.08,
+      "end_time": 1196.64,
+      "text": "哎妈，我刚看了他这么一会儿，我就知道了，你们当父母的太不容易了。"
+    },
+    {
+      "start_time": 1197.36,
+      "end_time": 1198.24,
+      "text": "哎，来，拥抱一个。"
+    },
+    {
+      "start_time": 1200.48,
+      "end_time": 1202.32,
+      "text": "爸爸妈妈，你们实在是太伟大了。"
+    },
+    {
+      "start_time": 1202.32,
+      "end_time": 1202.72,
+      "text": "来，抱抱。"
+    },
+    {
+      "start_time": 1202.72,
+      "end_time": 1204.16,
+      "text": "好好好，抱抱抱抱抱。"
+    },
+    {
+      "start_time": 1204.48,
+      "end_time": 1206.8,
+      "text": "还有我姥姥姥爷爷爷奶奶也太伟大了。"
+    },
+    {
+      "start_time": 1207.04,
+      "end_time": 1208.56,
+      "text": "既然他们没来，那我就再拥抱一个。"
+    },
+    {
+      "start_time": 1210.24,
+      "end_time": 1211.04,
+      "text": "那我也再拥抱一个。"
+    },
+    {
+      "start_time": 1211.04,
+      "end_time": 1212.0,
+      "text": "好，再拥抱一个。"
+    },
+    {
+      "start_time": 1212.0,
+      "end_time": 1213.68,
+      "text": "哎哎哎，夏东海，你看看。"
+    },
+    {
+      "start_time": 1214.16,
+      "end_time": 1216.88,
+      "text": "让孩子们看这小不点看这么短时间，"
+    },
+    {
+      "start_time": 1217.36,
+      "end_time": 1219.04,
+      "text": "就连爸爸妈妈不容易，"
+    },
+    {
+      "start_time": 1219.04,
+      "end_time": 1221.6,
+      "text": "爷爷奶奶姥姥姥爷不容易都想起来了。"
+    },
+    {
+      "start_time": 1221.6,
+      "end_time": 1224.8,
+      "text": "行，我看啊，必须得给点奖励。"
+    },
+    {
+      "start_time": 1225.28,
+      "end_time": 1225.6,
+      "text": "没错。"
+    },
+    {
+      "start_time": 1226.32,
+      "end_time": 1228.08,
+      "text": "呃，说吧，你们想要什么？"
+    },
+    {
+      "start_time": 1231.52,
+      "end_time": 1232.24,
+      "text": "可能是小马来了。"
+    },
+    {
+      "start_time": 1232.4,
+      "end_time": 1232.56,
+      "text": "啊？"
+    },
+    {
+      "start_time": 1232.8,
+      "end_time": 1233.28,
+      "text": "肯定是。"
+    },
+    {
+      "start_time": 1235.12,
+      "end_time": 1236.4,
+      "text": "真棒，你们真乖。"
+    },
+    {
+      "start_time": 1237.68,
+      "end_time": 1238.8,
+      "text": "哟，哎呀，小马。"
+    },
+    {
+      "start_time": 1238.8,
+      "end_time": 1239.6,
+      "text": "都在呢。"
+    },
+    {
+      "start_time": 1239.6,
+      "end_time": 1240.32,
+      "text": "辛苦了啊。"
+    },
+    {
+      "start_time": 1240.32,
+      "end_time": 1241.6,
+      "text": "睡了。"
+    },
+    {
+      "start_time": 1241.76,
+      "end_time": 1242.08,
+      "text": "是吗？"
+    },
+    {
+      "start_time": 1242.08,
+      "end_time": 1242.8,
+      "text": "啊，我看看。"
+    },
+    {
+      "start_time": 1242.8,
+      "end_time": 1243.68,
+      "text": "可乖了。"
+    },
+    {
+      "start_time": 1247.12,
+      "end_time": 1247.92,
+      "text": "这怎么回事啊？"
+    },
+    {
+      "start_time": 1248.16,
+      "end_time": 1248.56,
+      "text": "怎么了？"
+    },
+    {
+      "start_time": 1248.56,
+      "end_time": 1248.96,
+      "text": "怎么了？"
+    },
+    {
+      "start_time": 1250.48,
+      "end_time": 1251.36,
+      "text": "啊？怎么了？"
+    },
+    {
+      "start_time": 1251.36,
+      "end_time": 1251.84,
+      "text": "怎么了？"
+    },
+    {
+      "start_time": 1252.48,
+      "end_time": 1253.92,
+      "text": "他不是我们家宝宝呀。"
+    },
+    {
+      "start_time": 1253.92,
+      "end_time": 1256.8,
+      "text": "啊？怎么了？这不就是他吗？"
+    },
+    {
+      "start_time": 1256.8,
+      "end_time": 1257.28,
+      "text": "是啊。"
+    },
+    {
+      "start_time": 1257.28,
+      "end_time": 1259.92,
+      "text": "哎呦，我自己生的孩子我能不知道吗？"
+    },
+    {
+      "start_time": 1260.24,
+      "end_time": 1261.28,
+      "text": "这不是我们家宝宝。"
+    },
+    {
+      "start_time": 1261.36,
+      "end_time": 1262.24,
+      "text": "绝对不是。"
+    },
+    {
+      "start_time": 1262.56,
+      "end_time": 1264.16,
+      "text": "啊？怎么回事啊？"
+    },
+    {
+      "start_time": 1265.36,
+      "end_time": 1266.0,
+      "text": "怎么回事啊？"
+    },
+    {
+      "start_time": 1266.4,
+      "end_time": 1267.52,
+      "text": "怎么回事啊？"
+    },
+    {
+      "start_time": 1268.72,
+      "end_time": 1269.68,
+      "text": "问你们呢。"
+    },
+    {
+      "start_time": 1270.48,
+      "end_time": 1273.28,
+      "text": "这...这...这怎么不是啊？"
+    },
+    {
+      "start_time": 1273.28,
+      "end_time": 1274.08,
+      "text": "就是他呀。"
+    },
+    {
+      "start_time": 1274.08,
+      "end_time": 1275.12,
+      "text": "差不多。"
+    },
+    {
+      "start_time": 1278.0,
+      "end_time": 1280.56,
+      "text": "我记得咱们出门之前这个球是红的。"
+    },
+    {
+      "start_time": 1281.04,
+      "end_time": 1282.48,
+      "text": "现在怎么变成蓝色的了？"
+    },
+    {
+      "start_time": 1286.96,
+      "end_time": 1288.08,
+      "text": "肯定是咱们弄错了。"
+    },
+    {
+      "start_time": 1288.08,
+      "end_time": 1289.2,
+      "text": "我赶紧把帽子换回来。"
+    },
+    {
+      "start_time": 1289.2,
+      "end_time": 1289.6,
+      "text": "站住！"
+    },
+    {
+      "start_time": 1289.92,
+      "end_time": 1290.64,
+      "text": "换什么帽子？"
+    },
+    {
+      "start_time": 1290.64,
+      "end_time": 1292.08,
+      "text": "赶紧把孩子换回来吧。"
+    },
+    {
+      "start_time": 1292.08,
+      "end_time": 1292.48,
+      "text": "对呀。"
+    },
+    {
+      "start_time": 1299.244,
+      "end_time": 1301.244,
+      "text": "你们忘带这个啦！"
+    }
+  ]
+}

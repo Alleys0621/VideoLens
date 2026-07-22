@@ -25,6 +25,7 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { getApiKey } from "@/lib/api-key";
 import { useThreads } from "./Thread";
 import { toast } from "sonner";
+import { useAbsoluteApiUrl } from "@/hooks/useAbsoluteApiUrl";
 
 export type StateType = { messages: Message[]; ui?: UIMessage[] };
 
@@ -181,6 +182,10 @@ export const StreamProvider: React.FC<{ children: ReactNode }> = ({
   const finalAssistantId = assistantId || envAssistantId;
   const finalAuthScheme = authScheme || envAuthScheme || "";
 
+  // 相对路径 (/api) 转绝对 — langgraph SDK 内部 new URL() 不支持相对路径
+  // SSR 阶段返回 null, 客户端 mount 后才有值
+  const absoluteApiUrl = useAbsoluteApiUrl(finalApiUrl);
+
   // Show the form if we: don't have an API URL, or don't have an assistant ID
   if (!finalApiUrl || !finalAssistantId) {
     return (
@@ -302,10 +307,19 @@ export const StreamProvider: React.FC<{ children: ReactNode }> = ({
     );
   }
 
+  // SSR 阶段或第一次渲染时 absoluteApiUrl 还是 null — 显示 loading, 避免传相对路径给 SDK
+  if (!absoluteApiUrl) {
+    return (
+      <div className="flex min-h-screen w-full items-center justify-center">
+        <div className="text-muted-foreground text-sm">Loading...</div>
+      </div>
+    );
+  }
+
   return (
     <StreamSession
       apiKey={apiKey}
-      apiUrl={finalApiUrl}
+      apiUrl={absoluteApiUrl}
       assistantId={finalAssistantId}
       authScheme={finalAuthScheme || undefined}
     >

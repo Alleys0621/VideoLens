@@ -17,6 +17,7 @@ from __future__ import annotations
 import os
 import re
 import threading
+from datetime import datetime
 
 from src.core.config import get_config
 from src.core.helpers.json_utils import load_json
@@ -32,18 +33,8 @@ from src.agent.mem0_client import search_relevant_memories, add_conversation_mem
 # BM25 score 阈值: top1 >= 此值走 KB 模式 (经验值, 第一季数据 top1~9, 不相关 <3)
 # 降到 2.0: 让泛化/弱相关查询也走 KB (避免频繁拒答), LLM 自己判断相关性
 KB_SCORE_THRESHOLD = 2.0
-
-# 元问题检测: "这集讲了什么/梗概/剧情" 等 → 用 video_summary 回答 (不走 BM25, 避免误拒答)
-_META_QUERY_RE = re.compile(
-    r"这集|讲了什么|什么故事|梗概|总结|剧情|讲的啥|主要内容|关于什么|大概讲的|什么内容"
-)
-
-# 闲聊检测: 打招呼 / 情绪 / 表情
-_CHITCHAT_KEYWORDS = re.compile(
-    r"你好|在吗|谢谢|辛苦|哈哈|嘿嘿|嘻嘻|嘿|嗨|早安|晚安|拜拜|么么哒|加油"
-    r"|[\U0001F600-\U0001F64F\U0001F300-\U0001F5FF\U0001F680-\U0001F6FF\u2600-\u26FF\u2700-\u27BF]"
-)
-_QUESTION_WORDS = ("什么", "怎么", "为什么", "咋", "哪", "谁", "吗", "呢", "？", "?")
+# 意图理解 (deictic/meta/chitchat) → 语义路由 (intent_router.py), 不再用正则.
+# kb/refuse 仍用 BM25 top_score 阈值判断, 后续可改 LLM-based.
 
 # 角色归一 (从 frontend_app.py 迁移)
 _PINYIN_MAP = {
@@ -68,17 +59,20 @@ _XIAOYING_FALLBACK = (
 # 数据加载
 # ============================================================
 
-def _load_episode_data(video_dir: str) -> tuple[list, list, list]:
-    """加载一集的 events / actions / scenes.
+def _load_episode_data(video_dir: str) -> tuple[list, list, list, list]:
+    """加载一集的 events / actions / scenes / audio_segments.
 
     Returns:
-        (events, actions, scenes) — events/actions 来自 stage3_dryrun.json,
-        scenes 来自 visual.json
+        (events, actions, scenes, segments) —
+        events/actions 来自 stage3_dryrun.json,
+        scenes 来自 visual.json,
+        segments 来自 audio.json (Stage 1 ASR, 含 begin_time/end_time/speaker_pred/text).
     """
     cfg = get_config()
     ep_dir = os.path.join(cfg.output_root, video_dir)
     dryrun_path = os.path.join(ep_dir, "stage3_dryrun.json")
     visual_path = os.path.join(ep_dir, "visual.json")
+    audio_path = os.path.join(ep_dir, "audio.json")
 
     if not os.path.isfile(dryrun_path):
         raise FileNotFoundError(f"未建库: {dryrun_path}; 先跑 Stage 1-3")
@@ -91,7 +85,33 @@ def _load_episode_data(video_dir: str) -> tuple[list, list, list]:
     if os.path.isfile(visual_path):
         scenes = load_json(visual_path).get("scenes", []) or []
 
-    return events, actions, scenes
+    segments = []
+    if os.path.isfile(audio_path):
+        segments = load_json(audio_path).get("segments", []) or []
+
+    return events, actions, scenes, segments
+
+
+def _retrieve_segments_by_time(
+    segments: list, video_time: float, window: float = 15.0, max_n: int = 8,
+) -> list[dict]:
+    """基于视频时间戳检索邻域 audio segments (用户当前画面附近的对白).
+
+    用于回答 "这一刻在说什么 / 这个'哎'称呼谁" 等指代当前画面的提问.
+    返回 video_time ± window 秒内的 segments (按时间序).
+    """
+    if not segments or video_time is None or video_time < 0:
+        return []
+    lo = video_time - window
+    hi = video_time + window
+    hits = []
+    for s in segments:
+        begin = float(s.get("begin_time") or 0)
+        end = float(s.get("end_time") or 0)
+        # segment 时间窗和 [lo, hi] 有重叠
+        if begin <= hi and end >= lo:
+            hits.append(s)
+    return hits[:max_n]
 
 
 def _build_char_map() -> dict[str, str]:
@@ -193,25 +213,10 @@ def _events_to_keyframes(events: list[dict], scenes: list, max_frames: int = 3) 
 # 意图分流
 # ============================================================
 
-def _is_chitchat(query: str) -> bool:
-    """闲聊检测: 短无疑问词, 或含打招呼/情绪/表情."""
-    q = query.strip()
-    if not q:
-        return True
-    has_q = any(w in q for w in _QUESTION_WORDS)
-    if len(q) < 6 and not has_q:
-        return True
-    if _CHITCHAT_KEYWORDS.search(q):
-        return True
-    return False
-
-
-def _classify_intent(top_score: float, query: str) -> str:
-    """三分类: kb / chitchat / refuse."""
+def _classify_intent(top_score: float) -> str:
+    """kb/refuse 二分类 (chitchat 由语义路由 intent_router 预判)."""
     if top_score >= KB_SCORE_THRESHOLD:
         return "kb"
-    if _is_chitchat(query):
-        return "chitchat"
     return "refuse"
 
 
@@ -220,12 +225,17 @@ def _classify_intent(top_score: float, query: str) -> str:
 # ============================================================
 
 def _get_system_prompt() -> str:
-    """从 yaml 加载Alleys人设, 失败用 fallback."""
+    """从 yaml 加载Alleys人设, 追加当前时间, 失败用 fallback."""
     cfg = get_config()
     p = cfg.prompts.get("companion_xiaoying_system", {})
     if isinstance(p, dict):
-        return p.get("user", "") or _XIAOYING_FALLBACK
-    return _XIAOYING_FALLBACK
+        base = p.get("user", "") or _XIAOYING_FALLBACK
+    else:
+        base = _XIAOYING_FALLBACK
+    weekdays = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"]
+    now = datetime.now()
+    now_str = f"{now.strftime('%Y-%m-%d')} {weekdays[now.weekday()]} {now.strftime('%H:%M:%S')}"
+    return f"{base}\n\n## 当前时间\n{now_str}"
 
 
 def _llm_generate(
@@ -274,12 +284,15 @@ def _llm_kb_answer(
     chat_history: list[dict],
     long_term: list[str],
     video_label: str = "",
+    video_context: str = "",
 ) -> str:
     """KB 模式: 基于检索到的 events 回答."""
     system = _get_system_prompt()
     parts = []
     if video_label:
         parts.append(f"## 当前正在看的视频\n{video_label}")
+    if video_context:
+        parts.append(video_context)
     if video_summary:
         parts.append(f"## 视频梗概\n{video_summary.get('episode_summary', '')}")
     evs_text = "\n\n".join(
@@ -320,12 +333,15 @@ def _llm_kb_answer(
 def _llm_chitchat(
     llm, query: str, chat_history: list[dict], long_term: list[str],
     video_label: str = "",
+    video_context: str = "",
 ) -> str:
     """闲聊模式: 人设回应 (不查 KB)."""
     system = _get_system_prompt()
     parts = []
     if video_label:
         parts.append(f"## 当前正在看的视频\n{video_label}")
+    if video_context:
+        parts.append(video_context)
     if long_term:
         mems = "\n".join(f"- {m}" for m in long_term)
         parts.append(f"## 关于这位用户我之前记得\n{mems}")
@@ -355,6 +371,7 @@ def _llm_refuse(
     chat_history: list[dict] | None = None,
     long_term: list[str] | None = None,
     video_label: str = "",
+    video_context: str = "",
     web_search: bool = False,
 ) -> str:
     """拒答模式: KB 没相关内容 + 非闲聊, 诚实承认 (带上下文, 拒答也关联上文角色).
@@ -363,6 +380,8 @@ def _llm_refuse(
     parts = []
     if video_label:
         parts.append(f"## 当前正在看的视频\n{video_label}")
+    if video_context:
+        parts.append(video_context)
     parts.append(f"用户问: 「{query}」")
     if long_term:
         mems = "\n".join(f"- {m}" for m in long_term)
@@ -399,6 +418,7 @@ def _llm_web_search(
     video_label: str,
     chat_history: list[dict],
     long_term: list[str],
+    video_context: str = "",
 ) -> tuple[str, list[dict]]:
     """联网搜索模式: Tavily 真实搜 query → 结果塞 prompt → LLM 基于 results 回答.
 
@@ -421,6 +441,8 @@ def _llm_web_search(
     parts = []
     if video_label:
         parts.append(f"## 当前正在看的视频\n{video_label}")
+    if video_context:
+        parts.append(video_context)
     if long_term:
         mems = "\n".join(f"- {m}" for m in long_term)
         parts.append(f"## 关于这位用户我之前记得\n{mems}")
@@ -472,6 +494,7 @@ def companion_chat(
     chat_history: list[dict] | None = None,
     llm=None,
     web_search: bool = False,
+    video_time: float | None = None,
 ) -> dict:
     """陪看智能体主入口.
 
@@ -493,7 +516,7 @@ def companion_chat(
     t_start = time.time()
 
     # 1. 加载数据 + 归一
-    events_raw, _actions, scenes = _load_episode_data(video_dir)
+    events_raw, _actions, scenes, segments = _load_episode_data(video_dir)
     char_map = _build_char_map()
     events = _normalize_events(events_raw, char_map)
 
@@ -508,32 +531,68 @@ def companion_chat(
         video_summary = kb.get("video_summary")
         arc_updates = kb.get("arc_updates", []) or []
 
-    # 2. BM25 检索
+    # 2. 混合检索: BM25 (events) + 向量 (events + segments) → RRF 融合
     index = BM25Index([build_searchable_text(e) for e in events]) if events else None
     retrieved = []
     top_score = 0.0
     selected = []
     web_results: list[dict] = []
-    if index:
-        hits = index.search(query, top_k=5)
-        retrieved = [
-            {"event_id": events[i].get("event_id", ""),
-             "title": events[i].get("title", ""),
-             "score": round(float(s), 3)}
-            for i, s in hits
+    matched_segments: list[dict] = []  # 向量检索命中的对白 (对白级, 注入 prompt)
+    # 并行: LLM 意图理解 + 检索 (两者都是 ~0.7s API 调用, 并行省一半时间)
+    from src.agent.intent_router import llm_route_intent
+    _intent_box: dict = {"v": "kb"}
+    def _do_intent():
+        _intent_box["v"] = llm_route_intent(query, video_time)
+    _intent_th = threading.Thread(target=_do_intent, daemon=True)
+    _intent_th.start()
+
+    bm25_hits = index.search(query, top_k=5) if index else []
+    # BM25 top_score 用于意图分流 (KB_SCORE_THRESHOLD=2.0) + reasoning 展示
+    top_score = float(bm25_hits[0][1]) if bm25_hits else 0.0
+
+    # 向量检索 (和意图理解并行; 总是全集检索, 意图结果后决定用不用)
+    try:
+        from src.agent.retriever import (
+            build_or_load_embeddings, embed_query, vector_search, rrf_fuse,
+        )
+        events_emb, segs_emb, _ev_text, _sg_text = build_or_load_embeddings(video_dir)
+        query_emb = embed_query(query)
+        events_vec_hits = vector_search(query_emb, events_emb, top_k=5)
+        events_fused = rrf_fuse(bm25_hits, events_vec_hits, top_k=5)
+        segs_vec_hits = vector_search(query_emb, segs_emb, top_k=5)
+        matched_segments = [
+            segments[i] for i, _ in segs_vec_hits[:5] if i < len(segments)
         ]
-        top_score = float(hits[0][1]) if hits else 0.0
-        # 选 top-3 喂 LLM
-        selected = [events[i] for i, _ in hits[:3]]
+    except Exception as e:
+        print(f"[retriever] 向量检索失败, 回退纯 BM25: {e}", flush=True)
+        events_fused = bm25_hits  # fallback
 
-    t_retrieval = time.time()  # BM25 检索完成 (打点)
+    # 等意图理解完成 (和检索并行了, 通常同时完成, join 几乎不等)
+    _intent_th.join()
+    intent_type = _intent_box["v"]
 
-    # 3. 意图分流 (元问题 "这集讲了什么" 优先: 用 video_summary 回答, 不依赖 BM25)
-    if video_summary and _META_QUERY_RE.search(query):
+    # 指代类 (deictic): 清空向量 segments, 只用时间邻域 (避免全集其他时间相同词干扰)
+    if intent_type == "deictic" and video_time is not None and video_time >= 0:
+        matched_segments = []
+
+    retrieved = [
+        {"event_id": events[i].get("event_id", ""),
+         "title": events[i].get("title", ""),
+         "score": round(float(s), 3)}
+        for i, s in events_fused
+    ]
+    selected = [events[i] for i, _ in events_fused[:3]]
+
+    t_retrieval = time.time()  # 混合检索完成 (打点)
+
+    # 3. 意图分流 (语义路由 intent_type + BM25 阈值)
+    if intent_type == "meta" and video_summary:
         intent = "kb_meta"
         selected = []  # 元问题不用 events, 只用 video_summary
+    elif intent_type == "chitchat":
+        intent = "chitchat"
     else:
-        intent = _classify_intent(top_score, query)
+        intent = _classify_intent(top_score)  # kb/refuse (BM25 阈值)
 
     # 联网搜索时, refuse → web_search (前端推理卡片区分展示 "联网搜索了")
     if web_search and intent == "refuse":
@@ -544,9 +603,29 @@ def companion_chat(
     # 当前视频身份 (作品 · 季 · 集), 注入 prompt 让 Alleys 知道用户在看什么
     video_label = " · ".join(p for p in video_dir.split("/") if p)
 
+    # 当前画面上下文 (时间戳 + 邻域对白), 让 Alleys 知道用户此刻看到什么
+    # 总是注入, LLM 自己判断 query 是否和当前画面相关 (用户问的不一定和画面有关)
+    video_context = ""
+    if video_time is not None and video_time >= 0 and segments:
+        nearby = _retrieve_segments_by_time(segments, float(video_time), window=15)
+        if nearby:
+            lines = "\n".join(
+                f"[{float(s.get('begin_time') or 0):.0f}s] {s.get('speaker_pred','?')}: {s.get('text','')}"
+                for s in nearby
+            )
+            video_context = f"## 用户当前画面 (约 {float(video_time):.0f}s, 附近对白)\n{lines}"
+
+    # 语义相关的对白 (向量检索 segments 命中, 解决 BM25 漏的同义/改述召回)
+    if matched_segments:
+        seg_lines = "\n".join(
+            f"[{float(s.get('begin_time') or 0):.0f}s] {s.get('speaker_pred','?')}: {s.get('text','')}"
+            for s in matched_segments
+        )
+        video_context += f"\n\n## 语义相关的对白 (检索命中)\n{seg_lines}"
+
     if intent in ("kb", "kb_meta"):
         answer = _llm_kb_answer(llm, query, selected, video_summary, arc_updates,
-                                chat_history, long_term, video_label)
+                                chat_history, long_term, video_label, video_context)
         keyframes = _events_to_keyframes(selected, scenes)
         evidence = []
         for e in selected:
@@ -559,7 +638,7 @@ def companion_chat(
         # 存长期记忆
         _async_add_memory(user_id, query, answer, video_dir)
     elif intent == "chitchat":
-        answer = _llm_chitchat(llm, query, chat_history, long_term, video_label)
+        answer = _llm_chitchat(llm, query, chat_history, long_term, video_label, video_context)
         keyframes = []
         evidence = []
         _async_add_memory(user_id, query, answer, video_dir)
@@ -569,11 +648,11 @@ def companion_chat(
         if web_search:
             # 联网模式: Tavily 真实搜索 → 结果塞 prompt → LLM 基于 results 回答
             answer, web_results = _llm_web_search(
-                llm, query, video_label, chat_history, long_term
+                llm, query, video_label, chat_history, long_term, video_context
             )
             _async_add_memory(user_id, query, answer, video_dir)
         else:
-            answer = _llm_refuse(llm, query, chat_history, long_term, video_label)
+            answer = _llm_refuse(llm, query, chat_history, long_term, video_label, video_context)
             # 拒答不存记忆 (避免误导未来检索)
 
     t_end = time.time()

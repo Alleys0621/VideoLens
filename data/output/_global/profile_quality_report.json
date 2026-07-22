@@ -1,0 +1,41 @@
+{
+  "summary": {
+    "n_profiles": 8,
+    "n_characters_source": 8,
+    "n_covered": 8,
+    "coverage_ratio": 1.0,
+    "n_patterns": 16,
+    "n_dangling_event_refs": 0,
+    "n_dangling_action_refs": 1,
+    "n_lonely_patterns": 0
+  },
+  "personality_completeness": {
+    "core_motivation": 1.0,
+    "values": 1.0,
+    "strengths": 1.0,
+    "weaknesses": 1.0,
+    "inner_conflict": 1.0,
+    "growth_direction": 1.0
+  },
+  "behavior_patterns": {
+    "avg_per_profile": 2.0,
+    "avg_evidence_per_pattern": 2.0,
+    "distribution": {
+      "4": 1,
+      "3": 1,
+      "2": 3,
+      "1": 3
+    }
+  },
+  "lonely_patterns": [],
+  "dangling_refs": {
+    "events": [],
+    "actions": [
+      {
+        "character_id": "char_007",
+        "action_id": "家有儿女/第001集_a0427"
+      }
+    ]
+  },
+  "missing_character_ids": []
+}

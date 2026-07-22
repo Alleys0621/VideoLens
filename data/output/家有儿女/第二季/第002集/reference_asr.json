@@ -1,0 +1,2023 @@
+{
+  "video": "家有儿女/第二季/第002集",
+  "model": "qwen3.5-omni-plus",
+  "audio_duration": 1309.01,
+  "chunk_duration": 60.0,
+  "segments": [
+    {
+      "start_time": 0.163,
+      "end_time": 0.823,
+      "text": "妈"
+    },
+    {
+      "start_time": 2.957,
+      "end_time": 4.227,
+      "text": "啊？什么大事？"
+    },
+    {
+      "start_time": 4.417,
+      "end_time": 4.667,
+      "text": "啊？"
+    },
+    {
+      "start_time": 4.817,
+      "end_time": 5.717,
+      "text": "来来，坐这儿坐这儿。"
+    },
+    {
+      "start_time": 6.027,
+      "end_time": 6.847,
+      "text": "什么事啊？"
+    },
+    {
+      "start_time": 7.227,
+      "end_time": 9.757,
+      "text": "累了一年了，儿子给您揉揉肩捶捶背。"
+    },
+    {
+      "start_time": 11.457,
+      "end_time": 11.857,
+      "text": "来。"
+    },
+    {
+      "start_time": 13.307,
+      "end_time": 18.507,
+      "text": "哎呦，舒服，舒服。"
+    },
+    {
+      "start_time": 19.867,
+      "end_time": 21.827,
+      "text": "小雨，姥姥可最疼你啊。"
+    },
+    {
+      "start_time": 22.067,
+      "end_time": 22.527,
+      "text": "嗯嗯。"
+    },
+    {
+      "start_time": 22.527,
+      "end_time": 25.537,
+      "text": "哎呀，妈，把东西先给放下啊。"
+    },
+    {
+      "start_time": 25.927,
+      "end_time": 27.877,
+      "text": "好好好，坐下坐下啊。"
+    },
+    {
+      "start_time": 27.877,
+      "end_time": 28.897,
+      "text": "啊啊啊，坐下。"
+    },
+    {
+      "start_time": 30.127,
+      "end_time": 34.197,
+      "text": "哎呀，你看看这俩孩子啊，多懂事啊。"
+    },
+    {
+      "start_time": 34.197,
+      "end_time": 37.417,
+      "text": "刘星，有什么事要求我吗？"
+    },
+    {
+      "start_time": 38.907,
+      "end_time": 39.467,
+      "text": "没事啊。"
+    },
+    {
+      "start_time": 39.917,
+      "end_time": 40.577,
+      "text": "没有啊？"
+    },
+    {
+      "start_time": 40.577,
+      "end_time": 40.717,
+      "text": "嗯。"
+    },
+    {
+      "start_time": 41.067,
+      "end_time": 47.307,
+      "text": "嗨，我心想呢，这大过年的，没准孩子有什么事想求我，那我就答应他了。"
+    },
+    {
+      "start_time": 47.587,
+      "end_time": 48.517,
+      "text": "没什么事，算了。"
+    },
+    {
+      "start_time": 48.847,
+      "end_time": 51.067,
+      "text": "做饭去喽，包饺子去喽。"
+    },
+    {
+      "start_time": 51.067,
+      "end_time": 52.227,
+      "text": "哎，妈妈妈妈妈。"
+    },
+    {
+      "start_time": 52.227,
+      "end_time": 52.487,
+      "text": "啊？"
+    },
+    {
+      "start_time": 53.197,
+      "end_time": 56.427,
+      "text": "其实我还真...嗯...没什么事。"
+    },
+    {
+      "start_time": 57.647,
+      "end_time": 58.737,
+      "text": "真乖呀这孩子。"
+    },
+    {
+      "start_time": 58.937,
+      "end_time": 59.177,
+      "text": "啊？"
+    },
+    {
+      "start_time": 60.283,
+      "end_time": 61.073,
+      "text": "哎呀妈"
+    },
+    {
+      "start_time": 62.293,
+      "end_time": 64.153,
+      "text": "本来是没什么事儿"
+    },
+    {
+      "start_time": 64.603,
+      "end_time": 67.683,
+      "text": "可是您这么一提醒吧，我还真想起一件来。"
+    },
+    {
+      "start_time": 68.903,
+      "end_time": 69.873,
+      "text": "想起来了？"
+    },
+    {
+      "start_time": 70.463,
+      "end_time": 71.273,
+      "text": "那就说出来。"
+    },
+    {
+      "start_time": 71.603,
+      "end_time": 75.063,
+      "text": "那个，我今天就不在家陪您了。"
+    },
+    {
+      "start_time": 76.293,
+      "end_time": 76.963,
+      "text": "干嘛去啊？"
+    },
+    {
+      "start_time": 77.643,
+      "end_time": 81.473,
+      "text": "我都和鼠标键盘约好了，说今天几个同学一块聚聚。"
+    },
+    {
+      "start_time": 82.083,
+      "end_time": 82.813,
+      "text": "聚聚？"
+    },
+    {
+      "start_time": 83.893,
+      "end_time": 88.293,
+      "text": "您想啊，这学了一年了，也该放松放松了，也该聚聚了吧。"
+    },
+    {
+      "start_time": 88.953,
+      "end_time": 91.983,
+      "text": "嘿，你们哪天没在一块聚呀？啊？"
+    },
+    {
+      "start_time": 92.603,
+      "end_time": 97.333,
+      "text": "哎，学校嘛在一个班，回家在一个院，还有什么可聚的？"
+    },
+    {
+      "start_time": 98.593,
+      "end_time": 100.853,
+      "text": "那哪叫聚啊，那就是瞎混。"
+    },
+    {
+      "start_time": 100.973,
+      "end_time": 104.263,
+      "text": "今天是一个多么重要的日子，啊，所以我们一定要相聚。"
+    },
+    {
+      "start_time": 105.813,
+      "end_time": 108.033,
+      "text": "你呀，少跟我逗咳嗽。"
+    },
+    {
+      "start_time": 110.003,
+      "end_time": 113.043,
+      "text": "哎哎妈，姥姥这咳嗽可不是我逗来的啊。"
+    },
+    {
+      "start_time": 113.293,
+      "end_time": 115.603,
+      "text": "不许去就是不去。"
+    },
+    {
+      "start_time": 115.913,
+      "end_time": 120.003,
+      "text": "妈，我这回肯定不惹祸了。哎，小东他爸他妈呀"
+    },
+    {
+      "start_time": 120.0,
+      "end_time": 121.04,
+      "text": "都不在家，"
+    },
+    {
+      "start_time": 121.04,
+      "end_time": 123.84,
+      "text": "所以所以他们家空着，我们就上他们家玩玩去，聚聚。"
+    },
+    {
+      "start_time": 123.92,
+      "end_time": 126.72,
+      "text": "真不乱跑，哪都不去。"
+    },
+    {
+      "start_time": 127.2,
+      "end_time": 128.56,
+      "text": "不许去就是不许去。"
+    },
+    {
+      "start_time": 128.8,
+      "end_time": 131.28,
+      "text": "你少在这跟我求我，没用啊。"
+    },
+    {
+      "start_time": 132.72,
+      "end_time": 135.04,
+      "text": "我要不去，他们得多没劲啊。"
+    },
+    {
+      "start_time": 135.04,
+      "end_time": 136.8,
+      "text": "他们哪能玩得起来呀？"
+    },
+    {
+      "start_time": 137.2,
+      "end_time": 140.24,
+      "text": "再说了，他们该以为我看不起他们了。"
+    },
+    {
+      "start_time": 141.84,
+      "end_time": 142.56,
+      "text": "你放心，"
+    },
+    {
+      "start_time": 142.96,
+      "end_time": 146.0,
+      "text": "他们绝对不会以为你看不起他们了啊。"
+    },
+    {
+      "start_time": 146.6,
+      "end_time": 148.0,
+      "text": "你就说是你妈不让去。"
+    },
+    {
+      "start_time": 148.72,
+      "end_time": 151.6,
+      "text": "那肯定，他们肯定认为是一借口。"
+    },
+    {
+      "start_time": 152.28,
+      "end_time": 152.68,
+      "text": "那成。"
+    },
+    {
+      "start_time": 153.28,
+      "end_time": 154.88,
+      "text": "那我给他们打个电话，我跟他们说。"
+    },
+    {
+      "start_time": 154.96,
+      "end_time": 156.08,
+      "text": "哎，妈，您别打呀。"
+    },
+    {
+      "start_time": 156.08,
+      "end_time": 159.28,
+      "text": "您要给他们打，他们肯定认为是我指使的您。"
+    },
+    {
+      "start_time": 160.24,
+      "end_time": 161.44,
+      "text": "妈，您就同意吧。"
+    },
+    {
+      "start_time": 161.52,
+      "end_time": 164.16,
+      "text": "我们班同学都说您是刀子嘴豆腐心，"
+    },
+    {
+      "start_time": 164.16,
+      "end_time": 165.68,
+      "text": "您是豆腐脑做的。"
+    },
+    {
+      "start_time": 167.04,
+      "end_time": 167.76,
+      "text": "我什么做的？"
+    },
+    {
+      "start_time": 168.64,
+      "end_time": 169.36,
+      "text": "我什么做的？"
+    },
+    {
+      "start_time": 169.44,
+      "end_time": 173.12,
+      "text": "我说我们那个今天年夜饭准备吃豆腐脑。"
+    },
+    {
+      "start_time": 174.48,
+      "end_time": 176.08,
+      "text": "你少在这耍贫嘴你。"
+    },
+    {
+      "start_time": 176.64,
+      "end_time": 177.04,
+      "text": "不许去。"
+    },
+    {
+      "start_time": 179.12,
+      "end_time": 179.92,
+      "text": "跑了。"
+    },
+    {
+      "start_time": 180.16,
+      "end_time": 182.48,
+      "text": "妈，你就让我去嘛，姥姥。"
+    },
+    {
+      "start_time": 182.96,
+      "end_time": 185.52,
+      "text": "哎呀，哎，我倒有个主意呀。"
+    },
+    {
+      "start_time": 185.76,
+      "end_time": 187.76,
+      "text": "啊，让你们娘俩都满意。"
+    },
+    {
+      "start_time": 188.08,
+      "end_time": 188.88,
+      "text": "啊？真的？什么？"
+    },
+    {
+      "start_time": 189.68,
+      "end_time": 191.2,
+      "text": "把你们同学请咱家来呀。"
+    },
+    {
+      "start_time": 192.32,
+      "end_time": 193.6,
+      "text": "算了吧。"
+    },
+    {
+      "start_time": 195.28,
+      "end_time": 196.96,
+      "text": "那我就没主意了啊。"
+    },
+    {
+      "start_time": 197.68,
+      "end_time": 200.32,
+      "text": "爸，你就让我去嘛。"
+    },
+    {
+      "start_time": 200.72,
+      "end_time": 202.96,
+      "text": "哎呀，刘星，你能不能别闹了？"
+    },
+    {
+      "start_time": 203.12,
+      "end_time": 204.56,
+      "text": "再不包饺子我就饿死了。"
+    },
+    {
+      "start_time": 204.64,
+      "end_time": 205.84,
+      "text": "吃吃吃，你就知道吃。"
+    },
+    {
+      "start_time": 206.08,
+      "end_time": 206.96,
+      "text": "小心你成饭桶。"
+    },
+    {
+      "start_time": 207.68,
+      "end_time": 209.12,
+      "text": "说什么呢？"
+    },
+    {
+      "start_time": 209.68,
+      "end_time": 210.64,
+      "text": "人家是饭桶啊？"
+    },
+    {
+      "start_time": 211.36,
+      "end_time": 212.72,
+      "text": "你比谁也不少吃一口啊。"
+    },
+    {
+      "start_time": 214.4,
+      "end_time": 216.32,
+      "text": "要是要是不让我去的话，"
+    },
+    {
+      "start_time": 216.4,
+      "end_time": 217.36,
+      "text": "别说饺子了，"
+    },
+    {
+      "start_time": 217.52,
+      "end_time": 219.6,
+      "text": "我我连饭我都不吃了，我绝食。"
+    },
+    {
+      "start_time": 220.08,
+      "end_time": 221.92,
+      "text": "嗯？你要绝食？"
+    },
+    {
+      "start_time": 222.24,
+      "end_time": 223.84,
+      "text": "嗯，行，小雨，"
+    },
+    {
+      "start_time": 224.24,
+      "end_time": 226.16,
+      "text": "回屋把你们屋所有的零食都拿出来，"
+    },
+    {
+      "start_time": 226.32,
+      "end_time": 226.88,
+      "text": "他绝食了。"
+    },
+    {
+      "start_time": 227.12,
+      "end_time": 227.6,
+      "text": "得令！"
+    },
+    {
+      "start_time": 228.0,
+      "end_time": 232.08,
+      "text": "哎呀，这大过年的，你让他去吧。"
+    },
+    {
+      "start_time": 232.48,
+      "end_time": 233.92,
+      "text": "他还是个孩子呢。"
+    },
+    {
+      "start_time": 234.16,
+      "end_time": 234.8,
+      "text": "行了你。"
+    },
+    {
+      "start_time": 234.96,
+      "end_time": 236.8,
+      "text": "哎呀，我完喽。"
+    },
+    {
+      "start_time": 240.0,
+      "end_time": 241.28,
+      "text": "拿皮带干嘛呀？"
+    },
+    {
+      "start_time": 241.44,
+      "end_time": 242.72,
+      "text": "牛皮的，怕它偷吃。"
+    },
+    {
+      "start_time": 253.564,
+      "end_time": 254.204,
+      "text": "我回来了。"
+    },
+    {
+      "start_time": 255.692,
+      "end_time": 256.172,
+      "text": "回来了。"
+    },
+    {
+      "start_time": 257.052,
+      "end_time": 258.332,
+      "text": "妈，您怎么在这儿啊？"
+    },
+    {
+      "start_time": 260.092,
+      "end_time": 260.892,
+      "text": "问刘梅去。"
+    },
+    {
+      "start_time": 261.452,
+      "end_time": 262.572,
+      "text": "哟，怎么了？"
+    },
+    {
+      "start_time": 263.532,
+      "end_time": 266.572,
+      "text": "梅梅，梅梅，怎么了？"
+    },
+    {
+      "start_time": 266.732,
+      "end_time": 267.612,
+      "text": "刘星又闯祸了？"
+    },
+    {
+      "start_time": 268.731,
+      "end_time": 270.731,
+      "text": "大过年的，非上人同学家过去。"
+    },
+    {
+      "start_time": 271.451,
+      "end_time": 273.611,
+      "text": "我不愿意让他去吧，就耍脾气，甭理他。"
+    },
+    {
+      "start_time": 273.931,
+      "end_time": 274.651,
+      "text": "讨厌。"
+    },
+    {
+      "start_time": 275.211,
+      "end_time": 277.291,
+      "text": "你说这要是平时呢，也就算了。"
+    },
+    {
+      "start_time": 277.691,
+      "end_time": 280.011,
+      "text": "啊，大过年的，你说闹什么别扭啊？"
+    },
+    {
+      "start_time": 280.251,
+      "end_time": 282.331,
+      "text": "啊，家和才能万事兴啊。"
+    },
+    {
+      "start_time": 282.331,
+      "end_time": 283.291,
+      "text": "是是是，妈。"
+    },
+    {
+      "start_time": 283.291,
+      "end_time": 285.851,
+      "text": "妈，我们家合不了也都怨您。"
+    },
+    {
+      "start_time": 286.891,
+      "end_time": 289.291,
+      "text": "那孩子要不是您惯的，他能蹬鼻子上脸呐？"
+    },
+    {
+      "start_time": 289.451,
+      "end_time": 290.811,
+      "text": "行了行了梅梅，少说两句。"
+    },
+    {
+      "start_time": 291.371,
+      "end_time": 292.651,
+      "text": "好了妈，您别着急啊。"
+    },
+    {
+      "start_time": 292.811,
+      "end_time": 294.891,
+      "text": "我去跟刘星说去，您歇会儿吧，啊。"
+    },
+    {
+      "start_time": 299.13,
+      "end_time": 300.01,
+      "text": "刘星啊。"
+    },
+    {
+      "start_time": 420.0,
+      "end_time": 422.16,
+      "text": "你能多理解理解你妈就行了。"
+    },
+    {
+      "start_time": 423.489,
+      "end_time": 424.259,
+      "text": "比如说今天吧，"
+    },
+    {
+      "start_time": 424.729,
+      "end_time": 426.569,
+      "text": "你妈不让你出去知道为什么吗？"
+    },
+    {
+      "start_time": 427.009,
+      "end_time": 429.289,
+      "text": "那是因为担心你知道吗？"
+    },
+    {
+      "start_time": 431.843,
+      "end_time": 432.243,
+      "text": "可是"
+    },
+    {
+      "start_time": 432.883,
+      "end_time": 433.683,
+      "text": "可是什么呀？"
+    },
+    {
+      "start_time": 434.443,
+      "end_time": 435.363,
+      "text": "嗨，不说了。"
+    },
+    {
+      "start_time": 436.643,
+      "end_time": 437.283,
+      "text": "说说您吧，"
+    },
+    {
+      "start_time": 437.323,
+      "end_time": 439.083,
+      "text": "您怎么这么晚才回来？干嘛去了？"
+    },
+    {
+      "start_time": 441.163,
+      "end_time": 443.603,
+      "text": "哎，几个好哥们儿，好久不见了，"
+    },
+    {
+      "start_time": 443.723,
+      "end_time": 446.043,
+      "text": "在一块儿聊聊天，聚一聚嘛。"
+    },
+    {
+      "start_time": 446.723,
+      "end_time": 448.403,
+      "text": "有什么可聚的呀？"
+    },
+    {
+      "start_time": 449.363,
+      "end_time": 451.363,
+      "text": "我们难得有机会在一起，"
+    },
+    {
+      "start_time": 451.363,
+      "end_time": 453.563,
+      "text": "大家碰碰面聊聊天怎么了？"
+    },
+    {
+      "start_time": 453.803,
+      "end_time": 454.803,
+      "text": "大过年的。"
+    },
+    {
+      "start_time": 455.443,
+      "end_time": 456.523,
+      "text": "所以嘛，"
+    },
+    {
+      "start_time": 456.523,
+      "end_time": 460.603,
+      "text": "所以你们应该站在我的角度上来为我想一想。"
+    },
+    {
+      "start_time": 464.683,
+      "end_time": 466.243,
+      "text": "你跟我一样吗？啊？"
+    },
+    {
+      "start_time": 466.603,
+      "end_time": 469.803,
+      "text": "我们一年到头难得有机会碰到一起，"
+    },
+    {
+      "start_time": 470.203,
+      "end_time": 472.243,
+      "text": "你和鼠标可是天天在一起啊。"
+    },
+    {
+      "start_time": 473.883,
+      "end_time": 475.283,
+      "text": "那能一样吗？"
+    },
+    {
+      "start_time": 475.723,
+      "end_time": 476.603,
+      "text": "今天什么日子？"
+    },
+    {
+      "start_time": 476.883,
+      "end_time": 478.243,
+      "text": "今天是除夕之夜，"
+    },
+    {
+      "start_time": 478.243,
+      "end_time": 480.003,
+      "text": "是一个令人感慨的日子。"
+    },
+    {
+      "start_time": 480.16,
+      "end_time": 481.84,
+      "text": "是相聚的日子呀，爸。"
+    },
+    {
+      "start_time": 482.72,
+      "end_time": 484.32,
+      "text": "哎，我觉得您能理解我。"
+    },
+    {
+      "start_time": 484.48,
+      "end_time": 485.2,
+      "text": "都是男人嘛。"
+    },
+    {
+      "start_time": 485.92,
+      "end_time": 486.48,
+      "text": "您看我，"
+    },
+    {
+      "start_time": 486.96,
+      "end_time": 491.6,
+      "text": "哼，堂堂一大男人，天天在家圈着，大门不出二门不迈的。"
+    },
+    {
+      "start_time": 492.0,
+      "end_time": 494.64,
+      "text": "有出去还不胆小如鼠，干啥啥不行。"
+    },
+    {
+      "start_time": 497.6,
+      "end_time": 499.44,
+      "text": "你你改天去不也一样吗？"
+    },
+    {
+      "start_time": 499.44,
+      "end_time": 500.48,
+      "text": "今天不是过年吗？"
+    },
+    {
+      "start_time": 500.48,
+      "end_time": 502.64,
+      "text": "你看姥姥跟那个小雪都在家。"
+    },
+    {
+      "start_time": 503.28,
+      "end_time": 504.32,
+      "text": "改天去不行啊？"
+    },
+    {
+      "start_time": 505.52,
+      "end_time": 507.6,
+      "text": "就因为今天过年，所以要出去。"
+    },
+    {
+      "start_time": 508.08,
+      "end_time": 511.6,
+      "text": "哼。哎呀，您老说您理解我。"
+    },
+    {
+      "start_time": 511.92,
+      "end_time": 514.64,
+      "text": "我看呀，您和我妈一样，一点都不理解我。"
+    },
+    {
+      "start_time": 518.96,
+      "end_time": 522.8,
+      "text": "哎，要说你的要求确实也不是很过分。"
+    },
+    {
+      "start_time": 523.68,
+      "end_time": 525.52,
+      "text": "就是嘛，还是您理解我。"
+    },
+    {
+      "start_time": 528.88,
+      "end_time": 531.12,
+      "text": "我可以有条件地答应你出去。"
+    },
+    {
+      "start_time": 534.0,
+      "end_time": 535.52,
+      "text": "我看未必。"
+    },
+    {
+      "start_time": 535.68,
+      "end_time": 538.88,
+      "text": "就你那点权力，还不让我妈一票给否决了。"
+    },
+    {
+      "start_time": 540.08,
+      "end_time": 541.24,
+      "text": "谁说的呀？"
+    },
+    {
+      "start_time": 543.56,
+      "end_time": 544.36,
+      "text": "反正我不信。"
+    },
+    {
+      "start_time": 544.64,
+      "end_time": 545.92,
+      "text": "不信您自己试试去。"
+    },
+    {
+      "start_time": 547.4,
+      "end_time": 548.52,
+      "text": "试试就试试。"
+    },
+    {
+      "start_time": 549.16,
+      "end_time": 551.84,
+      "text": "我要是口才不行，我这不还有魅力吗？"
+    },
+    {
+      "start_time": 553.12,
+      "end_time": 554.68,
+      "text": "您就施展施展您的魅力。"
+    },
+    {
+      "start_time": 555.0,
+      "end_time": 556.4,
+      "text": "啊，我等着您凯旋。"
+    },
+    {
+      "start_time": 557.32,
+      "end_time": 558.96,
+      "text": "等着吧，我这就去施展魅力去。"
+    },
+    {
+      "start_time": 560.28,
+      "end_time": 563.4,
+      "text": "啊对了，饼干如果不藏在鞋里味道会更好。"
+    },
+    {
+      "start_time": 568.92,
+      "end_time": 570.84,
+      "text": "哎，人就是聪明。"
+    },
+    {
+      "start_time": 572.36,
+      "end_time": 573.2,
+      "text": "哎哎，怎么样？"
+    },
+    {
+      "start_time": 573.52,
+      "end_time": 573.92,
+      "text": "说通了。"
+    },
+    {
+      "start_time": 574.24,
+      "end_time": 574.64,
+      "text": "说通了。"
+    },
+    {
+      "start_time": 576.28,
+      "end_time": 579.32,
+      "text": "你看看啊，还是人家东海会教育孩子吧。"
+    },
+    {
+      "start_time": 580.08,
+      "end_time": 581.24,
+      "text": "哎，怎么说通的？"
+    },
+    {
+      "start_time": 582.36,
+      "end_time": 583.92,
+      "text": "我就是有条件的答应了他。"
+    },
+    {
+      "start_time": 585.52,
+      "end_time": 587.44,
+      "text": "嗨，你答应他了？"
+    },
+    {
+      "start_time": 587.76,
+      "end_time": 590.16,
+      "text": "那叫说通了？那叫被他说通了。"
+    },
+    {
+      "start_time": 591.52,
+      "end_time": 592.36,
+      "text": "什么条件呢？"
+    },
+    {
+      "start_time": 593.8,
+      "end_time": 595.56,
+      "text": "条件当然得梅梅说了。"
+    },
+    {
+      "start_time": 595.88,
+      "end_time": 597.8,
+      "text": "梅梅，你说什么条件，我跟她说。"
+    },
+    {
+      "start_time": 598.84,
+      "end_time": 600.0,
+      "text": "没条件。就"
+    },
+    {
+      "start_time": 600.0,
+      "end_time": 601.84,
+      "text": "一个条件，哪儿也不许去，给我家待着。"
+    },
+    {
+      "start_time": 603.52,
+      "end_time": 605.36,
+      "text": "我觉得呀，人家东海说得对。"
+    },
+    {
+      "start_time": 606.24,
+      "end_time": 607.76,
+      "text": "咱们给他提条件不就行了吗？"
+    },
+    {
+      "start_time": 607.84,
+      "end_time": 608.32,
+      "text": "就是就是。"
+    },
+    {
+      "start_time": 608.48,
+      "end_time": 612.56,
+      "text": "啊，比如说上谁家去，把那孩子家电话记下来。"
+    },
+    {
+      "start_time": 613.12,
+      "end_time": 617.36,
+      "text": "有不放心的时候呢，你给他打个电话，问问不就得了吗？"
+    },
+    {
+      "start_time": 617.6,
+      "end_time": 618.0,
+      "text": "就是。"
+    },
+    {
+      "start_time": 618.24,
+      "end_time": 622.72,
+      "text": "再有，嗯，让什么时候回来就什么时候回来，不许晚。"
+    },
+    {
+      "start_time": 623.2,
+      "end_time": 625.28,
+      "text": "啊，还有，不许抽烟喝酒。"
+    },
+    {
+      "start_time": 626.24,
+      "end_time": 627.6,
+      "text": "约法三章不就得了吗？"
+    },
+    {
+      "start_time": 627.92,
+      "end_time": 628.24,
+      "text": "就是。"
+    },
+    {
+      "start_time": 628.8,
+      "end_time": 631.36,
+      "text": "妈，去年是约法三章吗？"
+    },
+    {
+      "start_time": 631.84,
+      "end_time": 634.16,
+      "text": "都约法八章了，他执行吗？"
+    },
+    {
+      "start_time": 634.56,
+      "end_time": 638.08,
+      "text": "那不是去年嘛，啊，今年又长一岁了。"
+    },
+    {
+      "start_time": 638.24,
+      "end_time": 638.4,
+      "text": "就是。"
+    },
+    {
+      "start_time": 638.72,
+      "end_time": 641.04,
+      "text": "这孩子呀，一年比一年懂事。"
+    },
+    {
+      "start_time": 641.28,
+      "end_time": 643.68,
+      "text": "哼，光长岁数，不长记性。"
+    },
+    {
+      "start_time": 647.84,
+      "end_time": 648.48,
+      "text": "过年呢。"
+    },
+    {
+      "start_time": 650.24,
+      "end_time": 651.28,
+      "text": "行行行行行。"
+    },
+    {
+      "start_time": 652.16,
+      "end_time": 653.6,
+      "text": "有条件的，去提条件去。"
+    },
+    {
+      "start_time": 654.08,
+      "end_time": 657.12,
+      "text": "行，妈，您别生气了，梅梅答应。"
+    },
+    {
+      "start_time": 661.328,
+      "end_time": 661.708,
+      "text": "怎么样？"
+    },
+    {
+      "start_time": 663.118,
+      "end_time": 664.908,
+      "text": "哎，你猜怎么样呢？"
+    },
+    {
+      "start_time": 665.268,
+      "end_time": 665.488,
+      "text": "啊？"
+    },
+    {
+      "start_time": 665.998,
+      "end_time": 667.618,
+      "text": "我已经把你妈说通了。"
+    },
+    {
+      "start_time": 667.808,
+      "end_time": 668.788,
+      "text": "啊，太棒了！"
+    },
+    {
+      "start_time": 669.598,
+      "end_time": 670.518,
+      "text": "高兴太早了。"
+    },
+    {
+      "start_time": 671.028,
+      "end_time": 672.188,
+      "text": "你可不能给我掉链子啊。"
+    },
+    {
+      "start_time": 672.488,
+      "end_time": 673.688,
+      "text": "哎，放心吧。"
+    },
+    {
+      "start_time": 673.978,
+      "end_time": 675.658,
+      "text": "爸，我现在可是真服你了。"
+    },
+    {
+      "start_time": 676.518,
+      "end_time": 679.998,
+      "text": "我一直以为您对我妈永远是言听计从，百依百顺。"
+    },
+    {
+      "start_time": 680.348,
+      "end_time": 681.898,
+      "text": "现在看来是一个误解。"
+    },
+    {
+      "start_time": 682.088,
+      "end_time": 683.588,
+      "text": "嘿，误解很深我告诉你。"
+    },
+    {
+      "start_time": 684.538,
+      "end_time": 684.998,
+      "text": "我走了啊。"
+    },
+    {
+      "start_time": 685.538,
+      "end_time": 685.858,
+      "text": "哎哎。"
+    },
+    {
+      "start_time": 685.858,
+      "end_time": 686.048,
+      "text": "啊？"
+    },
+    {
+      "start_time": 686.298,
+      "end_time": 686.648,
+      "text": "都待着。"
+    },
+    {
+      "start_time": 687.858,
+      "end_time": 688.108,
+      "text": "妈。"
+    },
+    {
+      "start_time": 688.858,
+      "end_time": 689.338,
+      "text": "干嘛去啊？"
+    },
+    {
+      "start_time": 690.498,
+      "end_time": 691.868,
+      "text": "您不是都同意了吗？"
+    },
+    {
+      "start_time": 692.648,
+      "end_time": 693.548,
+      "text": "同意什么了？"
+    },
+    {
+      "start_time": 695.778,
+      "end_time": 698.888,
+      "text": "爸，您您告诉我妈，大人不能出尔反尔。"
+    },
+    {
+      "start_time": 699.528,
+      "end_time": 703.908,
+      "text": "我先告诉你，啊，我们是有条件的同意了。"
+    },
+    {
+      "start_time": 705.928,
+      "end_time": 706.428,
+      "text": "是这样。"
+    },
+    {
+      "start_time": 707.708,
+      "end_time": 708.298,
+      "text": "什么条件？"
+    },
+    {
+      "start_time": 709.948,
+      "end_time": 710.638,
+      "text": "拿笔拿纸。"
+    },
+    {
+      "start_time": 711.388,
+      "end_time": 712.718,
+      "text": "干干干嘛呀？"
+    },
+    {
+      "start_time": 713.608,
+      "end_time": 714.608,
+      "text": "写个保证。"
+    },
+    {
+      "start_time": 715.678,
+      "end_time": 718.038,
+      "text": "哎呀，现在还搞这套啊。"
+    },
+    {
+      "start_time": 720.748,
+      "end_time": 722.138,
+      "text": "用不用签字啊？"
+    },
+    {
+      "start_time": 722.588,
+      "end_time": 724.818,
+      "text": "当然啦，不签字怎么生效啊？"
+    },
+    {
+      "start_time": 725.208,
+      "end_time": 726.668,
+      "text": "不光你签，我也得陪你签。"
+    },
+    {
+      "start_time": 726.958,
+      "end_time": 728.238,
+      "text": "谁让我是你的担保人呢。"
+    },
+    {
+      "start_time": 730.685,
+      "end_time": 730.975,
+      "text": "一"
+    },
+    {
+      "start_time": 740.572,
+      "end_time": 741.142,
+      "text": "柳青。"
+    },
+    {
+      "start_time": 742.562,
+      "end_time": 744.582,
+      "text": "咱就在这干坐一晚上？"
+    },
+    {
+      "start_time": 745.132,
+      "end_time": 747.132,
+      "text": "你说这小东他爸妈也真是的。"
+    },
+    {
+      "start_time": 747.842,
+      "end_time": 749.622,
+      "text": "非非得这时候回来。"
+    },
+    {
+      "start_time": 750.392,
+      "end_time": 752.182,
+      "text": "那咱还去吗？啊？"
+    },
+    {
+      "start_time": 752.652,
+      "end_time": 753.952,
+      "text": "反正我不去了。"
+    },
+    {
+      "start_time": 754.142,
+      "end_time": 755.532,
+      "text": "他妈对我有偏见。"
+    },
+    {
+      "start_time": 756.652,
+      "end_time": 757.532,
+      "text": "对，对我也有。"
+    },
+    {
+      "start_time": 760.764,
+      "end_time": 763.204,
+      "text": "那，那咱们现在怎么办？"
+    },
+    {
+      "start_time": 763.764,
+      "end_time": 764.284,
+      "text": "回家。"
+    },
+    {
+      "start_time": 766.364,
+      "end_time": 770.604,
+      "text": "反正，反正我是好不容易才争取到这次自由的权利。"
+    },
+    {
+      "start_time": 771.164,
+      "end_time": 773.084,
+      "text": "那现在干什么呀？"
+    },
+    {
+      "start_time": 773.884,
+      "end_time": 776.924,
+      "text": "再再再再再再坐会儿。"
+    },
+    {
+      "start_time": 778.284,
+      "end_time": 779.604,
+      "text": "就这么干坐着？"
+    },
+    {
+      "start_time": 841.38,
+      "end_time": 843.68,
+      "text": "你贫什么呀，没胆就躲了。"
+    },
+    {
+      "start_time": 844.2,
+      "end_time": 845.96,
+      "text": "啊？对对对对对，躲躲躲。"
+    },
+    {
+      "start_time": 846.72,
+      "end_time": 848.28,
+      "text": "藏好了啊，藏好玩意儿。"
+    },
+    {
+      "start_time": 850.72,
+      "end_time": 851.32,
+      "text": "藏好了吗？"
+    },
+    {
+      "start_time": 851.48,
+      "end_time": 852.52,
+      "text": "哎，藏好了。"
+    },
+    {
+      "start_time": 852.76,
+      "end_time": 853.24,
+      "text": "放了啊。"
+    },
+    {
+      "start_time": 853.48,
+      "end_time": 854.32,
+      "text": "哎，放放放。"
+    },
+    {
+      "start_time": 856.16,
+      "end_time": 864.2,
+      "text": "五、四、三、二、一。"
+    },
+    {
+      "start_time": 867.84,
+      "end_time": 868.12,
+      "text": "哎？"
+    },
+    {
+      "start_time": 871.96,
+      "end_time": 873.84,
+      "text": "我我再来了啊，我点了。"
+    },
+    {
+      "start_time": 874.08,
+      "end_time": 874.6,
+      "text": "点点点。"
+    },
+    {
+      "start_time": 875.0,
+      "end_time": 878.2,
+      "text": "三、二、一。"
+    },
+    {
+      "start_time": 888.36,
+      "end_time": 891.08,
+      "text": "哎！刘星刘星刘星刘星。"
+    },
+    {
+      "start_time": 892.56,
+      "end_time": 893.4,
+      "text": "你怎么了？"
+    },
+    {
+      "start_time": 893.48,
+      "end_time": 894.52,
+      "text": "快这这怎么了？"
+    },
+    {
+      "start_time": 894.52,
+      "end_time": 895.92,
+      "text": "起来起来快快快起来。"
+    },
+    {
+      "start_time": 898.0,
+      "end_time": 899.0,
+      "text": "这怎么了怎么了？"
+    },
+    {
+      "start_time": 899.0,
+      "end_time": 899.68,
+      "text": "没事吧？"
+    },
+    {
+      "start_time": 900.24,
+      "end_time": 901.68,
+      "text": "好像还可以。"
+    },
+    {
+      "start_time": 904.593,
+      "end_time": 905.373,
+      "text": "嗯？怎么了？"
+    },
+    {
+      "start_time": 905.373,
+      "end_time": 905.513,
+      "text": "怎么了？"
+    },
+    {
+      "start_time": 907.133,
+      "end_time": 907.773,
+      "text": "怎么了？"
+    },
+    {
+      "start_time": 907.773,
+      "end_time": 908.893,
+      "text": "怎怎怎么了？"
+    },
+    {
+      "start_time": 908.893,
+      "end_time": 909.773,
+      "text": "你说话呀。"
+    },
+    {
+      "start_time": 910.08,
+      "end_time": 910.72,
+      "text": "警察！"
+    },
+    {
+      "start_time": 912.8,
+      "end_time": 914.72,
+      "text": "警…黑猫警长！"
+    },
+    {
+      "start_time": 915.36,
+      "end_time": 917.76,
+      "text": "哎哎，我我动不了了。"
+    },
+    {
+      "start_time": 918.08,
+      "end_time": 919.68,
+      "text": "你你不谁来帮我一把？"
+    },
+    {
+      "start_time": 921.76,
+      "end_time": 922.08,
+      "text": "站住！"
+    },
+    {
+      "start_time": 923.68,
+      "end_time": 924.24,
+      "text": "你在干什么呢？"
+    },
+    {
+      "start_time": 925.76,
+      "end_time": 927.28,
+      "text": "警察叔叔，我投降。"
+    },
+    {
+      "start_time": 927.68,
+      "end_time": 928.8,
+      "text": "我我坦白。"
+    },
+    {
+      "start_time": 929.84,
+      "end_time": 931.12,
+      "text": "快来看这小品多好玩。"
+    },
+    {
+      "start_time": 931.68,
+      "end_time": 932.64,
+      "text": "我们做的广告啊。"
+    },
+    {
+      "start_time": 932.88,
+      "end_time": 934.88,
+      "text": "这上到天文下到地理。"
+    },
+    {
+      "start_time": 938.48,
+      "end_time": 939.68,
+      "text": "挠痒痒的。"
+    },
+    {
+      "start_time": 940.32,
+      "end_time": 941.92,
+      "text": "喂，哎小东啊。"
+    },
+    {
+      "start_time": 942.48,
+      "end_time": 943.68,
+      "text": "哎我是刘梅阿姨。"
+    },
+    {
+      "start_time": 944.72,
+      "end_time": 945.44,
+      "text": "哎你好。"
+    },
+    {
+      "start_time": 946.0,
+      "end_time": 947.2,
+      "text": "你让刘星接下电话。"
+    },
+    {
+      "start_time": 948.96,
+      "end_time": 949.28,
+      "text": "啊？"
+    },
+    {
+      "start_time": 950.64,
+      "end_time": 951.28,
+      "text": "是吗？"
+    },
+    {
+      "start_time": 952.4,
+      "end_time": 953.44,
+      "text": "啊谢谢你啊。"
+    },
+    {
+      "start_time": 956.16,
+      "end_time": 957.44,
+      "text": "怎么了？生那么大气。"
+    },
+    {
+      "start_time": 957.92,
+      "end_time": 958.56,
+      "text": "气死我了。"
+    },
+    {
+      "start_time": 959.12,
+      "end_time": 959.92,
+      "text": "怎么气成这样？"
+    },
+    {
+      "start_time": 960.0,
+      "end_time": 960.32,
+      "text": "啊？"
+    },
+    {
+      "start_time": 961.28,
+      "end_time": 963.68,
+      "text": "他根本就没去小东他们家，全是骗人的。"
+    },
+    {
+      "start_time": 963.92,
+      "end_time": 965.28,
+      "text": "那那他上哪儿去了？"
+    },
+    {
+      "start_time": 967.2,
+      "end_time": 967.84,
+      "text": "谁知道？"
+    },
+    {
+      "start_time": 968.8,
+      "end_time": 969.6,
+      "text": "都是你们。"
+    },
+    {
+      "start_time": 975.28,
+      "end_time": 975.92,
+      "text": "哎，这孩子。"
+    },
+    {
+      "start_time": 976.8,
+      "end_time": 977.68,
+      "text": "你怎么了你？"
+    },
+    {
+      "start_time": 978.48,
+      "end_time": 979.36,
+      "text": "你去煤矿挖煤了？"
+    },
+    {
+      "start_time": 979.52,
+      "end_time": 980.8,
+      "text": "你怎么成黑人了？"
+    },
+    {
+      "start_time": 981.2,
+      "end_time": 982.08,
+      "text": "你去非洲了？"
+    },
+    {
+      "start_time": 983.84,
+      "end_time": 985.12,
+      "text": "我畏罪潜逃了。"
+    },
+    {
+      "start_time": 986.48,
+      "end_time": 987.6,
+      "text": "怎么回事啊？"
+    },
+    {
+      "start_time": 987.76,
+      "end_time": 988.56,
+      "text": "对呀，快说呀。"
+    },
+    {
+      "start_time": 993.84,
+      "end_time": 995.84,
+      "text": "我在楼下放炮仗来着我。"
+    },
+    {
+      "start_time": 997.68,
+      "end_time": 1000.32,
+      "text": "谁让你在这小区里头放炮仗啊？"
+    },
+    {
+      "start_time": 1001.28,
+      "end_time": 1002.16,
+      "text": "人家规定不能放炮仗。"
+    },
+    {
+      "start_time": 1002.4,
+      "end_time": 1003.2,
+      "text": "去吧去，别捣乱。"
+    },
+    {
+      "start_time": 1003.52,
+      "end_time": 1005.12,
+      "text": "爸，你听我说完了呀。"
+    },
+    {
+      "start_time": 1005.68,
+      "end_time": 1008.64,
+      "text": "警察肯定不会放过我的，鼠标已经落他们手里了。"
+    },
+    {
+      "start_time": 1008.64,
+      "end_time": 1010.16,
+      "text": "他绝对会给我供出来的。"
+    },
+    {
+      "start_time": 1011.2,
+      "end_time": 1012.8,
+      "text": "你这孩子，你气死我了。"
+    },
+    {
+      "start_time": 1012.8,
+      "end_time": 1014.08,
+      "text": "你不是上小东家去了吗？"
+    },
+    {
+      "start_time": 1014.08,
+      "end_time": 1015.52,
+      "text": "你不是告诉我在人家家呢吗？"
+    },
+    {
+      "start_time": 1015.68,
+      "end_time": 1016.32,
+      "text": "行了行了。"
+    },
+    {
+      "start_time": 1017.2,
+      "end_time": 1019.92,
+      "text": "刘星，你告诉我，那警察看出你什么长相？"
+    },
+    {
+      "start_time": 1020.0,
+      "end_time": 1020.32,
+      "text": "没有？"
+    },
+    {
+      "start_time": 1020.72,
+      "end_time": 1021.84,
+      "text": "那倒没有。"
+    },
+    {
+      "start_time": 1022.16,
+      "end_time": 1024.56,
+      "text": "他看见我时候我已经这样了。"
+    },
+    {
+      "start_time": 1024.64,
+      "end_time": 1026.08,
+      "text": "哦，行，那就好。"
+    },
+    {
+      "start_time": 1026.24,
+      "end_time": 1026.96,
+      "text": "那就好。"
+    },
+    {
+      "start_time": 1027.04,
+      "end_time": 1029.92,
+      "text": "啊，我就说这炮竹啊是我放的。"
+    },
+    {
+      "start_time": 1031.04,
+      "end_time": 1033.68,
+      "text": "嘿，就您这岁数，有放炮竹的吗？"
+    },
+    {
+      "start_time": 1033.68,
+      "end_time": 1034.48,
+      "text": "谁信呢？"
+    },
+    {
+      "start_time": 1034.48,
+      "end_time": 1036.08,
+      "text": "还不如说我放的呢。"
+    },
+    {
+      "start_time": 1036.4,
+      "end_time": 1037.6,
+      "text": "嘿，你更好。"
+    },
+    {
+      "start_time": 1037.68,
+      "end_time": 1039.12,
+      "text": "有你们这样教育孩子的？"
+    },
+    {
+      "start_time": 1039.84,
+      "end_time": 1041.6,
+      "text": "行了行了刘星，走，跟我走吧。"
+    },
+    {
+      "start_time": 1041.92,
+      "end_time": 1043.04,
+      "text": "哎哎哎，干嘛呀？"
+    },
+    {
+      "start_time": 1043.6,
+      "end_time": 1044.96,
+      "text": "你又要大义灭亲呐？"
+    },
+    {
+      "start_time": 1046.48,
+      "end_time": 1048.8,
+      "text": "我这不是趁着警察没来赶紧带他自首去。"
+    },
+    {
+      "start_time": 1048.8,
+      "end_time": 1051.44,
+      "text": "好好跟人说说，兴许还能宽大处理。"
+    },
+    {
+      "start_time": 1052.8,
+      "end_time": 1054.08,
+      "text": "啊，那也行，我也去啊。"
+    },
+    {
+      "start_time": 1054.08,
+      "end_time": 1055.92,
+      "text": "哎哎哎，行了行了，您甭去。"
+    },
+    {
+      "start_time": 1056.08,
+      "end_time": 1057.28,
+      "text": "带俩孩子在家看着。"
+    },
+    {
+      "start_time": 1068.268,
+      "end_time": 1071.148,
+      "text": "哎呀姥姥，您都转悠俩小时了。"
+    },
+    {
+      "start_time": 1071.148,
+      "end_time": 1072.508,
+      "text": "您就坐下歇会儿吧啊。"
+    },
+    {
+      "start_time": 1073.068,
+      "end_time": 1075.148,
+      "text": "我也得坐得下呀，啊？"
+    },
+    {
+      "start_time": 1076.188,
+      "end_time": 1078.908,
+      "text": "你说他们也不知得把刘星怎么给处理喽。"
+    },
+    {
+      "start_time": 1080.928,
+      "end_time": 1081.968,
+      "text": "别再给拘留了吧。"
+    },
+    {
+      "start_time": 1082.328,
+      "end_time": 1083.768,
+      "text": "谁让他不在家里好好待着，这回可好。"
+    },
+    {
+      "start_time": 1086.248,
+      "end_time": 1087.448,
+      "text": "哎呦，回来啦。"
+    },
+    {
+      "start_time": 1087.768,
+      "end_time": 1088.808,
+      "text": "哎呀，爸，怎么样他？"
+    },
+    {
+      "start_time": 1088.808,
+      "end_time": 1089.528,
+      "text": "没什么事。"
+    },
+    {
+      "start_time": 1089.928,
+      "end_time": 1090.728,
+      "text": "啊，刘星呢？"
+    },
+    {
+      "start_time": 1090.888,
+      "end_time": 1093.208,
+      "text": "嗯？啊？我回来了。"
+    },
+    {
+      "start_time": 1093.208,
+      "end_time": 1095.048,
+      "text": "哎呦喂，可回来了孩子。"
+    },
+    {
+      "start_time": 1105.221,
+      "end_time": 1106.101,
+      "text": "生这么大气啊？"
+    },
+    {
+      "start_time": 1106.741,
+      "end_time": 1108.021,
+      "text": "行了行了，别生气了。"
+    },
+    {
+      "start_time": 1108.581,
+      "end_time": 1109.941,
+      "text": "这事赖我行了吧？"
+    },
+    {
+      "start_time": 1111.221,
+      "end_time": 1112.421,
+      "text": "本来就赖你们。"
+    },
+    {
+      "start_time": 1112.661,
+      "end_time": 1113.621,
+      "text": "都是你们惯的。"
+    },
+    {
+      "start_time": 1114.741,
+      "end_time": 1115.861,
+      "text": "真出事怎么办呀？"
+    },
+    {
+      "start_time": 1116.021,
+      "end_time": 1117.221,
+      "text": "炸瞎眼睛怎么办呢？"
+    },
+    {
+      "start_time": 1117.781,
+      "end_time": 1120.741,
+      "text": "哎，你说这个还真是。"
+    },
+    {
+      "start_time": 1121.381,
+      "end_time": 1123.221,
+      "text": "这教训确实挺深刻的。"
+    },
+    {
+      "start_time": 1123.221,
+      "end_time": 1123.941,
+      "text": "多吓人哪。"
+    },
+    {
+      "start_time": 1125.941,
+      "end_time": 1126.421,
+      "text": "还有呢？"
+    },
+    {
+      "start_time": 1128.341,
+      "end_time": 1130.101,
+      "text": "以后绝对不买劣质的二踢脚。"
+    },
+    {
+      "start_time": 1131.221,
+      "end_time": 1134.581,
+      "text": "嘿！你这是检讨的态度吗你？"
+    },
+    {
+      "start_time": 1134.741,
+      "end_time": 1135.461,
+      "text": "我是啊。"
+    },
+    {
+      "start_time": 1136.181,
+      "end_time": 1138.021,
+      "text": "嗯？啊，不是，不是。"
+    },
+    {
+      "start_time": 1138.501,
+      "end_time": 1138.981,
+      "text": "讨厌。"
+    },
+    {
+      "start_time": 1141.763,
+      "end_time": 1144.283,
+      "text": "哎呦，快瞧瞧这小黑脸儿哦。"
+    },
+    {
+      "start_time": 1147.723,
+      "end_time": 1150.593,
+      "text": "刘星啊，也别太伤心啊。"
+    },
+    {
+      "start_time": 1151.023,
+      "end_time": 1153.513,
+      "text": "那个派出所呀，姥姥也去过。"
+    },
+    {
+      "start_time": 1154.453,
+      "end_time": 1157.233,
+      "text": "啊？您也去过？您犯什么错误了？"
+    },
+    {
+      "start_time": 1158.773,
+      "end_time": 1163.773,
+      "text": "元旦的时候，姥姥去上那儿啊，慰问那些失足的孩子们。"
+    },
+    {
+      "start_time": 1165.323,
+      "end_time": 1169.443,
+      "text": "姥姥，等您明年再去的时候，就有刘星了。"
+    },
+    {
+      "start_time": 1170.213,
+      "end_time": 1173.083,
+      "text": "你说什么呢？小雨，怎么能这么说话呀？"
+    },
+    {
+      "start_time": 1174.143,
+      "end_time": 1175.283,
+      "text": "能不能盼我点好啊你？"
+    },
+    {
+      "start_time": 1178.663,
+      "end_time": 1182.153,
+      "text": "我真是恨死那个卖鞭炮的，别让我再见着他。"
+    },
+    {
+      "start_time": 1183.233,
+      "end_time": 1187.043,
+      "text": "这能怪谁呀？要怪呀，也只能怪你自己。"
+    },
+    {
+      "start_time": 1187.413,
+      "end_time": 1188.193,
+      "text": "凭什么怪我？"
+    },
+    {
+      "start_time": 1189.433,
+      "end_time": 1191.893,
+      "text": "刘星，你是得接受教训啊。"
+    },
+    {
+      "start_time": 1192.523,
+      "end_time": 1198.183,
+      "text": "这回人家派出所呀，要不是看你呀年纪小，认错态度好，"
+    },
+    {
+      "start_time": 1198.643,
+      "end_time": 1200.003,
+      "text": "人家就把你留那儿了。"
+    },
+    {
+      "start_time": 1200.32,
+      "end_time": 1200.56,
+      "text": "哼。"
+    },
+    {
+      "start_time": 1202.4,
+      "end_time": 1202.67,
+      "text": "嗯？"
+    },
+    {
+      "start_time": 1206.418,
+      "end_time": 1206.848,
+      "text": "喂？"
+    },
+    {
+      "start_time": 1207.638,
+      "end_time": 1209.138,
+      "text": "哦，他在，你等一下啊。"
+    },
+    {
+      "start_time": 1209.618,
+      "end_time": 1210.518,
+      "text": "刘星找你的。"
+    },
+    {
+      "start_time": 1213.258,
+      "end_time": 1214.158,
+      "text": "喂，谁呀？"
+    },
+    {
+      "start_time": 1216.238,
+      "end_time": 1217.838,
+      "text": "啊？啊？什么？"
+    },
+    {
+      "start_time": 1218.718,
+      "end_time": 1219.118,
+      "text": "在哪儿？"
+    },
+    {
+      "start_time": 1223.958,
+      "end_time": 1224.398,
+      "text": "刘星啊，"
+    },
+    {
+      "start_time": 1224.918,
+      "end_time": 1225.638,
+      "text": "谁的电话？"
+    },
+    {
+      "start_time": 1225.838,
+      "end_time": 1226.198,
+      "text": "鼠标。"
+    },
+    {
+      "start_time": 1226.518,
+      "end_time": 1228.158,
+      "text": "哎，他说什么呀？"
+    },
+    {
+      "start_time": 1228.518,
+      "end_time": 1231.158,
+      "text": "他说，他说看见那卖炮的了。"
+    },
+    {
+      "start_time": 1233.078,
+      "end_time": 1234.438,
+      "text": "那就赶紧报警啊。"
+    },
+    {
+      "start_time": 1236.038,
+      "end_time": 1239.118,
+      "text": "刘星，我可告诉你，你哪儿也甭打算去。"
+    },
+    {
+      "start_time": 1239.278,
+      "end_time": 1240.078,
+      "text": "给我坐这儿。"
+    },
+    {
+      "start_time": 1241.918,
+      "end_time": 1244.558,
+      "text": "哎呀，姥姥，他已经报警了。"
+    },
+    {
+      "start_time": 1244.638,
+      "end_time": 1246.078,
+      "text": "您放心，我绝对不出去。"
+    },
+    {
+      "start_time": 1246.238,
+      "end_time": 1247.998,
+      "text": "我就是想回屋歇会儿。"
+    },
+    {
+      "start_time": 1248.998,
+      "end_time": 1250.238,
+      "text": "哦，那行。"
+    },
+    {
+      "start_time": 1250.558,
+      "end_time": 1251.718,
+      "text": "啊，去吧。"
+    }
+  ]
+}

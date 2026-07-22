@@ -1,0 +1,119 @@
+{
+  "video": "S1E2",
+  "metrics": {
+    "n_scenes": 444,
+    "n_midpoint": 280,
+    "n_switch": 142,
+    "n_silence": 22,
+    "n_ocr_hit": 401,
+    "n_ocr_hit_nonsilence": 401,
+    "hit_rate": 0.9032,
+    "hit_rate_nonsilence": 0.9502,
+    "n_ref_segments": 426,
+    "n_ref_matched": 198,
+    "recall": 0.4648,
+    "char_precision": 0.9051,
+    "char_recall": 0.7441,
+    "char_f1": 0.8168,
+    "n_miss_candidates": 12,
+    "miss_rate": 0.0284
+  },
+  "miss_candidates": [
+    {
+      "index": 13,
+      "anchor_type": "midpoint",
+      "timestamp": 29.389,
+      "speaker_ref": null,
+      "ref_text": "狂野男孩，你会为了小雪和她的爸爸决斗吗？",
+      "anchor_text": "哎哎哎。"
+    },
+    {
+      "index": 67,
+      "anchor_type": "switch",
+      "timestamp": 218.849,
+      "speaker_ref": null,
+      "ref_text": "塑料的，预备着让你摔的。",
+      "anchor_text": ""
+    },
+    {
+      "index": 68,
+      "anchor_type": "midpoint",
+      "timestamp": 220.406,
+      "speaker_ref": null,
+      "ref_text": "没玻璃的摔得过瘾。",
+      "anchor_text": "没玻璃的摔得过瘾。"
+    },
+    {
+      "index": 113,
+      "anchor_type": "switch",
+      "timestamp": 347.324,
+      "speaker_ref": null,
+      "ref_text": "平常啊就喜欢打孩子。",
+      "anchor_text": ""
+    },
+    {
+      "index": 114,
+      "anchor_type": "midpoint",
+      "timestamp": 347.844,
+      "speaker_ref": null,
+      "ref_text": "平常啊就喜欢打孩子。",
+      "anchor_text": "平常啊就喜欢打孩子。"
+    },
+    {
+      "index": 169,
+      "anchor_type": "midpoint",
+      "timestamp": 535.136,
+      "speaker_ref": null,
+      "ref_text": "老弟你等着吧，",
+      "anchor_text": "一会儿惨叫声就出来了。"
+    },
+    {
+      "index": 253,
+      "anchor_type": "switch",
+      "timestamp": 750.646,
+      "speaker_ref": null,
+      "ref_text": "哎呀，小雪她男朋友来了。",
+      "anchor_text": ""
+    },
+    {
+      "index": 254,
+      "anchor_type": "midpoint",
+      "timestamp": 751.291,
+      "speaker_ref": null,
+      "ref_text": "哎呀，小雪她男朋友来了。",
+      "anchor_text": "哦，狂野男孩来了呀。"
+    },
+    {
+      "index": 269,
+      "anchor_type": "midpoint",
+      "timestamp": 779.735,
+      "speaker_ref": null,
+      "ref_text": "第三页，第二十七行。",
+      "anchor_text": "第三页第二十七行。"
+    },
+    {
+      "index": 417,
+      "anchor_type": "switch",
+      "timestamp": 1183.704,
+      "speaker_ref": null,
+      "ref_text": "嘿嘿嘿嘿嘿！",
+      "anchor_text": ""
+    },
+    {
+      "index": 418,
+      "anchor_type": "midpoint",
+      "timestamp": 1185.339,
+      "speaker_ref": null,
+      "ref_text": "你把你的臭鞋往哪儿甩呢你？",
+      "anchor_text": "嘿嘿嘿嘿嘿你把你的臭鞋往哪甩呢你？"
+    },
+    {
+      "index": 442,
+      "anchor_type": "switch",
+      "timestamp": 1275.12,
+      "speaker_ref": null,
+      "ref_text": "那个狂野少年是她的一个托儿！",
+      "anchor_text": ""
+    }
+  ]
+}

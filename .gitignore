@@ -20,13 +20,26 @@ ENV/
 .DS_Store
 Thumbs.db
 
-# Runtime data (regeneratable)
+# === 视频 / 媒体 (太大, 不上传) ===
 data/videos/
-data/output/
-
-# Model weights
+data/hls/
 data/models/
 models/*.onnx
+
+# === 流水线大文件 (可重新跑 pipeline 生成) ===
+# 注意: data/output/ 下的 JSON 知识库文件 *要* 上传 (别人部署后 Alleys 才能聊天)
+# 只 ignore 大文件:
+data/output/**/*.wav
+data/output/**/*.npz
+data/output/**/keyframes/
+data/output/**/_stage3_dryrun.log
+data/output/_batch_reports/
+
+# === LangGraph checkpoint (对话状态快照, 不通用, 但 store.pckl 要上传) ===
+.langgraph_api/.langgraph_checkpoint.*
+.langgraph_api/.langgraph_ops.pckl
+.langgraph_api/.langgraph_retry_counter.pckl
+.langgraph_api/store.vectors.pckl
 
 # Experiments data
 experiments/_archive/
@@ -55,3 +68,7 @@ experiments/test_omni_result/
 *.mov
 *.wmv
 *.webm
+
+# HLS generated files
+*.m3u8
+*.ts

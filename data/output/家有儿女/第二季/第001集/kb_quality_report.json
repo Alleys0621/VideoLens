@@ -1,0 +1,114 @@
+{
+  "video_id": "家有儿女/第二季/第001集",
+  "summary": {
+    "n_events": 61,
+    "n_arc_updates": 4,
+    "n_global_characters": 8,
+    "n_global_arcs": 4,
+    "n_schema_violations": 0
+  },
+  "completeness": {
+    "event": {
+      "event_id": 1.0,
+      "title": 1.0,
+      "motivation": 1.0,
+      "summary": 1.0,
+      "retrieval_text": 1.0
+    },
+    "arc_update": {
+      "arc_id": 1.0,
+      "title": 1.0,
+      "type": 1.0,
+      "status": 1.0,
+      "summary": 1.0,
+      "related_event_ids": 1.0
+    },
+    "video_summary": {
+      "video_id": 1.0,
+      "title": 1.0,
+      "episode_summary": 1.0,
+      "character_refs": 1.0,
+      "main_arcs": 1.0
+    },
+    "character": {
+      "character_id": 1.0,
+      "name": 1.0,
+      "role": 1.0,
+      "description": 1.0
+    },
+    "global_arc": {
+      "arc_id": 1.0,
+      "title": 1.0,
+      "type": 1.0,
+      "status": 1.0,
+      "summary": 1.0
+    }
+  },
+  "schema_violations": [],
+  "reference_integrity": {
+    "arc_dangling_event_refs": [],
+    "video_main_arcs_dangling": [],
+    "video_key_events_dangling": [],
+    "video_char_refs": 8,
+    "video_char_refs_matched_in_global": 0
+  },
+  "character_coverage": {
+    "unique_participants_in_events": 46,
+    "covered_by_global_chars": 5,
+    "missing": [
+      "char_donghai",
+      "char_grandma",
+      "char_liu_mei",
+      "char_liu_mei_ex_husband",
+      "char_liu_xing",
+      "char_liumei",
+      "char_liuxing",
+      "char_lu_ren_1",
+      "char_lumei",
+      "char_luren_001",
+      "char_mei",
+      "char_passerby",
+      "char_passerby_1",
+      "char_passerby_2",
+      "char_passerby_3",
+      "char_unknown_001",
+      "char_unknown_1",
+      "char_unknown_2",
+      "char_unknown_3",
+      "char_unknown_elder",
+      "char_unknown_elder_f",
+      "char_unknown_elder_m",
+      "char_unknown_father",
+      "char_unknown_grandma",
+      "char_unknown_grandpa",
+      "char_unknown_guests",
+      "char_unknown_mother",
+      "char_unknown_person",
+      "char_xia_donghai",
+      "char_xia_xue",
+      "char_xia_yu",
+      "char_xiadh",
+      "char_xiadonghai",
+      "char_xiahai",
+      "char_xiaodonghai",
+      "char_xiaxue",
+      "char_xiayu",
+      "char_xing",
+      "char_xue",
+      "char_yu",
+      "路人"
+    ]
+  },
+  "arc_distribution": {
+    "by_type": {
+      "relationship": 2,
+      "goal": 1,
+      "character_growth": 1
+    },
+    "by_status": {
+      "resolved": 2,
+      "progressing": 2
+    }
+  },
+  "cost_cny": 0.052618
+}

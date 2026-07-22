@@ -1,0 +1,2138 @@
+{
+  "video": "家有儿女/第一季/第02集",
+  "model": "qwen3.5-omni-plus",
+  "audio_duration": 1281.41,
+  "chunk_duration": 60.0,
+  "segments": [
+    {
+      "start_time": 2.083,
+      "end_time": 2.393,
+      "text": "出来。"
+    },
+    {
+      "start_time": 3.753,
+      "end_time": 4.143,
+      "text": "走。"
+    },
+    {
+      "start_time": 5.363,
+      "end_time": 7.123,
+      "text": "咱们俩必须要单独谈谈了。"
+    },
+    {
+      "start_time": 7.203,
+      "end_time": 8.563,
+      "text": "可我想跟他单独谈谈。"
+    },
+    {
+      "start_time": 8.563,
+      "end_time": 9.683,
+      "text": "那我还是先走了。"
+    },
+    {
+      "start_time": 9.683,
+      "end_time": 11.603,
+      "text": "第四十八页，先到十六行。"
+    },
+    {
+      "start_time": 11.603,
+      "end_time": 12.803,
+      "text": "我在这等你，我在这等你。"
+    },
+    {
+      "start_time": 12.883,
+      "end_time": 14.803,
+      "text": "你还在这等他，我看看你等。"
+    },
+    {
+      "start_time": 14.803,
+      "end_time": 15.203,
+      "text": "走开。"
+    },
+    {
+      "start_time": 15.603,
+      "end_time": 16.403,
+      "text": "爱心，耐心。"
+    },
+    {
+      "start_time": 17.443,
+      "end_time": 19.203,
+      "text": "我先要尽到一个做父亲的责任。"
+    },
+    {
+      "start_time": 19.443,
+      "end_time": 19.763,
+      "text": "走开。"
+    },
+    {
+      "start_time": 20.083,
+      "end_time": 20.243,
+      "text": "坐。"
+    },
+    {
+      "start_time": 20.723,
+      "end_time": 21.043,
+      "text": "给我坐。"
+    },
+    {
+      "start_time": 21.283,
+      "end_time": 23.363,
+      "text": "第四十八页，先到十六行。"
+    },
+    {
+      "start_time": 23.363,
+      "end_time": 25.203,
+      "text": "哎，别怕，我会保护你的。"
+    },
+    {
+      "start_time": 30.723,
+      "end_time": 34.083,
+      "text": "狂野男孩，你会为了小雪和她的爸爸决斗吗？"
+    },
+    {
+      "start_time": 34.723,
+      "end_time": 38.323,
+      "text": "第四十八页，几行几行什么来着？"
+    },
+    {
+      "start_time": 38.643,
+      "end_time": 39.843,
+      "text": "嗯，那是什么东东啊？"
+    },
+    {
+      "start_time": 40.723,
+      "end_time": 42.403,
+      "text": "是爱情誓言吧。"
+    },
+    {
+      "start_time": 42.403,
+      "end_time": 43.363,
+      "text": "不不不不不是不是。"
+    },
+    {
+      "start_time": 43.763,
+      "end_time": 44.883,
+      "text": "呃，我还是到外面待会儿吧。"
+    },
+    {
+      "start_time": 49.203,
+      "end_time": 50.803,
+      "text": "别怕，我们会保护你的。"
+    },
+    {
+      "start_time": 51.923,
+      "end_time": 53.603,
+      "text": "别怕，我们会保护你的。"
+    },
+    {
+      "start_time": 54.163,
+      "end_time": 56.163,
+      "text": "哎哎哎哎哎，干嘛呢这是？"
+    },
+    {
+      "start_time": 58.163,
+      "end_time": 60.003,
+      "text": "反正这句话我们以后..."
+    },
+    {
+      "start_time": 60.0,
+      "end_time": 61.68,
+      "text": "也会对女孩子说的。"
+    },
+    {
+      "start_time": 61.72,
+      "end_time": 65.04,
+      "text": "我们长大了也会狂野，狂野。"
+    },
+    {
+      "start_time": 67.36,
+      "end_time": 69.52,
+      "text": "揍你们！回屋去。"
+    },
+    {
+      "start_time": 77.691,
+      "end_time": 81.211,
+      "text": "小雪，你怎么居然交上男朋友？"
+    },
+    {
+      "start_time": 88.491,
+      "end_time": 91.051,
+      "text": "啊？你居然还把他带回家里来。"
+    },
+    {
+      "start_time": 91.691,
+      "end_time": 92.491,
+      "text": "我对你太失望了。"
+    },
+    {
+      "start_time": 93.611,
+      "end_time": 94.891,
+      "text": "你凭什么干涉我的社交？"
+    },
+    {
+      "start_time": 95.931,
+      "end_time": 102.331,
+      "text": "社交？哼，你这么小的年纪，你懂什么叫社交？"
+    },
+    {
+      "start_time": 103.291,
+      "end_time": 104.251,
+      "text": "我是怕你犯错误。"
+    },
+    {
+      "start_time": 107.131,
+      "end_time": 109.851,
+      "text": "您不犯错误，那你还离婚？"
+    },
+    {
+      "start_time": 110.651,
+      "end_time": 113.211,
+      "text": "你！怎么说话呢？"
+    },
+    {
+      "start_time": 114.331,
+      "end_time": 115.531,
+      "text": "爸爸可真生气了我告诉你。"
+    },
+    {
+      "start_time": 120.043,
+      "end_time": 121.273,
+      "text": "你干吗那么凶啊？"
+    },
+    {
+      "start_time": 125.159,
+      "end_time": 127.419,
+      "text": "你从来都没有关心过我。"
+    },
+    {
+      "start_time": 130.282,
+      "end_time": 133.862,
+      "text": "我七岁，你就把我扔在爷爷家不管。"
+    },
+    {
+      "start_time": 135.734,
+      "end_time": 138.424,
+      "text": "出趟国还把我妈给看丢了。"
+    },
+    {
+      "start_time": 141.577,
+      "end_time": 144.497,
+      "text": "我还没从你的离婚阴影中清醒过来，"
+    },
+    {
+      "start_time": 147.62,
+      "end_time": 149.62,
+      "text": "你又给我找了一个后妈。"
+    },
+    {
+      "start_time": 152.182,
+      "end_time": 154.902,
+      "text": "这对我的幼小心灵是多么大的伤害呀！"
+    },
+    {
+      "start_time": 155.272,
+      "end_time": 156.562,
+      "text": "你懂不懂啊？"
+    },
+    {
+      "start_time": 157.685,
+      "end_time": 158.845,
+      "text": "好好好。"
+    },
+    {
+      "start_time": 161.608,
+      "end_time": 164.248,
+      "text": "这这…不是不说我吗？"
+    },
+    {
+      "start_time": 165.098,
+      "end_time": 166.248,
+      "text": "我是说你。"
+    },
+    {
+      "start_time": 166.961,
+      "end_time": 169.771,
+      "text": "你你不应该交男朋友。"
+    },
+    {
+      "start_time": 170.291,
+      "end_time": 171.211,
+      "text": "我不用你管。"
+    },
+    {
+      "start_time": 172.214,
+      "end_time": 173.994,
+      "text": "就许你结婚、离婚、再结婚，"
+    },
+    {
+      "start_time": 174.534,
+      "end_time": 176.024,
+      "text": "我交个男朋友都不行啊？"
+    },
+    {
+      "start_time": 180.489,
+      "end_time": 181.279,
+      "text": "小雪。"
+    },
+    {
+      "start_time": 181.279,
+      "end_time": 182.369,
+      "text": "哎，小雪，小雪。"
+    },
+    {
+      "start_time": 182.579,
+      "end_time": 183.779,
+      "text": "行了行了，干嘛呀？"
+    },
+    {
+      "start_time": 184.909,
+      "end_time": 185.279,
+      "text": "干嘛？"
+    },
+    {
+      "start_time": 185.469,
+      "end_time": 187.129,
+      "text": "他说我结婚离婚又结婚。"
+    },
+    {
+      "start_time": 187.129,
+      "end_time": 187.959,
+      "text": "你说这孩子。"
+    },
+    {
+      "start_time": 188.579,
+      "end_time": 190.429,
+      "text": "不是结婚离婚又结婚吗？"
+    },
+    {
+      "start_time": 190.759,
+      "end_time": 192.439,
+      "text": "我还结婚离婚又结婚呢。"
+    },
+    {
+      "start_time": 193.069,
+      "end_time": 194.489,
+      "text": "人孩子说的也没错啊。"
+    },
+    {
+      "start_time": 204.189,
+      "end_time": 206.349,
+      "text": "嗯，给，喝口冰水败败火。"
+    },
+    {
+      "start_time": 210.409,
+      "end_time": 212.649,
+      "text": "哎呀，喝冰水，我摔了它。"
+    },
+    {
+      "start_time": 212.739,
+      "end_time": 214.389,
+      "text": "哎哎，别，摔吧。"
+    },
+    {
+      "start_time": 215.359,
+      "end_time": 217.629,
+      "text": "塑料的，预备着让你摔的。"
+    },
+    {
+      "start_time": 220.709,
+      "end_time": 221.869,
+      "text": "没玻璃的摔得过瘾。"
+    },
+    {
+      "start_time": 224.249,
+      "end_time": 225.389,
+      "text": "我告诉你啊夏东海，"
+    },
+    {
+      "start_time": 225.919,
+      "end_time": 229.239,
+      "text": "真的，这种事儿啊，父母越反对，孩子越跟你拧着来。"
+    },
+    {
+      "start_time": 229.689,
+      "end_time": 231.639,
+      "text": "我自己就是一个惨痛的教训啊。"
+    },
+    {
+      "start_time": 232.079,
+      "end_time": 233.629,
+      "text": "当初胡一统拼命追我，"
+    },
+    {
+      "start_time": 233.839,
+      "end_time": 237.179,
+      "text": "哎，就因为我爸我妈反对，我光顾着对抗家长了，"
+    },
+    {
+      "start_time": 237.339,
+      "end_time": 239.469,
+      "text": "稀里糊涂的就闪电式跟他结婚了。"
+    },
+    {
+      "start_time": 240.528,
+      "end_time": 240.918,
+      "text": "傻了吧？"
+    },
+    {
+      "start_time": 241.688,
+      "end_time": 242.538,
+      "text": "嫁错人了吧？"
+    },
+    {
+      "start_time": 243.048,
+      "end_time": 245.278,
+      "text": "虽然我现在及时的改正了错误，"
+    },
+    {
+      "start_time": 245.488,
+      "end_time": 247.758,
+      "text": "可是我跟他现在毕竟有一个共同的孩子啊。"
+    },
+    {
+      "start_time": 247.998,
+      "end_time": 250.028,
+      "text": "哎，他什么时候心血来潮想来看孩子，"
+    },
+    {
+      "start_time": 250.288,
+      "end_time": 251.518,
+      "text": "我也不能把他轰出去啊。"
+    },
+    {
+      "start_time": 253.752,
+      "end_time": 254.542,
+      "text": "你什么意思？"
+    },
+    {
+      "start_time": 255.542,
+      "end_time": 257.182,
+      "text": "你的意思是说不用我管了？"
+    },
+    {
+      "start_time": 257.572,
+      "end_time": 258.772,
+      "text": "随他的便，对吧？啊？"
+    },
+    {
+      "start_time": 259.462,
+      "end_time": 260.102,
+      "text": "不是。"
+    },
+    {
+      "start_time": 261.572,
+      "end_time": 265.102,
+      "text": "我是说你别非得跟他发生正面冲突。"
+    },
+    {
+      "start_time": 266.542,
+      "end_time": 266.962,
+      "text": "那怎么办？"
+    },
+    {
+      "start_time": 268.252,
+      "end_time": 271.132,
+      "text": "你不是挺聪明的嘛？"
+    },
+    {
+      "start_time": 271.992,
+      "end_time": 273.252,
+      "text": "挺有创意的嘛？"
+    },
+    {
+      "start_time": 274.152,
+      "end_time": 275.892,
+      "text": "啊，挺有想象力的嘛？"
+    },
+    {
+      "start_time": 276.912,
+      "end_time": 279.192,
+      "text": "你不是我的智囊团吗，小哥？"
+    },
+    {
+      "start_time": 281.453,
+      "end_time": 284.313,
+      "text": "我现在就从狂野男孩那儿下手。"
+    },
+    {
+      "start_time": 285.603,
+      "end_time": 287.143,
+      "text": "干嘛呀？你要打人家？"
+    },
+    {
+      "start_time": 288.793,
+      "end_time": 290.333,
+      "text": "他还用我亲自动手？"
+    },
+    {
+      "start_time": 292.473,
+      "end_time": 293.993,
+      "text": "你要雇人打他？"
+    },
+    {
+      "start_time": 296.023,
+      "end_time": 298.453,
+      "text": "准备使用最锐利的武器。"
+    },
+    {
+      "start_time": 298.823,
+      "end_time": 300.003,
+      "text": "咱们家新磨的切"
+    },
+    {
+      "start_time": 300.0,
+      "end_time": 300.32,
+      "text": "菜刀"
+    },
+    {
+      "start_time": 300.64,
+      "end_time": 301.28,
+      "text": "拿菜刀干嘛？"
+    },
+    {
+      "start_time": 302.24,
+      "end_time": 304.56,
+      "text": "我准备舌战狂野男孩。"
+    },
+    {
+      "start_time": 307.2,
+      "end_time": 307.68,
+      "text": "谁不会？"
+    },
+    {
+      "start_time": 315.36,
+      "end_time": 315.6,
+      "text": "站住！"
+    },
+    {
+      "start_time": 318.16,
+      "end_time": 319.52,
+      "text": "很高兴认识你。"
+    },
+    {
+      "start_time": 320.4,
+      "end_time": 323.04,
+      "text": "四十八页三到十六行什么意思啊？"
+    },
+    {
+      "start_time": 324.0,
+      "end_time": 327.2,
+      "text": "是哪本书的四十八页呀？"
+    },
+    {
+      "start_time": 327.92,
+      "end_time": 330.8,
+      "text": "是大众情人还是恋爱绝句？"
+    },
+    {
+      "start_time": 331.2,
+      "end_time": 332.64,
+      "text": "不不不不是。"
+    },
+    {
+      "start_time": 332.96,
+      "end_time": 333.2,
+      "text": "回来！"
+    },
+    {
+      "start_time": 335.44,
+      "end_time": 340.72,
+      "text": "听好了，作为夏雪的父亲，我是绝不会允许你们这个年龄谈恋爱的，绝不！"
+    },
+    {
+      "start_time": 342.88,
+      "end_time": 344.8,
+      "text": "你先等一会儿啊，你先消消气儿。"
+    },
+    {
+      "start_time": 345.6,
+      "end_time": 346.56,
+      "text": "他爸脾气不好。"
+    },
+    {
+      "start_time": 346.56,
+      "end_time": 346.96,
+      "text": "非常不好。"
+    },
+    {
+      "start_time": 346.96,
+      "end_time": 348.48,
+      "text": "平常啊就喜欢打孩子。"
+    },
+    {
+      "start_time": 350.0,
+      "end_time": 352.88,
+      "text": "小雪那弟弟小雨，那脸就是扇肿的。"
+    },
+    {
+      "start_time": 355.36,
+      "end_time": 356.24,
+      "text": "明白。"
+    },
+    {
+      "start_time": 357.28,
+      "end_time": 360.0,
+      "text": "哎呀，看你长得这么文质彬彬。"
+    },
+    {
+      "start_time": 360.0,
+      "end_time": 362.16,
+      "text": "应该是个好学生啊。"
+    },
+    {
+      "start_time": 362.56,
+      "end_time": 365.12,
+      "text": "啊？你怎么能叫狂野男孩啊？"
+    },
+    {
+      "start_time": 365.44,
+      "end_time": 369.28,
+      "text": "我看你应该叫文弱小书生才对呀。"
+    },
+    {
+      "start_time": 370.24,
+      "end_time": 371.36,
+      "text": "这是夏雪给我取的。"
+    },
+    {
+      "start_time": 371.76,
+      "end_time": 373.6,
+      "text": "你必须停止和小雪的一切交往。"
+    },
+    {
+      "start_time": 374.24,
+      "end_time": 377.6,
+      "text": "在滑向错误的深渊之前，你给我悬崖勒马。"
+    },
+    {
+      "start_time": 377.84,
+      "end_time": 379.44,
+      "text": "勒住勒住！"
+    },
+    {
+      "start_time": 382.8,
+      "end_time": 386.48,
+      "text": "其实啊，我们呀都是为你们着急，为你们负责。"
+    },
+    {
+      "start_time": 387.04,
+      "end_time": 391.36,
+      "text": "高中正是人生很重要的一个积累知识的阶段。"
+    },
+    {
+      "start_time": 391.84,
+      "end_time": 393.76,
+      "text": "你们应该把精力放在学习上啊。"
+    },
+    {
+      "start_time": 394.0,
+      "end_time": 396.16,
+      "text": "谈恋爱那都是大人的事。"
+    },
+    {
+      "start_time": 396.4,
+      "end_time": 399.12,
+      "text": "你们不应该预知未来呀，是不是？"
+    },
+    {
+      "start_time": 399.36,
+      "end_time": 399.68,
+      "text": "我"
+    },
+    {
+      "start_time": 400.08,
+      "end_time": 400.96,
+      "text": "我什么我？"
+    },
+    {
+      "start_time": 401.76,
+      "end_time": 406.64,
+      "text": "如果你不肯放弃这种不负责任的、幼稚的、所所谓的感情，"
+    },
+    {
+      "start_time": 407.28,
+      "end_time": 411.28,
+      "text": "作为小雪的父亲，我就会马上联络你的父亲，连同校方处理这个问题。"
+    },
+    {
+      "start_time": 411.52,
+      "end_time": 413.6,
+      "text": "将反对早恋进行到底，到底！"
+    },
+    {
+      "start_time": 414.88,
+      "end_time": 416.64,
+      "text": "他脾气一上来，我根本就管不了他。"
+    },
+    {
+      "start_time": 416.64,
+      "end_time": 419.12,
+      "text": "哎哎，千千千千万别告诉我爸爸好不好？"
+    },
+    {
+      "start_time": 420.0,
+      "end_time": 422.72,
+      "text": "你是不是就能够立刻从小雪的身边消失？"
+    },
+    {
+      "start_time": 424.88,
+      "end_time": 430.32,
+      "text": "其实，嗯，其实，哎呀，其实我不是小雪男朋友，是她雇来的一个托儿。"
+    },
+    {
+      "start_time": 430.56,
+      "end_time": 430.96,
+      "text": "什么？"
+    },
+    {
+      "start_time": 432.24,
+      "end_time": 436.72,
+      "text": "我都说了吧，小雪让我假冒她男朋友，是为了演给你们俩看。"
+    },
+    {
+      "start_time": 437.28,
+      "end_time": 443.68,
+      "text": "她说爸爸娶了后妈，她怕受后妈的气，失去自由和快乐，所以拿这事跟你叫板。"
+    },
+    {
+      "start_time": 448.08,
+      "end_time": 454.88,
+      "text": "哦，她是想表明她不是一个任人宰割的小绵羊，而是长满了刺的小刺猬。"
+    },
+    {
+      "start_time": 455.04,
+      "end_time": 456.0,
+      "text": "是是这个意思。"
+    },
+    {
+      "start_time": 457.2,
+      "end_time": 459.76,
+      "text": "那，那她花了多少钱雇你啊？"
+    },
+    {
+      "start_time": 460.0,
+      "end_time": 464.72,
+      "text": "别那么庸俗好不好？这不是金钱交易，是第四十八页三到十六行。"
+    },
+    {
+      "start_time": 464.88,
+      "end_time": 465.68,
+      "text": "那是什么东西？"
+    },
+    {
+      "start_time": 467.12,
+      "end_time": 470.24,
+      "text": "一道三加X经典理科试题，我们班只有夏雪会。"
+    },
+    {
+      "start_time": 471.52,
+      "end_time": 476.72,
+      "text": "哦，她是让你帮助她，然后她再来帮助你？"
+    },
+    {
+      "start_time": 476.72,
+      "end_time": 480.0,
+      "text": "呃对，但是她没有帮助我，她说除非我演得特别像。"
+    },
+    {
+      "start_time": 480.32,
+      "end_time": 481.28,
+      "text": "她才肯给我讲题。"
+    },
+    {
+      "start_time": 481.68,
+      "end_time": 483.76,
+      "text": "哎，叔叔阿姨，我演得像吗？"
+    },
+    {
+      "start_time": 484.8,
+      "end_time": 485.92,
+      "text": "不像！"
+    },
+    {
+      "start_time": 486.4,
+      "end_time": 487.52,
+      "text": "早就看出来了。"
+    },
+    {
+      "start_time": 487.92,
+      "end_time": 489.2,
+      "text": "小雪怎么可能早恋呢？"
+    },
+    {
+      "start_time": 489.44,
+      "end_time": 490.4,
+      "text": "而且长那么高的个儿。"
+    },
+    {
+      "start_time": 490.4,
+      "end_time": 491.2,
+      "text": "头发还是红的。"
+    },
+    {
+      "start_time": 491.44,
+      "end_time": 492.48,
+      "text": "一点不像我们高粱。"
+    },
+    {
+      "start_time": 492.96,
+      "end_time": 493.68,
+      "text": "叔叔阿姨啊，"
+    },
+    {
+      "start_time": 494.08,
+      "end_time": 496.24,
+      "text": "千万别把我招了这事告诉夏雪啊，"
+    },
+    {
+      "start_time": 496.64,
+      "end_time": 498.4,
+      "text": "不然她该不给我讲题了。"
+    },
+    {
+      "start_time": 499.68,
+      "end_time": 500.24,
+      "text": "谢谢了啊。"
+    },
+    {
+      "start_time": 500.64,
+      "end_time": 501.6,
+      "text": "我先走了啊。"
+    },
+    {
+      "start_time": 502.08,
+      "end_time": 502.8,
+      "text": "拜拜。"
+    },
+    {
+      "start_time": 506.8,
+      "end_time": 507.76,
+      "text": "哎呀，我就说嘛，"
+    },
+    {
+      "start_time": 508.0,
+      "end_time": 509.52,
+      "text": "小雪怎么可能早恋。"
+    },
+    {
+      "start_time": 509.92,
+      "end_time": 511.04,
+      "text": "我早就知道了。"
+    },
+    {
+      "start_time": 512.64,
+      "end_time": 514.4,
+      "text": "你什么时候早就知道的？"
+    },
+    {
+      "start_time": 517.6,
+      "end_time": 518.32,
+      "text": "我是早就知道了。"
+    },
+    {
+      "start_time": 518.96,
+      "end_time": 520.72,
+      "text": "我还说过，你没听见而已。"
+    },
+    {
+      "start_time": 536.167,
+      "end_time": 537.447,
+      "text": "老弟你等着吧，"
+    },
+    {
+      "start_time": 538.007,
+      "end_time": 539.447,
+      "text": "一会儿惨叫声就出来。"
+    },
+    {
+      "start_time": 540.576,
+      "end_time": 541.686,
+      "text": "嗯？谁的惨叫声？"
+    },
+    {
+      "start_time": 542.346,
+      "end_time": 543.076,
+      "text": "我姐的呀。"
+    },
+    {
+      "start_time": 543.796,
+      "end_time": 546.846,
+      "text": "她今天呀，绝对得受到严厉的惩罚。"
+    },
+    {
+      "start_time": 547.686,
+      "end_time": 548.386,
+      "text": "嗯？是吗？"
+    },
+    {
+      "start_time": 548.836,
+      "end_time": 550.106,
+      "text": "那当然了。"
+    },
+    {
+      "start_time": 550.426,
+      "end_time": 553.146,
+      "text": "你想想啊，从她第一天进家门就捣乱。"
+    },
+    {
+      "start_time": 553.836,
+      "end_time": 555.866,
+      "text": "还把自己的男朋友带回家。"
+    },
+    {
+      "start_time": 557.736,
+      "end_time": 558.426,
+      "text": "太猖狂了。"
+    },
+    {
+      "start_time": 558.906,
+      "end_time": 559.946,
+      "text": "不打她不正常。"
+    },
+    {
+      "start_time": 561.146,
+      "end_time": 563.236,
+      "text": "在美国打孩子是犯法的。"
+    },
+    {
+      "start_time": 563.956,
+      "end_time": 566.166,
+      "text": "在中国也一样犯法。"
+    },
+    {
+      "start_time": 566.706,
+      "end_time": 569.526,
+      "text": "在美国挨打的孩子就要打911。"
+    },
+    {
+      "start_time": 570.046,
+      "end_time": 573.916,
+      "text": "在中国挨打的孩子就要打110。"
+    },
+    {
+      "start_time": 575.226,
+      "end_time": 576.396,
+      "text": "不过也没人打过。"
+    },
+    {
+      "start_time": 577.296,
+      "end_time": 578.206,
+      "text": "嗯？为什么？"
+    },
+    {
+      "start_time": 579.186,
+      "end_time": 580.336,
+      "text": "嗯，你想想啊。"
+    },
+    {
+      "start_time": 580.906,
+      "end_time": 587.796,
+      "text": "警察要是一走，孩子又要落到家长的手掌里了。"
+    },
+    {
+      "start_time": 587.976,
+      "end_time": 588.426,
+      "text": "刘星。"
+    },
+    {
+      "start_time": 588.796,
+      "end_time": 589.076,
+      "text": "嗯？"
+    },
+    {
+      "start_time": 589.976,
+      "end_time": 591.386,
+      "text": "你说的惨叫声没有。"
+    },
+    {
+      "start_time": 593.576,
+      "end_time": 594.726,
+      "text": "把嘴给堵上了。"
+    },
+    {
+      "start_time": 595.026,
+      "end_time": 595.616,
+      "text": "就像这样。"
+    },
+    {
+      "start_time": 601.632,
+      "end_time": 602.892,
+      "text": "小雪你不要紧张。"
+    },
+    {
+      "start_time": 605.712,
+      "end_time": 609.272,
+      "text": "呃，我们找你来就是想彼此的沟通一下。"
+    },
+    {
+      "start_time": 609.272,
+      "end_time": 609.472,
+      "text": "对。"
+    },
+    {
+      "start_time": 610.352,
+      "end_time": 613.392,
+      "text": "如果要是为了狂野男孩的事儿，那就算了。"
+    },
+    {
+      "start_time": 613.992,
+      "end_time": 616.352,
+      "text": "因为我不想和别人讨论我的男朋友。"
+    },
+    {
+      "start_time": 617.612,
+      "end_time": 620.192,
+      "text": "关于你的男朋友。"
+    },
+    {
+      "start_time": 621.392,
+      "end_time": 624.352,
+      "text": "我们认为这是你自己的事情，我们不再干涉。"
+    },
+    {
+      "start_time": 625.702,
+      "end_time": 625.942,
+      "text": "啊？"
+    },
+    {
+      "start_time": 627.512,
+      "end_time": 632.232,
+      "text": "因为我们认为你的综合素质完全可以应付这方面的问题。"
+    },
+    {
+      "start_time": 632.432,
+      "end_time": 632.592,
+      "text": "对。"
+    },
+    {
+      "start_time": 632.992,
+      "end_time": 635.952,
+      "text": "我代表你的妈妈，明确表一下态。"
+    },
+    {
+      "start_time": 636.432,
+      "end_time": 638.712,
+      "text": "你在这个家里有完全的自由。"
+    },
+    {
+      "start_time": 639.232,
+      "end_time": 643.072,
+      "text": "只要是你认为正确的事情，对的事情，想怎么做就怎么做。"
+    },
+    {
+      "start_time": 643.552,
+      "end_time": 645.952,
+      "text": "我们准备对你实行零限制。"
+    },
+    {
+      "start_time": 646.272,
+      "end_time": 646.512,
+      "text": "零？"
+    },
+    {
+      "start_time": 647.872,
+      "end_time": 648.912,
+      "text": "想干什么就干什么？"
+    },
+    {
+      "start_time": 649.392,
+      "end_time": 649.712,
+      "text": "当然。"
+    },
+    {
+      "start_time": 650.592,
+      "end_time": 654.192,
+      "text": "对呀，你在这个家就是一个自由的小小小小鸟。"
+    },
+    {
+      "start_time": 654.992,
+      "end_time": 656.992,
+      "text": "想要飞多高啊就可以飞多高。"
+    },
+    {
+      "start_time": 657.152,
+      "end_time": 657.312,
+      "text": "对。"
+    },
+    {
+      "start_time": 658.192,
+      "end_time": 658.752,
+      "text": "那我走了。"
+    },
+    {
+      "start_time": 660.0,
+      "end_time": 660.56,
+      "text": "可以。"
+    },
+    {
+      "start_time": 661.84,
+      "end_time": 663.04,
+      "text": "我想去爷爷家住几天。"
+    },
+    {
+      "start_time": 663.28,
+      "end_time": 664.72,
+      "text": "可以。"
+    },
+    {
+      "start_time": 665.44,
+      "end_time": 667.68,
+      "text": "我还会把狂野男孩带到家里来的。"
+    },
+    {
+      "start_time": 667.92,
+      "end_time": 669.2,
+      "text": "可以。"
+    },
+    {
+      "start_time": 669.84,
+      "end_time": 671.12,
+      "text": "你们不怕我变得很坏？"
+    },
+    {
+      "start_time": 671.44,
+      "end_time": 672.32,
+      "text": "可能。"
+    },
+    {
+      "start_time": 672.96,
+      "end_time": 674.16,
+      "text": "你怎么会变得很坏呢？"
+    },
+    {
+      "start_time": 674.32,
+      "end_time": 675.28,
+      "text": "根本不可能。"
+    },
+    {
+      "start_time": 675.28,
+      "end_time": 676.32,
+      "text": "对呀，不可能。"
+    },
+    {
+      "start_time": 684.08,
+      "end_time": 685.2,
+      "text": "我们配合的挺好。"
+    },
+    {
+      "start_time": 685.44,
+      "end_time": 686.56,
+      "text": "就是有点累。"
+    },
+    {
+      "start_time": 688.48,
+      "end_time": 690.64,
+      "text": "你说小雪会明白我们的苦心吗？"
+    },
+    {
+      "start_time": 691.04,
+      "end_time": 692.8,
+      "text": "没准儿可以。"
+    },
+    {
+      "start_time": 693.68,
+      "end_time": 696.48,
+      "text": "哎，小雪自个儿跑阳台上去了。"
+    },
+    {
+      "start_time": 696.88,
+      "end_time": 698.24,
+      "text": "可以。"
+    },
+    {
+      "start_time": 698.96,
+      "end_time": 700.08,
+      "text": "她逃跑了。"
+    },
+    {
+      "start_time": 700.56,
+      "end_time": 702.8,
+      "text": "可，哎，凭什么呀？"
+    },
+    {
+      "start_time": 703.2,
+      "end_time": 704.56,
+      "text": "你们不是惩罚她了吗？"
+    },
+    {
+      "start_time": 704.96,
+      "end_time": 706.0,
+      "text": "我们干嘛惩罚她呀？"
+    },
+    {
+      "start_time": 706.0,
+      "end_time": 709.12,
+      "text": "啊，你，你们凭什么不惩罚她呀？"
+    },
+    {
+      "start_time": 709.44,
+      "end_time": 711.2,
+      "text": "我们凭什么惩罚她呀？"
+    },
+    {
+      "start_time": 712.56,
+      "end_time": 714.16,
+      "text": "那你们凭什么惩罚我呀？"
+    },
+    {
+      "start_time": 714.56,
+      "end_time": 717.04,
+      "text": "嘿，我们凭什么不惩罚你呀？"
+    },
+    {
+      "start_time": 718.0,
+      "end_time": 720.0,
+      "text": "哎呀，天理。"
+    },
+    {
+      "start_time": 720.0,
+      "end_time": 721.234,
+      "text": "何在呀？"
+    },
+    {
+      "start_time": 721.234,
+      "end_time": 723.567,
+      "text": "你们凭什么惩罚我呀？"
+    },
+    {
+      "start_time": 724.89,
+      "end_time": 726.723,
+      "text": "我们凭什么这么累呀？"
+    },
+    {
+      "start_time": 737.656,
+      "end_time": 738.389,
+      "text": "我去看去。"
+    },
+    {
+      "start_time": 738.389,
+      "end_time": 738.922,
+      "text": "我去我去。"
+    },
+    {
+      "start_time": 738.922,
+      "end_time": 740.055,
+      "text": "我去我去我去。"
+    },
+    {
+      "start_time": 740.055,
+      "end_time": 740.988,
+      "text": "我去。"
+    },
+    {
+      "start_time": 745.588,
+      "end_time": 748.221,
+      "text": "爸妈，狂野男孩来了！"
+    },
+    {
+      "start_time": 748.221,
+      "end_time": 750.154,
+      "text": "哎呀，小雪她男朋友来了。"
+    },
+    {
+      "start_time": 750.154,
+      "end_time": 752.487,
+      "text": "哦，狂野男孩来了。"
+    },
+    {
+      "start_time": 752.487,
+      "end_time": 753.62,
+      "text": "哎呀，欢迎欢迎。"
+    },
+    {
+      "start_time": 753.62,
+      "end_time": 754.553,
+      "text": "叔叔阿姨好。"
+    },
+    {
+      "start_time": 754.553,
+      "end_time": 755.286,
+      "text": "嗨，你好。"
+    },
+    {
+      "start_time": 755.286,
+      "end_time": 758.019,
+      "text": "是来学习四十八页三到十六行？"
+    },
+    {
+      "start_time": 758.019,
+      "end_time": 759.552,
+      "text": "是啊。"
+    },
+    {
+      "start_time": 759.552,
+      "end_time": 761.385,
+      "text": "那快去吧，去学习吧。"
+    },
+    {
+      "start_time": 761.385,
+      "end_time": 763.718,
+      "text": "我给你们弄点水果，待会儿给你们送进去。"
+    },
+    {
+      "start_time": 763.718,
+      "end_time": 764.651,
+      "text": "谢谢阿姨啊。"
+    },
+    {
+      "start_time": 764.651,
+      "end_time": 766.084,
+      "text": "真乖这孩子。"
+    },
+    {
+      "start_time": 766.084,
+      "end_time": 766.917,
+      "text": "哎，小雪。"
+    },
+    {
+      "start_time": 769.55,
+      "end_time": 770.383,
+      "text": "去去去。"
+    },
+    {
+      "start_time": 770.383,
+      "end_time": 771.216,
+      "text": "哎，小雪。"
+    },
+    {
+      "start_time": 771.216,
+      "end_time": 772.049,
+      "text": "小雪。"
+    },
+    {
+      "start_time": 781.036,
+      "end_time": 784.286,
+      "text": "第三页，第二十七行。"
+    },
+    {
+      "start_time": 785.106,
+      "end_time": 786.636,
+      "text": "我想有个女朋友。"
+    },
+    {
+      "start_time": 787.726,
+      "end_time": 789.756,
+      "text": "第四页，第二行。"
+    },
+    {
+      "start_time": 790.026,
+      "end_time": 791.606,
+      "text": "送给你一朵玫瑰花。"
+    },
+    {
+      "start_time": 795.226,
+      "end_time": 797.766,
+      "text": "小雪啊，你现在告诉我怎么做那道题了吧？"
+    },
+    {
+      "start_time": 798.666,
+      "end_time": 799.786,
+      "text": "现在还不行。"
+    },
+    {
+      "start_time": 800.576,
+      "end_time": 801.146,
+      "text": "为什么呀？"
+    },
+    {
+      "start_time": 802.026,
+      "end_time": 803.416,
+      "text": "我的目标还没达到。"
+    },
+    {
+      "start_time": 803.556,
+      "end_time": 806.136,
+      "text": "夏雪啊，我觉得你父母人挺好的。"
+    },
+    {
+      "start_time": 806.406,
+      "end_time": 808.316,
+      "text": "你担心的事情啊，根本不会发生。"
+    },
+    {
+      "start_time": 817.516,
+      "end_time": 818.586,
+      "text": "哎，小葛儿。"
+    },
+    {
+      "start_time": 819.116,
+      "end_time": 820.276,
+      "text": "你发现了没有？"
+    },
+    {
+      "start_time": 820.276,
+      "end_time": 820.916,
+      "text": "什么呀？"
+    },
+    {
+      "start_time": 820.916,
+      "end_time": 824.276,
+      "text": "这几天小雪开始往乖乖女的方向发展啦。"
+    },
+    {
+      "start_time": 824.756,
+      "end_time": 828.036,
+      "text": "这就是宽容和理解的神奇力量。"
+    },
+    {
+      "start_time": 828.836,
+      "end_time": 830.356,
+      "text": "这说明我们的决策多么英明啊。"
+    },
+    {
+      "start_time": 831.196,
+      "end_time": 834.876,
+      "text": "我们终于实现了理智和情感的完美结合。"
+    },
+    {
+      "start_time": 835.996,
+      "end_time": 839.796,
+      "text": "这要让世界教科文组织知道了，肯定发咱俩。"
+    },
+    {
+      "start_time": 900.048,
+      "end_time": 902.398,
+      "text": "我怎么就不能见见自己的野蛮女友啊？"
+    },
+    {
+      "start_time": 903.118,
+      "end_time": 903.758,
+      "text": "我告诉你，"
+    },
+    {
+      "start_time": 904.688,
+      "end_time": 906.498,
+      "text": "你要是敢有野蛮女友，"
+    },
+    {
+      "start_time": 906.828,
+      "end_time": 908.088,
+      "text": "你就会突然发现，"
+    },
+    {
+      "start_time": 908.518,
+      "end_time": 912.088,
+      "text": "你有一个野蛮又狂野的母亲。"
+    },
+    {
+      "start_time": 912.298,
+      "end_time": 913.628,
+      "text": "我不要！不要！"
+    },
+    {
+      "start_time": 913.628,
+      "end_time": 914.338,
+      "text": "哎，没没没有。"
+    },
+    {
+      "start_time": 914.338,
+      "end_time": 914.588,
+      "text": "你管！"
+    },
+    {
+      "start_time": 914.688,
+      "end_time": 915.618,
+      "text": "小雨，快开门！"
+    },
+    {
+      "start_time": 916.558,
+      "end_time": 918.888,
+      "text": "干嘛？我要跟他拼了！"
+    },
+    {
+      "start_time": 941.629,
+      "end_time": 942.249,
+      "text": "嗨！哎！"
+    },
+    {
+      "start_time": 942.869,
+      "end_time": 943.539,
+      "text": "你干什么呢？"
+    },
+    {
+      "start_time": 943.749,
+      "end_time": 944.069,
+      "text": "起开。"
+    },
+    {
+      "start_time": 946.469,
+      "end_time": 951.139,
+      "text": "只许州官放火，不许百姓点灯呢。"
+    },
+    {
+      "start_time": 952.549,
+      "end_time": 956.409,
+      "text": "放火？点灯？什么意思啊？"
+    },
+    {
+      "start_time": 957.949,
+      "end_time": 959.379,
+      "text": "记住这个成语吧。"
+    },
+    {
+      "start_time": 960.408,
+      "end_time": 962.538,
+      "text": "以后在咱们家只能够说"
+    },
+    {
+      "start_time": 963.118,
+      "end_time": 966.098,
+      "text": "只许姐姐放火，不许弟弟点灯。"
+    },
+    {
+      "start_time": 967.148,
+      "end_time": 967.798,
+      "text": "那怎么办？"
+    },
+    {
+      "start_time": 968.938,
+      "end_time": 969.368,
+      "text": "反抗。"
+    },
+    {
+      "start_time": 970.468,
+      "end_time": 972.038,
+      "text": "干自己想干的事情。"
+    },
+    {
+      "start_time": 973.098,
+      "end_time": 974.618,
+      "text": "反正小雪也没受过惩罚。"
+    },
+    {
+      "start_time": 976.798,
+      "end_time": 978.688,
+      "text": "不受惩罚还怕什么呀？"
+    },
+    {
+      "start_time": 980.678,
+      "end_time": 980.918,
+      "text": "走。"
+    },
+    {
+      "start_time": 986.333,
+      "end_time": 988.043,
+      "text": "小雨，什么事这么开心啊？"
+    },
+    {
+      "start_time": 988.343,
+      "end_time": 990.423,
+      "text": "我有权保持沉默。"
+    },
+    {
+      "start_time": 992.393,
+      "end_time": 993.793,
+      "text": "刘星怎么还不回来呀？"
+    },
+    {
+      "start_time": 993.793,
+      "end_time": 994.743,
+      "text": "都几点了？"
+    },
+    {
+      "start_time": 996.283,
+      "end_time": 996.753,
+      "text": "来了吗？"
+    },
+    {
+      "start_time": 997.063,
+      "end_time": 998.143,
+      "text": "肯定忘拿钥匙了。"
+    },
+    {
+      "start_time": 998.673,
+      "end_time": 999.243,
+      "text": "你怎么回……"
+    },
+    {
+      "start_time": 1001.983,
+      "end_time": 1004.453,
+      "text": "我就住在你家楼上。"
+    },
+    {
+      "start_time": 1005.483,
+      "end_time": 1007.853,
+      "text": "我的儿子，啊不不，糊涂了。"
+    },
+    {
+      "start_time": 1008.363,
+      "end_time": 1012.023,
+      "text": "我的女儿和你家的小儿子是同一个班的。"
+    },
+    {
+      "start_time": 1012.823,
+      "end_time": 1014.673,
+      "text": "哦，对对对，您的女儿。"
+    },
+    {
+      "start_time": 1015.373,
+      "end_time": 1016.923,
+      "text": "我想有什么事吗？"
+    },
+    {
+      "start_time": 1017.893,
+      "end_time": 1018.903,
+      "text": "由于事关重大"
+    },
+    {
+      "start_time": 1019.333,
+      "end_time": 1020.013,
+      "text": "我要和你家的"
+    },
+    {
+      "start_time": 1020.0,
+      "end_time": 1021.07,
+      "text": "男主人对话。"
+    },
+    {
+      "start_time": 1022.048,
+      "end_time": 1023.958,
+      "text": "哦，男主人，人家跟你对话。"
+    },
+    {
+      "start_time": 1024.468,
+      "end_time": 1027.028,
+      "text": "哦，对，男主人，男主人在，男主人在。"
+    },
+    {
+      "start_time": 1029.178,
+      "end_time": 1031.038,
+      "text": "怎么着？要不然坐下叙话？"
+    },
+    {
+      "start_time": 1031.038,
+      "end_time": 1031.598,
+      "text": "不客气。"
+    },
+    {
+      "start_time": 1034.088,
+      "end_time": 1038.428,
+      "text": "我看由于事情非常严重，所以还是事先确认一下为好。"
+    },
+    {
+      "start_time": 1039.118,
+      "end_time": 1040.258,
+      "text": "请问你家夏雨在吗？"
+    },
+    {
+      "start_time": 1040.738,
+      "end_time": 1041.278,
+      "text": "小雨？"
+    },
+    {
+      "start_time": 1041.278,
+      "end_time": 1042.328,
+      "text": "我在这儿呢。"
+    },
+    {
+      "start_time": 1042.328,
+      "end_time": 1042.838,
+      "text": "来来来。"
+    },
+    {
+      "start_time": 1043.048,
+      "end_time": 1043.528,
+      "text": "叫你呢。"
+    },
+    {
+      "start_time": 1044.498,
+      "end_time": 1044.948,
+      "text": "等一下。"
+    },
+    {
+      "start_time": 1046.628,
+      "end_time": 1047.188,
+      "text": "是他吧？"
+    },
+    {
+      "start_time": 1051.448,
+      "end_time": 1051.818,
+      "text": "对不起。"
+    },
+    {
+      "start_time": 1052.848,
+      "end_time": 1053.618,
+      "text": "喂，进来。"
+    },
+    {
+      "start_time": 1056.148,
+      "end_time": 1056.898,
+      "text": "是他啊？"
+    },
+    {
+      "start_time": 1057.548,
+      "end_time": 1058.428,
+      "text": "多多，I love you。"
+    },
+    {
+      "start_time": 1058.928,
+      "end_time": 1059.378,
+      "text": "Stop！"
+    },
+    {
+      "start_time": 1060.188,
+      "end_time": 1062.188,
+      "text": "听到了吗？你们都听到了吧？"
+    },
+    {
+      "start_time": 1062.588,
+      "end_time": 1067.908,
+      "text": "他说L...他这是对我女儿进行性骚扰。"
+    },
+    {
+      "start_time": 1069.708,
+      "end_time": 1073.708,
+      "text": "其实没那么严重，其实我们家小雨呀，才七岁。"
+    },
+    {
+      "start_time": 1074.338,
+      "end_time": 1074.978,
+      "text": "七岁？"
+    },
+    {
+      "start_time": 1077.758,
+      "end_time": 1079.808,
+      "text": "看看这个，啊，多多。"
+    },
+    {
+      "start_time": 1080.32,
+      "end_time": 1081.28,
+      "text": "你再重复一遍。"
+    },
+    {
+      "start_time": 1081.76,
+      "end_time": 1083.52,
+      "text": "他当时是如何对你讲的？"
+    },
+    {
+      "start_time": 1084.48,
+      "end_time": 1089.68,
+      "text": "夏雨说，他让我长大以后用这鸡毛换钻石戒指。"
+    },
+    {
+      "start_time": 1090.08,
+      "end_time": 1090.88,
+      "text": "你们都听到了吧？"
+    },
+    {
+      "start_time": 1091.2,
+      "end_time": 1093.44,
+      "text": "小孩子的话您不能当真。"
+    },
+    {
+      "start_time": 1093.76,
+      "end_time": 1095.2,
+      "text": "我是当真喜欢朵朵的。"
+    },
+    {
+      "start_time": 1095.2,
+      "end_time": 1096.4,
+      "text": "不要再继续下去了！"
+    },
+    {
+      "start_time": 1097.2,
+      "end_time": 1099.36,
+      "text": "我跟你讲，这个小花花公子，"
+    },
+    {
+      "start_time": 1099.36,
+      "end_time": 1101.04,
+      "text": "你们到底是管还是不管？"
+    },
+    {
+      "start_time": 1101.52,
+      "end_time": 1103.04,
+      "text": "您听我解释听我解释啊。"
+    },
+    {
+      "start_time": 1103.36,
+      "end_time": 1106.08,
+      "text": "呃这个事情有可能不是您想象的那样。"
+    },
+    {
+      "start_time": 1106.08,
+      "end_time": 1106.8,
+      "text": "对对对。什么？"
+    },
+    {
+      "start_time": 1107.44,
+      "end_time": 1109.68,
+      "text": "这个事情难道是我自己想象出来的？"
+    },
+    {
+      "start_time": 1109.68,
+      "end_time": 1111.04,
+      "text": "哦不是，不是这个意思。"
+    },
+    {
+      "start_time": 1111.04,
+      "end_time": 1113.2,
+      "text": "我不是说您想象的。"
+    },
+    {
+      "start_time": 1113.2,
+      "end_time": 1116.8,
+      "text": "我是说呀，我们家小雨刚从美国回来半年多。"
+    },
+    {
+      "start_time": 1116.8,
+      "end_time": 1117.12,
+      "text": "对。"
+    },
+    {
+      "start_time": 1117.12,
+      "end_time": 1119.36,
+      "text": "可能这个思想还有点西方化。"
+    },
+    {
+      "start_time": 1119.36,
+      "end_time": 1119.92,
+      "text": "啊对对。"
+    },
+    {
+      "start_time": 1119.92,
+      "end_time": 1121.12,
+      "text": "但是绝无恶意。"
+    },
+    {
+      "start_time": 1121.36,
+      "end_time": 1127.12,
+      "text": "呃，他所说的那个喜欢呢，其实就是有点喜欢。"
+    },
+    {
+      "start_time": 1127.12,
+      "end_time": 1128.4,
+      "text": "喜欢啊？"
+    },
+    {
+      "start_time": 1128.4,
+      "end_time": 1133.76,
+      "text": "不是，他的意思是说，他的喜欢绝无半点骚扰的意思。"
+    },
+    {
+      "start_time": 1133.76,
+      "end_time": 1134.08,
+      "text": "对。"
+    },
+    {
+      "start_time": 1135.04,
+      "end_time": 1137.6,
+      "text": "当然，我会尽快让他回归中国国情的。"
+    },
+    {
+      "start_time": 1137.6,
+      "end_time": 1138.16,
+      "text": "对对对。"
+    },
+    {
+      "start_time": 1138.4,
+      "end_time": 1139.12,
+      "text": "朵朵爱"
+    },
+    {
+      "start_time": 1140.0,
+      "end_time": 1141.234,
+      "text": "I love you!"
+    },
+    {
+      "start_time": 1141.234,
+      "end_time": 1142.567,
+      "text": "这太不像话了！"
+    },
+    {
+      "start_time": 1142.567,
+      "end_time": 1144.1,
+      "text": "啊，好，对不起。"
+    },
+    {
+      "start_time": 1144.1,
+      "end_time": 1146.234,
+      "text": "我和我的女儿不得不马上逃离这里。"
+    },
+    {
+      "start_time": 1146.234,
+      "end_time": 1147.567,
+      "text": "走吧走吧。"
+    },
+    {
+      "start_time": 1147.567,
+      "end_time": 1149.9,
+      "text": "那个，希望你对你们家的小孩子严加管教。"
+    },
+    {
+      "start_time": 1149.9,
+      "end_time": 1151.234,
+      "text": "哦，还给你。"
+    },
+    {
+      "start_time": 1152.567,
+      "end_time": 1154.234,
+      "text": "哎，您听我给您解释。"
+    },
+    {
+      "start_time": 1154.234,
+      "end_time": 1155.234,
+      "text": "就是我我..."
+    },
+    {
+      "start_time": 1155.234,
+      "end_time": 1157.234,
+      "text": "朵朵，I love you!"
+    },
+    {
+      "start_time": 1161.9,
+      "end_time": 1162.9,
+      "text": "小雨！"
+    },
+    {
+      "start_time": 1162.9,
+      "end_time": 1163.567,
+      "text": "怎么了？"
+    },
+    {
+      "start_time": 1164.567,
+      "end_time": 1165.9,
+      "text": "你做得太过分了。"
+    },
+    {
+      "start_time": 1165.9,
+      "end_time": 1168.567,
+      "text": "哎，我就是做我喜欢的事，跟你一样啊。"
+    },
+    {
+      "start_time": 1168.567,
+      "end_time": 1170.234,
+      "text": "你能跟我比吗你？"
+    },
+    {
+      "start_time": 1170.234,
+      "end_time": 1172.9,
+      "text": "哎呀，那你等刘星晚回来，你去管他。"
+    },
+    {
+      "start_time": 1183.9,
+      "end_time": 1185.234,
+      "text": "嘿嘿嘿嘿嘿！"
+    },
+    {
+      "start_time": 1185.234,
+      "end_time": 1187.567,
+      "text": "你把你的臭鞋往哪儿甩呢你？"
+    },
+    {
+      "start_time": 1187.567,
+      "end_time": 1190.9,
+      "text": "哎呀，人是自由的，鞋也是自由的。"
+    },
+    {
+      "start_time": 1190.9,
+      "end_time": 1193.567,
+      "text": "不是我说，你也太过分了吧你。"
+    },
+    {
+      "start_time": 1193.567,
+      "end_time": 1195.234,
+      "text": "出去玩也不跟家长说一声。"
+    },
+    {
+      "start_time": 1195.234,
+      "end_time": 1197.234,
+      "text": "你看看表，现在都几点了？"
+    },
+    {
+      "start_time": 1197.567,
+      "end_time": 1198.567,
+      "text": "你说谁呢？"
+    },
+    {
+      "start_time": 1198.567,
+      "end_time": 1199.9,
+      "text": "我说你，还有..."
+    },
+    {
+      "start_time": 1200.0,
+      "end_time": 1202.73,
+      "text": "你，你们俩的所作所为都太过分了。"
+    },
+    {
+      "start_time": 1202.98,
+      "end_time": 1204.05,
+      "text": "你才过分呢！"
+    },
+    {
+      "start_time": 1204.1,
+      "end_time": 1204.86,
+      "text": "你过分！"
+    },
+    {
+      "start_time": 1205.18,
+      "end_time": 1206.55,
+      "text": "你根本没资格这么说我。"
+    },
+    {
+      "start_time": 1206.72,
+      "end_time": 1207.95,
+      "text": "因为我们是向你学的。"
+    },
+    {
+      "start_time": 1208.06,
+      "end_time": 1208.51,
+      "text": "胡说！"
+    },
+    {
+      "start_time": 1208.62,
+      "end_time": 1209.58,
+      "text": "对对对对对对对对对！"
+    },
+    {
+      "start_time": 1210.87,
+      "end_time": 1211.9,
+      "text": "干嘛呢你们？"
+    },
+    {
+      "start_time": 1212.44,
+      "end_time": 1214.65,
+      "text": "我先说！我先说！我先说！我先说！"
+    },
+    {
+      "start_time": 1214.65,
+      "end_time": 1215.05,
+      "text": "停！"
+    },
+    {
+      "start_time": 1215.89,
+      "end_time": 1216.52,
+      "text": "小雪先说。"
+    },
+    {
+      "start_time": 1217.55,
+      "end_time": 1219.46,
+      "text": "我只是行使一下当姐姐的责任。"
+    },
+    {
+      "start_time": 1219.88,
+      "end_time": 1220.95,
+      "text": "他们呢却跟我捣蛋。"
+    },
+    {
+      "start_time": 1221.32,
+      "end_time": 1222.38,
+      "text": "是她太霸道！"
+    },
+    {
+      "start_time": 1222.58,
+      "end_time": 1224.68,
+      "text": "只许姐姐放火，不能弟弟点灯！"
+    },
+    {
+      "start_time": 1224.85,
+      "end_time": 1225.6,
+      "text": "不许篡改成语！"
+    },
+    {
+      "start_time": 1226.13,
+      "end_time": 1228.38,
+      "text": "只许州官放火，不许百姓点灯。"
+    },
+    {
+      "start_time": 1228.89,
+      "end_time": 1231.25,
+      "text": "可是咱们家没有州官，只有姐姐。"
+    },
+    {
+      "start_time": 1232.33,
+      "end_time": 1233.52,
+      "text": "你凭什么这么说我呀？"
+    },
+    {
+      "start_time": 1233.9,
+      "end_time": 1234.7,
+      "text": "你比谁都过分！"
+    },
+    {
+      "start_time": 1234.95,
+      "end_time": 1235.2,
+      "text": "你！"
+    },
+    {
+      "start_time": 1236.12,
+      "end_time": 1237.42,
+      "text": "不听爸爸妈妈的话！"
+    },
+    {
+      "start_time": 1237.79,
+      "end_time": 1239.55,
+      "text": "你一进门就给我们来下马威。"
+    },
+    {
+      "start_time": 1242.69,
+      "end_time": 1244.14,
+      "text": "还把男朋友带家了。"
+    },
+    {
+      "start_time": 1244.44,
+      "end_time": 1245.2,
+      "text": "还两次！"
+    },
+    {
+      "start_time": 1245.3,
+      "end_time": 1245.58,
+      "text": "对！"
+    },
+    {
+      "start_time": 1245.78,
+      "end_time": 1246.72,
+      "text": "好了好了，说完了吗？"
+    },
+    {
+      "start_time": 1246.95,
+      "end_time": 1248.95,
+      "text": "能不能留个频道也给我们说两句啊？"
+    },
+    {
+      "start_time": 1249.1,
+      "end_time": 1255.23,
+      "text": "成，跟把男朋友带回家相比啊，小雨送小美眉一根鸡毛算得了什么呀？"
+    },
+    {
+      "start_time": 1255.4,
+      "end_time": 1257.25,
+      "text": "对，刘星贪玩算得了什么呀？"
+    },
+    {
+      "start_time": 1257.25,
+      "end_time": 1259.95,
+      "text": "真是的，小雨，嗯，算得了什么？"
+    },
+    {
+      "start_time": 1260.043,
+      "end_time": 1262.823,
+      "text": "对，刘星得二分又算得了什么呀？"
+    },
+    {
+      "start_time": 1263.113,
+      "end_time": 1264.283,
+      "text": "我们才是好孩子。"
+    },
+    {
+      "start_time": 1264.563,
+      "end_time": 1267.133,
+      "text": "我、我要跟你们两个小坏蛋决斗！"
+    },
+    {
+      "start_time": 1267.133,
+      "end_time": 1269.113,
+      "text": "别打！千万别打！"
+    },
+    {
+      "start_time": 1269.113,
+      "end_time": 1272.183,
+      "text": "听着！小雪根本就没有男朋友！"
+    },
+    {
+      "start_time": 1272.433,
+      "end_time": 1275.113,
+      "text": "那个狂野少年是她的一个托儿！"
+    }
+  ]
+}

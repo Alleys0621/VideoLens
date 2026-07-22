@@ -1,0 +1,1518 @@
+{
+  "video": "西游记/video",
+  "model": "qwen3.5-omni-plus",
+  "audio_duration": 2233.97,
+  "chunk_duration": 60.0,
+  "segments": [
+    {
+      "start_time": 75.238,
+      "end_time": 77.398,
+      "text": "下界是何声响？"
+    },
+    {
+      "start_time": 80.948,
+      "end_time": 82.688,
+      "text": "臣等不知。"
+    },
+    {
+      "start_time": 84.888,
+      "end_time": 86.478,
+      "text": "千里眼、顺风耳。"
+    },
+    {
+      "start_time": 88.148,
+      "end_time": 88.918,
+      "text": "臣在。"
+    },
+    {
+      "start_time": 89.078,
+      "end_time": 90.828,
+      "text": "速去查看明白。"
+    },
+    {
+      "start_time": 107.459,
+      "end_time": 109.599,
+      "text": "陛下，臣等奉旨观听，"
+    },
+    {
+      "start_time": 109.599,
+      "end_time": 113.689,
+      "text": "原来下界山峰崩裂，化出一个石猴。"
+    },
+    {
+      "start_time": 115.459,
+      "end_time": 117.489,
+      "text": "为此响震天宇。"
+    },
+    {
+      "start_time": 117.979,
+      "end_time": 119.989,
+      "text": "哦，是个石猴啊。"
+    },
+    {
+      "start_time": 120.0,
+      "end_time": 121.16,
+      "text": "不必管他。"
+    },
+    {
+      "start_time": 221.708,
+      "end_time": 222.368,
+      "text": "他来了"
+    },
+    {
+      "start_time": 222.598,
+      "end_time": 223.158,
+      "text": "他来了"
+    },
+    {
+      "start_time": 226.998,
+      "end_time": 227.458,
+      "text": "你瞧"
+    },
+    {
+      "start_time": 227.958,
+      "end_time": 228.338,
+      "text": "这个"
+    },
+    {
+      "start_time": 229.628,
+      "end_time": 230.268,
+      "text": "走走走"
+    },
+    {
+      "start_time": 241.436,
+      "end_time": 241.726,
+      "text": "快走！"
+    },
+    {
+      "start_time": 243.586,
+      "end_time": 243.956,
+      "text": "快走快！"
+    },
+    {
+      "start_time": 280.942,
+      "end_time": 281.742,
+      "text": "谁敢进去？"
+    },
+    {
+      "start_time": 285.492,
+      "end_time": 286.062,
+      "text": "我敢进去！"
+    },
+    {
+      "start_time": 286.442,
+      "end_time": 287.452,
+      "text": "你敢去？你敢去？"
+    },
+    {
+      "start_time": 290.152,
+      "end_time": 293.512,
+      "text": "你要能进得去，出得来，我们就拜你为王。"
+    },
+    {
+      "start_time": 297.442,
+      "end_time": 297.792,
+      "text": "当真？"
+    },
+    {
+      "start_time": 298.422,
+      "end_time": 299.622,
+      "text": "我要是进得去，出得来，"
+    },
+    {
+      "start_time": 300.243,
+      "end_time": 301.373,
+      "text": "你们就拜我为王。"
+    },
+    {
+      "start_time": 369.822,
+      "end_time": 371.572,
+      "text": "石猴怕是出不来了。"
+    },
+    {
+      "start_time": 374.362,
+      "end_time": 374.702,
+      "text": "你看！"
+    },
+    {
+      "start_time": 374.702,
+      "end_time": 376.892,
+      "text": "出来了，出来了！"
+    },
+    {
+      "start_time": 376.892,
+      "end_time": 378.522,
+      "text": "出来了，出来了！"
+    },
+    {
+      "start_time": 379.542,
+      "end_time": 381.142,
+      "text": "造化，造化！"
+    },
+    {
+      "start_time": 381.652,
+      "end_time": 382.952,
+      "text": "里头有什么好东西？"
+    },
+    {
+      "start_time": 383.232,
+      "end_time": 384.082,
+      "text": "里面可好了。"
+    },
+    {
+      "start_time": 384.332,
+      "end_time": 386.312,
+      "text": "里面是天造地设的一副家当。"
+    },
+    {
+      "start_time": 386.672,
+      "end_time": 388.272,
+      "text": "嗯，快随我到里面去住。"
+    },
+    {
+      "start_time": 388.572,
+      "end_time": 389.982,
+      "text": "走走走。"
+    },
+    {
+      "start_time": 390.342,
+      "end_time": 392.742,
+      "text": "就怕我们大家进不去呀，啊？"
+    },
+    {
+      "start_time": 393.582,
+      "end_time": 394.652,
+      "text": "进得去，进得去。"
+    },
+    {
+      "start_time": 395.152,
+      "end_time": 396.972,
+      "text": "过了这水帘就没事了。"
+    },
+    {
+      "start_time": 397.292,
+      "end_time": 399.692,
+      "text": "那好，你先走，我们跟着你。"
+    },
+    {
+      "start_time": 399.692,
+      "end_time": 401.252,
+      "text": "来来来，跟着走，跟着走。"
+    },
+    {
+      "start_time": 433.017,
+      "end_time": 433.597,
+      "text": "好洞"
+    },
+    {
+      "start_time": 440.677,
+      "end_time": 443.777,
+      "text": "真是神仙洞府啊！"
+    },
+    {
+      "start_time": 445.457,
+      "end_time": 447.137,
+      "text": "这下全归我们了。"
+    },
+    {
+      "start_time": 455.497,
+      "end_time": 456.897,
+      "text": "刚才我们不是说过，"
+    },
+    {
+      "start_time": 456.897,
+      "end_time": 459.697,
+      "text": "谁要是有本事进得来出得去，"
+    },
+    {
+      "start_time": 459.697,
+      "end_time": 461.217,
+      "text": "我们就拜他为王啊。"
+    },
+    {
+      "start_time": 462.737,
+      "end_time": 464.497,
+      "text": "言而无信呐。"
+    },
+    {
+      "start_time": 464.497,
+      "end_time": 465.777,
+      "text": "对对对，拜他为王。"
+    },
+    {
+      "start_time": 469.057,
+      "end_time": 470.577,
+      "text": "看看看，在那儿呢。"
+    },
+    {
+      "start_time": 597.389,
+      "end_time": 599.629,
+      "text": "大王,你看小的们多老实。"
+    },
+    {
+      "start_time": 600.128,
+      "end_time": 605.768,
+      "text": "大王，我们在这仙山福地，上不受天管，下不受地管。"
+    },
+    {
+      "start_time": 605.768,
+      "end_time": 607.418,
+      "text": "真是自由自在呀。"
+    },
+    {
+      "start_time": 641.348,
+      "end_time": 643.608,
+      "text": "大王，他死了。"
+    },
+    {
+      "start_time": 648.208,
+      "end_time": 650.928,
+      "text": "这……大王，他死了。"
+    },
+    {
+      "start_time": 651.448,
+      "end_time": 651.928,
+      "text": "死了？"
+    },
+    {
+      "start_time": 652.448,
+      "end_time": 655.208,
+      "text": "他乃年老体衰，气绝身亡。"
+    },
+    {
+      "start_time": 655.448,
+      "end_time": 659.848,
+      "text": "我等无有长生之术，日后也不免于死。"
+    },
+    {
+      "start_time": 660.0,
+      "end_time": 661.2,
+      "text": "死啦！"
+    },
+    {
+      "start_time": 663.04,
+      "end_time": 665.12,
+      "text": "日后我等也不免于死吗？"
+    },
+    {
+      "start_time": 665.12,
+      "end_time": 666.32,
+      "text": "嗯，是啊。"
+    },
+    {
+      "start_time": 674.08,
+      "end_time": 677.36,
+      "text": "大王，我也无有长生之术啊。"
+    },
+    {
+      "start_time": 680.56,
+      "end_time": 680.96,
+      "text": "大王。"
+    },
+    {
+      "start_time": 682.0,
+      "end_time": 688.4,
+      "text": "何不去到古洞仙山，寻访名师，学一个长生之道啊？"
+    },
+    {
+      "start_time": 688.8,
+      "end_time": 689.6,
+      "text": "长生之道？"
+    },
+    {
+      "start_time": 758.579,
+      "end_time": 759.149,
+      "text": "妖怪"
+    },
+    {
+      "start_time": 760.239,
+      "end_time": 760.749,
+      "text": "快走吧"
+    },
+    {
+      "start_time": 761.029,
+      "end_time": 761.659,
+      "text": "哎呀，快走"
+    },
+    {
+      "start_time": 762.229,
+      "end_time": 762.419,
+      "text": "哎"
+    },
+    {
+      "start_time": 762.729,
+      "end_time": 762.979,
+      "text": "嗯？"
+    },
+    {
+      "start_time": 763.629,
+      "end_time": 764.069,
+      "text": "哎！"
+    },
+    {
+      "start_time": 767.379,
+      "end_time": 767.609,
+      "text": "哎"
+    },
+    {
+      "start_time": 768.249,
+      "end_time": 770.839,
+      "text": "您吃我这个祖传秘方大力丸"
+    },
+    {
+      "start_time": 771.279,
+      "end_time": 774.379,
+      "text": "您敢，强筋壮骨，力大无穷"
+    },
+    {
+      "start_time": 776.929,
+      "end_time": 778.799,
+      "text": "哎，有钱的您捧个钱场"
+    },
+    {
+      "start_time": 779.099,
+      "end_time": 779.779,
+      "text": "没钱的"
+    },
+    {
+      "start_time": 780.483,
+      "end_time": 781.363,
+      "text": "人哪,嘿"
+    },
+    {
+      "start_time": 781.763,
+      "end_time": 782.723,
+      "text": "您看我这个啊"
+    },
+    {
+      "start_time": 783.043,
+      "end_time": 784.483,
+      "text": "我给您练个叉看看"
+    },
+    {
+      "start_time": 784.963,
+      "end_time": 785.283,
+      "text": "哎"
+    },
+    {
+      "start_time": 787.283,
+      "end_time": 787.763,
+      "text": "看这个啊"
+    },
+    {
+      "start_time": 795.603,
+      "end_time": 796.323,
+      "text": "妖怪!"
+    },
+    {
+      "start_time": 796.483,
+      "end_time": 797.283,
+      "text": "妖怪快跑!"
+    },
+    {
+      "start_time": 797.283,
+      "end_time": 798.403,
+      "text": "有妖怪啊!"
+    },
+    {
+      "start_time": 819.281,
+      "end_time": 820.641,
+      "text": "哎,你看看。"
+    },
+    {
+      "start_time": 820.641,
+      "end_time": 821.921,
+      "text": "买点菜吧。"
+    },
+    {
+      "start_time": 822.081,
+      "end_time": 823.681,
+      "text": "再来一捆吧。"
+    },
+    {
+      "start_time": 825.681,
+      "end_time": 826.881,
+      "text": "买菜!"
+    },
+    {
+      "start_time": 827.201,
+      "end_time": 827.601,
+      "text": "你看"
+    },
+    {
+      "start_time": 829.921,
+      "end_time": 831.281,
+      "text": "买鲜鱼买鱼吧。"
+    },
+    {
+      "start_time": 831.601,
+      "end_time": 833.681,
+      "text": "这鱼是刚打上来的,可新鲜了。"
+    },
+    {
+      "start_time": 835.121,
+      "end_time": 836.001,
+      "text": "哎呦!"
+    },
+    {
+      "start_time": 836.001,
+      "end_time": 836.641,
+      "text": "哎呦!"
+    },
+    {
+      "start_time": 838.561,
+      "end_time": 839.121,
+      "text": "慢点慢点。"
+    },
+    {
+      "start_time": 841.078,
+      "end_time": 841.428,
+      "text": "哎呦！"
+    },
+    {
+      "start_time": 842.958,
+      "end_time": 845.618,
+      "text": "这个人可真是的，走道也不看着点。"
+    },
+    {
+      "start_time": 847.138,
+      "end_time": 847.698,
+      "text": "哎，谢谢。"
+    },
+    {
+      "start_time": 858.668,
+      "end_time": 859.538,
+      "text": "成精了！"
+    },
+    {
+      "start_time": 861.698,
+      "end_time": 862.428,
+      "text": "太好笑了。"
+    },
+    {
+      "start_time": 873.738,
+      "end_time": 874.818,
+      "text": "走，看看去。"
+    },
+    {
+      "start_time": 874.818,
+      "end_time": 875.338,
+      "text": "去看看。"
+    },
+    {
+      "start_time": 878.048,
+      "end_time": 878.978,
+      "text": "掌柜的，掌柜的。"
+    },
+    {
+      "start_time": 879.398,
+      "end_time": 882.138,
+      "text": "你看，刚才进去了，进去了。"
+    },
+    {
+      "start_time": 888.418,
+      "end_time": 890.258,
+      "text": "不是，不是。"
+    },
+    {
+      "start_time": 890.538,
+      "end_time": 895.548,
+      "text": "刚才一个毛脸的、毛胳膊毛腿的妖精进去了。"
+    },
+    {
+      "start_time": 896.498,
+      "end_time": 899.858,
+      "text": "我们这是买卖家，哪有什么妖精啊。"
+    },
+    {
+      "start_time": 900.0,
+      "end_time": 901.28,
+      "text": "哎，各位。"
+    },
+    {
+      "start_time": 901.36,
+      "end_time": 903.52,
+      "text": "我们没有妖精啊。"
+    },
+    {
+      "start_time": 904.48,
+      "end_time": 905.52,
+      "text": "谢谢各位了。"
+    },
+    {
+      "start_time": 905.6,
+      "end_time": 906.72,
+      "text": "走吧走吧走吧。"
+    },
+    {
+      "start_time": 906.8,
+      "end_time": 908.96,
+      "text": "走吧，你去走吧小孩。"
+    },
+    {
+      "start_time": 909.04,
+      "end_time": 909.84,
+      "text": "没有嘛。"
+    },
+    {
+      "start_time": 909.92,
+      "end_time": 910.64,
+      "text": "让他进去。"
+    },
+    {
+      "start_time": 931.68,
+      "end_time": 933.68,
+      "text": "您每次起来这鱼就可新鲜了啊。"
+    },
+    {
+      "start_time": 942.64,
+      "end_time": 944.32,
+      "text": "我当什么怪物，"
+    },
+    {
+      "start_time": 944.96,
+      "end_time": 946.8,
+      "text": "原来是个猫啊。"
+    },
+    {
+      "start_time": 947.36,
+      "end_time": 948.48,
+      "text": "哎，来了。"
+    },
+    {
+      "start_time": 948.96,
+      "end_time": 950.08,
+      "text": "您尝尝，您尝尝。"
+    },
+    {
+      "start_time": 951.92,
+      "end_time": 954.08,
+      "text": "好嘞，这就来您呐。"
+    },
+    {
+      "start_time": 958.24,
+      "end_time": 960.0,
+      "text": "哎，各位，我是…"
+    },
+    {
+      "start_time": 960.0,
+      "end_time": 961.28,
+      "text": "姐夫，来来来。"
+    },
+    {
+      "start_time": 961.36,
+      "end_time": 962.48,
+      "text": "来来来，吃菜吃菜。"
+    },
+    {
+      "start_time": 962.56,
+      "end_time": 963.2,
+      "text": "好。"
+    },
+    {
+      "start_time": 964.24,
+      "end_time": 964.72,
+      "text": "来来来。"
+    },
+    {
+      "start_time": 965.36,
+      "end_time": 966.08,
+      "text": "坐坐坐。"
+    },
+    {
+      "start_time": 966.16,
+      "end_time": 966.88,
+      "text": "来来来。"
+    },
+    {
+      "start_time": 969.68,
+      "end_time": 970.32,
+      "text": "喝喝喝。"
+    },
+    {
+      "start_time": 974.4,
+      "end_time": 975.36,
+      "text": "哎这这这这这这。"
+    },
+    {
+      "start_time": 977.28,
+      "end_time": 978.0,
+      "text": "哎呦，这什么？"
+    },
+    {
+      "start_time": 978.08,
+      "end_time": 978.8,
+      "text": "快走快走快走。"
+    },
+    {
+      "start_time": 978.88,
+      "end_time": 980.0,
+      "text": "妖怪妖怪妖怪。"
+    },
+    {
+      "start_time": 980.08,
+      "end_time": 981.2,
+      "text": "快跑快跑。"
+    },
+    {
+      "start_time": 986.8,
+      "end_time": 988.8,
+      "text": "好菜来啦！"
+    },
+    {
+      "start_time": 990.0,
+      "end_time": 993.2,
+      "text": "哎呦，哎客官，您来点什么啊？"
+    },
+    {
+      "start_time": 993.6,
+      "end_time": 995.2,
+      "text": "呃，堂倌。"
+    },
+    {
+      "start_time": 995.28,
+      "end_time": 998.0,
+      "text": "哦，您来了，请坐。"
+    },
+    {
+      "start_time": 998.8,
+      "end_time": 1002.4,
+      "text": "我说你这店里今天怎么这么清静啊？"
+    },
+    {
+      "start_time": 1002.48,
+      "end_time": 1004.8,
+      "text": "刚才还人多着呢，刚走。"
+    },
+    {
+      "start_time": 1005.84,
+      "end_time": 1007.2,
+      "text": "您来点什么？"
+    },
+    {
+      "start_time": 1008.16,
+      "end_time": 1010.0,
+      "text": "呃，我要一壶酒。"
+    },
+    {
+      "start_time": 1010.08,
+      "end_time": 1011.2,
+      "text": "哦，一壶酒。"
+    },
+    {
+      "start_time": 1011.28,
+      "end_time": 1011.84,
+      "text": "一壶酒。"
+    },
+    {
+      "start_time": 1012.08,
+      "end_time": 1012.8,
+      "text": "哎好好好好。"
+    },
+    {
+      "start_time": 1012.88,
+      "end_time": 1016.0,
+      "text": "呃，我要一盘牛肉，一碗面。"
+    },
+    {
+      "start_time": 1016.08,
+      "end_time": 1016.8,
+      "text": "一碗面。"
+    },
+    {
+      "start_time": 1016.88,
+      "end_time": 1017.6,
+      "text": "一盘牛肉一碗面。"
+    },
+    {
+      "start_time": 1017.68,
+      "end_time": 1018.8,
+      "text": "哦，好好好。"
+    },
+    {
+      "start_time": 1020.482,
+      "end_time": 1021.372,
+      "text": "一大碗面。"
+    },
+    {
+      "start_time": 1021.372,
+      "end_time": 1022.042,
+      "text": "一大碗面。"
+    },
+    {
+      "start_time": 1022.042,
+      "end_time": 1022.942,
+      "text": "一大碗面。"
+    },
+    {
+      "start_time": 1022.942,
+      "end_time": 1024.282,
+      "text": "你也要一大碗面。"
+    },
+    {
+      "start_time": 1080.168,
+      "end_time": 1085.728,
+      "text": "哎呀,你看这人,连面条也不会吃。"
+    },
+    {
+      "start_time": 1090.048,
+      "end_time": 1091.128,
+      "text": "你呀你呀。"
+    },
+    {
+      "start_time": 1114.953,
+      "end_time": 1117.033,
+      "text": "就是放辣椒,辣椒,辣椒了。"
+    },
+    {
+      "start_time": 1195.371,
+      "end_time": 1196.091,
+      "text": "老神仙"
+    },
+    {
+      "start_time": 1200.48,
+      "end_time": 1201.76,
+      "text": "我以打柴为生"
+    },
+    {
+      "start_time": 1202.32,
+      "end_time": 1204.08,
+      "text": "衣食还不得周全"
+    },
+    {
+      "start_time": 1204.48,
+      "end_time": 1206.08,
+      "text": "怎么敢当神仙二字啊"
+    },
+    {
+      "start_time": 1206.96,
+      "end_time": 1209.2,
+      "text": "你方才唱的歌中说交往"
+    },
+    {
+      "start_time": 1209.52,
+      "end_time": 1210.48,
+      "text": "非仙即道"
+    },
+    {
+      "start_time": 1210.96,
+      "end_time": 1212.08,
+      "text": "想来对着讲经"
+    },
+    {
+      "start_time": 1212.08,
+      "end_time": 1214.64,
+      "text": "不是神仙怎么说出神仙的话来了"
+    },
+    {
+      "start_time": 1217.12,
+      "end_time": 1222.8,
+      "text": "这是灵台方寸山斜月三星洞的菩提祖师教给我的"
+    },
+    {
+      "start_time": 1224.4,
+      "end_time": 1226.0,
+      "text": "想必是个有本事的"
+    },
+    {
+      "start_time": 1226.96,
+      "end_time": 1227.68,
+      "text": "他住在何处"
+    },
+    {
+      "start_time": 1228.32,
+      "end_time": 1230.56,
+      "text": "顺着山路一直走"
+    },
+    {
+      "start_time": 1263.243,
+      "end_time": 1263.553,
+      "text": "哎呀"
+    },
+    {
+      "start_time": 1265.107,
+      "end_time": 1266.497,
+      "text": "什么人在此骚扰？"
+    },
+    {
+      "start_time": 1268.627,
+      "end_time": 1271.237,
+      "text": "啊，原来是只野猴。"
+    },
+    {
+      "start_time": 1271.517,
+      "end_time": 1272.617,
+      "text": "我不是野猴。"
+    },
+    {
+      "start_time": 1272.927,
+      "end_time": 1276.297,
+      "text": "我是石猴，特来嗯拜见祖师的。"
+    },
+    {
+      "start_time": 1277.067,
+      "end_time": 1281.577,
+      "text": "哦，我家师傅说门外来了个寻师学道的。"
+    },
+    {
+      "start_time": 1281.847,
+      "end_time": 1283.237,
+      "text": "难道就是你？"
+    },
+    {
+      "start_time": 1283.417,
+      "end_time": 1284.677,
+      "text": "嗯，正是，正是。"
+    },
+    {
+      "start_time": 1287.862,
+      "end_time": 1291.542,
+      "text": "既是这样，就随我进去拜见祖师吧。"
+    },
+    {
+      "start_time": 1291.542,
+      "end_time": 1291.942,
+      "text": "好好好。"
+    },
+    {
+      "start_time": 1292.572,
+      "end_time": 1292.832,
+      "text": "请。"
+    },
+    {
+      "start_time": 1300.484,
+      "end_time": 1301.654,
+      "text": "祖师，他来了。"
+    },
+    {
+      "start_time": 1343.516,
+      "end_time": 1346.476,
+      "text": "祖师，祖师，我我是来学道的。"
+    },
+    {
+      "start_time": 1346.986,
+      "end_time": 1347.336,
+      "text": "祖师。"
+    },
+    {
+      "start_time": 1351.062,
+      "end_time": 1353.372,
+      "text": "祖师，我我是来学道的。"
+    },
+    {
+      "start_time": 1360.895,
+      "end_time": 1364.525,
+      "text": "下站何人？到此作甚？"
+    },
+    {
+      "start_time": 1365.625,
+      "end_time": 1368.895,
+      "text": "祖师，我我我是前来学道的。"
+    },
+    {
+      "start_time": 1369.365,
+      "end_time": 1371.775,
+      "text": "你是哪方人士？"
+    },
+    {
+      "start_time": 1372.545,
+      "end_time": 1375.025,
+      "text": "弟子是花果山水帘洞人士。"
+    },
+    {
+      "start_time": 1376.635,
+      "end_time": 1377.215,
+      "text": "胡说！"
+    },
+    {
+      "start_time": 1378.275,
+      "end_time": 1379.885,
+      "text": "把他给我赶了出去。"
+    },
+    {
+      "start_time": 1380.32,
+      "end_time": 1382.16,
+      "text": "出去出去出去出去出去"
+    },
+    {
+      "start_time": 1383.45,
+      "end_time": 1384.09,
+      "text": "出去"
+    },
+    {
+      "start_time": 1387.58,
+      "end_time": 1389.11,
+      "text": "祖师，弟子说的是真话。"
+    },
+    {
+      "start_time": 1389.52,
+      "end_time": 1394.39,
+      "text": "花果山到这里，隔着茫茫大海。"
+    },
+    {
+      "start_time": 1394.99,
+      "end_time": 1396.03,
+      "text": "你是怎么来的？"
+    },
+    {
+      "start_time": 1398.43,
+      "end_time": 1401.65,
+      "text": "历尽千辛万苦，方才来到祖师身边。"
+    },
+    {
+      "start_time": 1401.94,
+      "end_time": 1403.95,
+      "text": "师父，嗯嗯嗯，收下我吧。"
+    },
+    {
+      "start_time": 1404.63,
+      "end_time": 1407.7,
+      "text": "你姓什么？叫什么名字啊？"
+    },
+    {
+      "start_time": 1408.33,
+      "end_time": 1410.62,
+      "text": "弟子是花果山石崩裂所生，"
+    },
+    {
+      "start_time": 1410.78,
+      "end_time": 1412.32,
+      "text": "故而无名无姓。"
+    },
+    {
+      "start_time": 1412.55,
+      "end_time": 1416.42,
+      "text": "哦，原来你是天生地长。"
+    },
+    {
+      "start_time": 1419.19,
+      "end_time": 1423.2,
+      "text": "我看你相貌举止像个猢狲。"
+    },
+    {
+      "start_time": 1424.24,
+      "end_time": 1429.79,
+      "text": "你就姓孙，法名悟空，好吗？"
+    },
+    {
+      "start_time": 1430.56,
+      "end_time": 1433.77,
+      "text": "师父！师父收我了！"
+    },
+    {
+      "start_time": 1435.27,
+      "end_time": 1437.65,
+      "text": "我有名字了！"
+    },
+    {
+      "start_time": 1437.65,
+      "end_time": 1439.83,
+      "text": "我叫孙悟空啦！"
+    },
+    {
+      "start_time": 1444.621,
+      "end_time": 1445.201,
+      "text": "来啊"
+    },
+    {
+      "start_time": 1478.937,
+      "end_time": 1480.407,
+      "text": "哈哈哈，你打我呀"
+    },
+    {
+      "start_time": 1594.508,
+      "end_time": 1601.288,
+      "text": "显密圆通，悟道参禅。"
+    },
+    {
+      "start_time": 1602.948,
+      "end_time": 1609.708,
+      "text": "无生无灭，气全神全。"
+    },
+    {
+      "start_time": 1611.548,
+      "end_time": 1617.968,
+      "text": "寿可齐天，前姓名焉。"
+    },
+    {
+      "start_time": 1619.388,
+      "end_time": 1619.948,
+      "text": "洪王"
+    },
+    {
+      "start_time": 1620.0,
+      "end_time": 1625.38,
+      "text": "满修满，非佛即仙。"
+    },
+    {
+      "start_time": 1629.436,
+      "end_time": 1630.276,
+      "text": "悟空。"
+    },
+    {
+      "start_time": 1633.436,
+      "end_time": 1637.716,
+      "text": "你在班中因何癫狂欢舞，不听我讲？"
+    },
+    {
+      "start_time": 1639.036,
+      "end_time": 1642.636,
+      "text": "弟子听到妙处，喜不自生，嗯，望师傅恕罪。"
+    },
+    {
+      "start_time": 1643.356,
+      "end_time": 1650.476,
+      "text": "嗯，我且问你，你到洞中多少时日了？"
+    },
+    {
+      "start_time": 1651.196,
+      "end_time": 1657.916,
+      "text": "嗯，弟子不知年月，只记得山桃熟了七次，嗯，被我嗯饱饱吃了七回了。"
+    },
+    {
+      "start_time": 1658.956,
+      "end_time": 1662.636,
+      "text": "嗯，七年了。"
+    },
+    {
+      "start_time": 1668.236,
+      "end_time": 1671.356,
+      "text": "你想学些什么道术呢？啊？"
+    },
+    {
+      "start_time": 1673.356,
+      "end_time": 1679.836,
+      "text": "师傅，嘿嘿嘿嘿，嗯，但凭师傅教我，只要有些道气，嘿嘿嘿，嗯，弟子就学。"
+    },
+    {
+      "start_time": 1683.916,
+      "end_time": 1689.526,
+      "text": "我教你求仙问卜，驱邪避凶之术。"
+    },
+    {
+      "start_time": 1691.836,
+      "end_time": 1692.356,
+      "text": "好吗？"
+    },
+    {
+      "start_time": 1693.116,
+      "end_time": 1696.276,
+      "text": "师傅，似这般，嗯，可得长生吗？"
+    },
+    {
+      "start_time": 1696.556,
+      "end_time": 1700.076,
+      "text": "嗯，不能，不能。"
+    },
+    {
+      "start_time": 1701.576,
+      "end_time": 1703.516,
+      "text": "求仙问卜，不如自己做主。"
+    },
+    {
+      "start_time": 1704.316,
+      "end_time": 1705.866,
+      "text": "嗯，不学，不学。"
+    },
+    {
+      "start_time": 1706.396,
+      "end_time": 1714.506,
+      "text": "啊，我教你念佛诵经，朝真降圣，可好？"
+    },
+    {
+      "start_time": 1715.486,
+      "end_time": 1716.336,
+      "text": "可得长生吗？"
+    },
+    {
+      "start_time": 1717.606,
+      "end_time": 1720.576,
+      "text": "好似水中捞月。"
+    },
+    {
+      "start_time": 1725.996,
+      "end_time": 1727.516,
+      "text": "师傅说话不爽快。"
+    },
+    {
+      "start_time": 1727.956,
+      "end_time": 1730.396,
+      "text": "我是个老实人，嗯，不会打隐语。"
+    },
+    {
+      "start_time": 1730.676,
+      "end_time": 1732.876,
+      "text": "嗯，什么叫做水中捞月？嗯？"
+    },
+    {
+      "start_time": 1735.076,
+      "end_time": 1739.916,
+      "text": "月在长空，水中有影。"
+    },
+    {
+      "start_time": 1740.0,
+      "end_time": 1745.92,
+      "text": "影，虽然看见，只是无法捞摸。"
+    },
+    {
+      "start_time": 1746.37,
+      "end_time": 1748.81,
+      "text": "到底成空。"
+    },
+    {
+      "start_time": 1750.743,
+      "end_time": 1754.153,
+      "text": "如此说来，念佛诵经，不如本事在身。"
+    },
+    {
+      "start_time": 1754.793,
+      "end_time": 1755.813,
+      "text": "不学，不学不学。"
+    },
+    {
+      "start_time": 1756.343,
+      "end_time": 1760.473,
+      "text": "我教你参禅打坐，戒语吃斋怎么样？"
+    },
+    {
+      "start_time": 1760.853,
+      "end_time": 1761.653,
+      "text": "可得长生吗？"
+    },
+    {
+      "start_time": 1762.023,
+      "end_time": 1767.023,
+      "text": "嗯，也是镜里观花，欲摘不能。"
+    },
+    {
+      "start_time": 1769.895,
+      "end_time": 1773.425,
+      "text": "不学不学，打坐参禅，不如弄棒打拳。"
+    },
+    {
+      "start_time": 1774.405,
+      "end_time": 1775.795,
+      "text": "师傅，再换个别的吧。"
+    },
+    {
+      "start_time": 1782.838,
+      "end_time": 1784.548,
+      "text": "你这个猢狲！"
+    },
+    {
+      "start_time": 1785.838,
+      "end_time": 1789.078,
+      "text": "这也不学，那也不学。"
+    },
+    {
+      "start_time": 1790.128,
+      "end_time": 1792.808,
+      "text": "我叫你尝尝戒尺的厉害。"
+    },
+    {
+      "start_time": 1803.588,
+      "end_time": 1806.188,
+      "text": "哼，你这猴子，竟敢冲撞师傅。"
+    },
+    {
+      "start_time": 1806.288,
+      "end_time": 1807.498,
+      "text": "真是的，你这个猴子。"
+    },
+    {
+      "start_time": 1807.498,
+      "end_time": 1809.528,
+      "text": "师傅都给气走了。"
+    },
+    {
+      "start_time": 1809.528,
+      "end_time": 1812.758,
+      "text": "哎呦，这个猴子。"
+    },
+    {
+      "start_time": 1815.82,
+      "end_time": 1816.14,
+      "text": "是。"
+    },
+    {
+      "start_time": 1817.47,
+      "end_time": 1817.92,
+      "text": "哦。"
+    },
+    {
+      "start_time": 1879.536,
+      "end_time": 1880.916,
+      "text": "是悟空吗？"
+    },
+    {
+      "start_time": 1883.087,
+      "end_time": 1885.437,
+      "text": "师傅，弟子等候多时了。"
+    },
+    {
+      "start_time": 1888.562,
+      "end_time": 1895.032,
+      "text": "你这个猢狲，深夜不去睡觉，到我这里干什么？"
+    },
+    {
+      "start_time": 1896.635,
+      "end_time": 1904.515,
+      "text": "师傅，白天打我三下，关闭中门，明明是要我三更时候，进后门前来学道。"
+    },
+    {
+      "start_time": 1904.995,
+      "end_time": 1909.315,
+      "text": "师傅，师傅，您就教我些真本事吧。"
+    },
+    {
+      "start_time": 1912.338,
+      "end_time": 1917.598,
+      "text": "念你虔诚好学，就传些道术给你。"
+    },
+    {
+      "start_time": 1919.43,
+      "end_time": 1920.01,
+      "text": "我这里"
+    },
+    {
+      "start_time": 1920.088,
+      "end_time": 1923.548,
+      "text": "有隐身潜行变化之术。"
+    },
+    {
+      "start_time": 1924.728,
+      "end_time": 1926.638,
+      "text": "分为两种。"
+    },
+    {
+      "start_time": 1928.628,
+      "end_time": 1931.978,
+      "text": "一种是三十六般变化，"
+    },
+    {
+      "start_time": 1933.628,
+      "end_time": 1936.898,
+      "text": "一种是七十二般变化。"
+    },
+    {
+      "start_time": 1938.238,
+      "end_time": 1941.148,
+      "text": "你愿意学哪一种呢？"
+    },
+    {
+      "start_time": 1941.738,
+      "end_time": 1942.778,
+      "text": "师傅，师傅，"
+    },
+    {
+      "start_time": 1943.368,
+      "end_time": 1944.478,
+      "text": "弟子愿学多的。"
+    },
+    {
+      "start_time": 1945.138,
+      "end_time": 1947.708,
+      "text": "您就教我七十二般变化吧。"
+    },
+    {
+      "start_time": 1948.348,
+      "end_time": 1948.808,
+      "text": "好。"
+    },
+    {
+      "start_time": 2009.836,
+      "end_time": 2010.566,
+      "text": "悟空"
+    },
+    {
+      "start_time": 2011.786,
+      "end_time": 2012.226,
+      "text": "师傅"
+    },
+    {
+      "start_time": 2012.746,
+      "end_time": 2016.876,
+      "text": "你的飞举之功练得怎么样了？"
+    },
+    {
+      "start_time": 2017.116,
+      "end_time": 2018.076,
+      "text": "请师傅指教。"
+    },
+    {
+      "start_time": 2027.932,
+      "end_time": 2028.332,
+      "text": "师傅"
+    },
+    {
+      "start_time": 2029.462,
+      "end_time": 2031.062,
+      "text": "我已能腾云驾雾了。"
+    },
+    {
+      "start_time": 2034.102,
+      "end_time": 2036.772,
+      "text": "你方才一去二三里，"
+    },
+    {
+      "start_time": 2037.562,
+      "end_time": 2039.392,
+      "text": "离地四五丈。"
+    },
+    {
+      "start_time": 2040.088,
+      "end_time": 2045.298,
+      "text": "算不得腾云，只能算是爬云而已。"
+    },
+    {
+      "start_time": 2045.748,
+      "end_time": 2046.838,
+      "text": "啊？爬云？"
+    },
+    {
+      "start_time": 2047.878,
+      "end_time": 2057.618,
+      "text": "嗯。一日之内游遍三山五岳，五洲四海，才能是腾云。"
+    },
+    {
+      "start_time": 2058.288,
+      "end_time": 2061.368,
+      "text": "师傅，就教我腾云之术吧，啊？"
+    },
+    {
+      "start_time": 2062.098,
+      "end_time": 2067.628,
+      "text": "嗯。这个却难呐，须得苦练才是。"
+    },
+    {
+      "start_time": 2068.298,
+      "end_time": 2072.228,
+      "text": "哦。再苦再难，我也要学呀。"
+    },
+    {
+      "start_time": 2072.488,
+      "end_time": 2082.338,
+      "text": "好吧。你方才腾飞之前，先翻一个筋斗，就传给你个筋斗云吧。"
+    },
+    {
+      "start_time": 2083.648,
+      "end_time": 2084.278,
+      "text": "筋斗云？"
+    },
+    {
+      "start_time": 2085.028,
+      "end_time": 2091.528,
+      "text": "嗯。一个筋斗就是十万八千里呀。"
+    },
+    {
+      "start_time": 2137.248,
+      "end_time": 2139.568,
+      "text": "为什么在此喧哗？"
+    },
+    {
+      "start_time": 2144.715,
+      "end_time": 2145.395,
+      "text": "悟空。"
+    },
+    {
+      "start_time": 2149.027,
+      "end_time": 2150.747,
+      "text": "我传你变化之功，"
+    },
+    {
+      "start_time": 2151.437,
+      "end_time": 2153.437,
+      "text": "是让你在人前卖弄的吗？"
+    },
+    {
+      "start_time": 2153.847,
+      "end_time": 2154.227,
+      "text": "师傅，"
+    },
+    {
+      "start_time": 2155.057,
+      "end_time": 2156.827,
+      "text": "弟子知错了，望师傅恕罪。"
+    },
+    {
+      "start_time": 2158.339,
+      "end_time": 2159.919,
+      "text": "你走。"
+    },
+    {
+      "start_time": 2160.0,
+      "end_time": 2160.43,
+      "text": "走吧。"
+    },
+    {
+      "start_time": 2160.72,
+      "end_time": 2161.85,
+      "text": "啊？师父。"
+    },
+    {
+      "start_time": 2163.62,
+      "end_time": 2165.69,
+      "text": "弟子蒙受师父传授大恩，"
+    },
+    {
+      "start_time": 2166.27,
+      "end_time": 2168.47,
+      "text": "未能报答，怎能离去呀？"
+    },
+    {
+      "start_time": 2169.43,
+      "end_time": 2171.9,
+      "text": "说什么报答之恩。"
+    },
+    {
+      "start_time": 2173.25,
+      "end_time": 2179.82,
+      "text": "日后你惹出祸来，不把师父说出来就行了。"
+    },
+    {
+      "start_time": 2183.63,
+      "end_time": 2187.7,
+      "text": "从今往后，不准你说是我的徒弟。"
+    },
+    {
+      "start_time": 2189.94,
+      "end_time": 2192.74,
+      "text": "我也不再见你。"
+    },
+    {
+      "start_time": 2193.47,
+      "end_time": 2197.26,
+      "text": "啊？师父！师父！师父！"
+    },
+    {
+      "start_time": 2197.85,
+      "end_time": 2199.78,
+      "text": "师父，留下我吧。"
+    },
+    {
+      "start_time": 2200.91,
+      "end_time": 2201.87,
+      "text": "记下了吗？"
+    },
+    {
+      "start_time": 2213.64,
+      "end_time": 2214.47,
+      "text": "去吧。"
+    },
+    {
+      "start_time": 2214.73,
+      "end_time": 2219.83,
+      "text": "此后多行善事，不可作恶。"
+    },
+    {
+      "start_time": 2221.372,
+      "end_time": 2224.142,
+      "text": "不然我不饶你。"
+    },
+    {
+      "start_time": 2225.082,
+      "end_time": 2226.912,
+      "text": "弟子记下了。"
+    }
+  ]
+}

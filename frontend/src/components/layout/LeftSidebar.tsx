@@ -96,7 +96,7 @@ export function LeftSidebar({ videoDir, onVideoDirChange }: LeftSidebarProps) {
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={cn(
-                "flex flex-1 items-center justify-center gap-1.5 border-b-2 py-2.5 text-xs font-medium transition-colors",
+                "flex flex-1 items-center justify-center gap-1.5 border-b-2 py-3.5 text-sm font-medium transition-colors",
                 active
                   ? "border-indigo-500 text-zinc-900"
                   : "border-transparent text-zinc-400 hover:text-zinc-600",
@@ -207,7 +207,7 @@ function EpisodeList({
             {/* 作品名 */}
             <button
               onClick={() => onToggleShow(show.name)}
-              className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50"
+              className="flex w-full items-center gap-2 rounded-lg px-3 py-3 text-left text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50"
             >
               <ChevronRight
                 className={cn(
@@ -249,7 +249,7 @@ function EpisodeList({
                     <div key={season.name} className="mt-1">
                       <button
                         onClick={() => onToggleSeason(season.name)}
-                        className="flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-left text-xs font-medium text-zinc-500 transition-colors hover:bg-zinc-50"
+                        className="flex w-full items-center gap-2 rounded-md px-2.5 py-2.5 text-left text-xs font-medium text-zinc-500 transition-colors hover:bg-zinc-50"
                       >
                         <ChevronRight
                           className={cn(
@@ -301,7 +301,7 @@ function EpisodeItem({
     <button
       onClick={onSelect}
       className={cn(
-        "group flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs transition-all",
+        "group flex w-full items-center gap-2 rounded-lg px-3 py-3 text-left text-xs transition-all",
         isActive
           ? "border border-zinc-200 bg-zinc-50 shadow-soft"
           : "border border-transparent text-zinc-500 hover:bg-zinc-50 hover:text-zinc-700",

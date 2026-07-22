@@ -1,0 +1,95 @@
+{
+  "video": "S2E5",
+  "metrics": {
+    "n_scenes": 506,
+    "n_midpoint": 312,
+    "n_switch": 173,
+    "n_silence": 21,
+    "n_ocr_hit": 473,
+    "n_ocr_hit_nonsilence": 473,
+    "hit_rate": 0.9348,
+    "hit_rate_nonsilence": 0.9753,
+    "n_ref_segments": 365,
+    "n_ref_matched": 199,
+    "recall": 0.5452,
+    "char_precision": 0.8504,
+    "char_recall": 0.7189,
+    "char_f1": 0.7791,
+    "n_miss_candidates": 9,
+    "miss_rate": 0.0186
+  },
+  "miss_candidates": [
+    {
+      "index": 188,
+      "anchor_type": "switch",
+      "timestamp": 507.95,
+      "speaker_ref": null,
+      "ref_text": "哎呀，你说他得受多大刺激才能让他丧失...",
+      "anchor_text": ""
+    },
+    {
+      "index": 189,
+      "anchor_type": "midpoint",
+      "timestamp": 508.53,
+      "speaker_ref": null,
+      "ref_text": "哎呀，你说他得受多大刺激才能让他丧失...",
+      "anchor_text": "哈哈哈哈哈哈。"
+    },
+    {
+      "index": 199,
+      "anchor_type": "switch",
+      "timestamp": 530.155,
+      "speaker_ref": null,
+      "ref_text": "我刚才说的是心灵创伤。",
+      "anchor_text": ""
+    },
+    {
+      "index": 200,
+      "anchor_type": "midpoint",
+      "timestamp": 531.804,
+      "speaker_ref": null,
+      "ref_text": "心心心心灵创伤不是摸不出来吗？",
+      "anchor_text": "我刚才说的是心灵创伤。"
+    },
+    {
+      "index": 430,
+      "anchor_type": "midpoint",
+      "timestamp": 1137.962,
+      "speaker_ref": null,
+      "ref_text": "不打扰了。",
+      "anchor_text": "哎，不打扰了。"
+    },
+    {
+      "index": 437,
+      "anchor_type": "switch",
+      "timestamp": 1152.844,
+      "speaker_ref": null,
+      "ref_text": "行，来了来了。",
+      "anchor_text": ""
+    },
+    {
+      "index": 438,
+      "anchor_type": "midpoint",
+      "timestamp": 1153.364,
+      "speaker_ref": null,
+      "ref_text": "行，来了来了。",
+      "anchor_text": "行，来了。哎呦。"
+    },
+    {
+      "index": 452,
+      "anchor_type": "switch",
+      "timestamp": 1177.274,
+      "speaker_ref": null,
+      "ref_text": "非常感谢啊。",
+      "anchor_text": ""
+    },
+    {
+      "index": 453,
+      "anchor_type": "midpoint",
+      "timestamp": 1178.266,
+      "speaker_ref": null,
+      "ref_text": "再见啊，哎。",
+      "anchor_text": "再见啊，哎。"
+    }
+  ]
+}
