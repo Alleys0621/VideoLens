@@ -129,8 +129,7 @@ export function AssistantMessage({
 
             <div
               className={cn(
-                "flex items-center gap-2 transition-opacity",
-                "opacity-0 group-focus-within:opacity-100 group-hover:opacity-100",
+                "flex items-center gap-2",
               )}
             >
               <CommandBar
@@ -139,24 +138,27 @@ export function AssistantMessage({
                 isAiMessage={true}
                 handleRegenerate={() => handleRegenerate(parentCheckpoint)}
               />
-              {/* TTS 朗读按钮: 用户主动点 → CosyVoice 语音播放 */}
-              {contentString.length > 0 && (
-                <TooltipIconButton
-                  tooltip={tts.speaking ? "停止朗读" : "朗读"}
-                  variant="ghost"
-                  onClick={() =>
-                    tts.speaking ? tts.stop() : tts.speak(contentString)
-                  }
-                >
-                  {tts.loading ? (
-                    <LoaderCircle className="h-4 w-4 animate-spin" />
-                  ) : tts.speaking ? (
-                    <Square className="h-4 w-4" />
-                  ) : (
-                    <Volume2 className="h-4 w-4" />
-                  )}
-                </TooltipIconButton>
-              )}
+              {/* TTS 朗读按钮: 仅当前正在播放的消息显示动态喇叭 */}
+              {contentString.length > 0 && (() => {
+                const isThisSpeaking = tts.speaking && tts.speakingMessageId === message?.id;
+                return (
+                  <TooltipIconButton
+                    tooltip={isThisSpeaking ? "停止朗读" : "朗读"}
+                    variant="ghost"
+                    onClick={() =>
+                      isThisSpeaking ? tts.stop() : tts.speak(contentString, message?.id)
+                    }
+                  >
+                    {isThisSpeaking ? (
+                      <Volume2 className="h-4 w-4 animate-tts-speaking text-indigo-500" />
+                    ) : tts.loading && tts.speakingMessageId === message?.id ? (
+                      <LoaderCircle className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Volume2 className="h-4 w-4" />
+                    )}
+                  </TooltipIconButton>
+                );
+              })()}
             </div>
           </>
         )}

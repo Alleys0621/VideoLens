@@ -22,7 +22,6 @@ Thumbs.db
 
 # === 视频 / 媒体 (太大, 不上传) ===
 data/videos/
-data/hls/
 data/models/
 models/*.onnx
 
@@ -57,6 +56,10 @@ experiments/test_omni_result/
 *.bmp
 *.webp
 *.svg
+# 例外: 前端 logo/avatar 等静态资源必须上传
+!frontend/public/**
+!data/output/_global/**
+!data/gt/**
 *.wav
 *.mp3
 *.flac
@@ -68,7 +71,3 @@ experiments/test_omni_result/
 *.mov
 *.wmv
 *.webm
-
-# HLS generated files
-*.m3u8
-*.ts

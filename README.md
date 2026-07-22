@@ -73,7 +73,7 @@ start.bat
 - **全局角色 / 剧情弧**（`data/output/_global/`）：跨集角色画像和剧情线
 - **声纹 / OCR / 场景数据**（`audio.json` / `visual.json` / `scenes.json`）
 
-**不含**视频文件（`data/videos/`）和 HLS 流（`data/hls/`），需自行放入视频到 `data/videos/` 目录。
+**不含**视频文件（`data/videos/`），需自行放入视频到 `data/videos/` 目录。
 
 ## License
 

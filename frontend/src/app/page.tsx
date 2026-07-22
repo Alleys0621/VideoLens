@@ -30,6 +30,8 @@ export default function DemoPage(): React.ReactNode {
     pause: () => void;
     resume: () => void;
     isPaused: () => boolean;
+    duckVolume: () => void;
+    restoreVolume: () => void;
   } | null>(null);
 
   return (

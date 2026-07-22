@@ -96,6 +96,8 @@ export function Thread({
       pause: () => void;
       resume: () => void;
       isPaused: () => boolean;
+      duckVolume: () => void;
+      restoreVolume: () => void;
     } | null;
   };
 }) {
@@ -162,6 +164,15 @@ export function Thread({
   const lastSpokenLenRef = useRef(0);
   // form ref: ASR 录音停止后自动 submit 用 (避开 setTimeout 后事件 stale 问题)
   const formRef = useRef<HTMLFormElement>(null);
+
+  // TTS 播放时降低视频音量 (2s 淡入淡出), 停止后恢复
+  useEffect(() => {
+    if (tts.speaking) {
+      videoControlRef?.current?.duckVolume();
+    } else {
+      videoControlRef?.current?.restoreVolume();
+    }
+  }, [tts.speaking, videoControlRef]);
 
   const lastError = useRef<string | undefined>(undefined);
 
@@ -239,13 +250,18 @@ export function Thread({
     const lastAi = [...messages].reverse().find((m) => m.type === "ai");
     if (!lastAi) return;
 
-    // 新 AI 消息 → 重置已喂位置 (但不 stop/start, handleSubmit 已预热)
+    // 新 AI 消息 → 启动 TTS 会话 (唯一入口, 杜绝双重启动)
     if (lastSpokenIdRef.current !== lastAi.id) {
       lastSpokenIdRef.current = lastAi.id ?? null;
       lastSpokenLenRef.current = 0;
+      // stop 旧会话 + 启动新会话 (async, 不阻塞)
+      tts.stop();
+      tts.start(lastAi.id ?? undefined).catch((e) =>
+        console.warn("[autoTTS] start failed", e),
+      );
     }
 
-    // 喂增量文本 (hook 内部走 ws 推给后端, 未 ready 时自动缓存)
+    // 喂增量文本 (未 ready 时自动缓存到 pendingTextRef, ready 后 flush)
     const fullText = getContentString(lastAi.content);
     const delta = fullText.slice(lastSpokenLenRef.current);
     lastSpokenLenRef.current = fullText.length;
@@ -266,15 +282,10 @@ export function Thread({
     if ((input.trim().length === 0 && contentBlocks.length === 0) || isLoading)
       return;
     setFirstTokenReceived(false);
-    // 标记"刚发过消息" — stream 完成时据此触发自动 TTS
+    // 标记"刚发过消息" — useEffect 据此启动自动 TTS
     justSentRef.current = true;
-    // 预热 TTS task: 立即建立 ws + run-task, LLM 出 token 时 ready 已回来
-    // 实测省 ~700ms 固定开销, 首字延迟从 ~1.2s 降到 ~400ms
-    if (autoSpeak) {
-      tts.start().catch((e) => console.warn("[TTS] preheat failed", e));
-    } else {
-      tts.stop();
-    }
+    // 停掉之前可能残留的 TTS 会话
+    tts.stop();
 
     const newHumanMessage: Message = {
       id: uuidv4(),
@@ -331,6 +342,15 @@ export function Thread({
       streamMode: ["values"],
       streamSubgraphs: true,
       streamResumable: true,
+      // 跟 handleSubmit 一样传 configurable, 否则后端拿不到 video_dir / user_id
+      config: {
+        configurable: {
+          video_dir: videoDir,
+          web_search: webSearch,
+          video_time: videoTimeRef?.current ?? 0,
+          user_id: user?.id ?? "default",
+        },
+      },
     });
   };
 

@@ -209,11 +209,11 @@ async def handle_connection(ws: websockets.WebSocketServerProtocol) -> None:
 
 async def main() -> None:
     # 监听 0.0.0.0:8000 (本地 Next.js 通过 frp tunnel 反代过来)
-    logger.info("ASR WebSocket server starting on ws://0.0.0.0:8000/stream")
+    logger.info("ASR WebSocket server starting on ws://0.0.0.0:9800/stream")
     async with websockets.serve(
         handle_connection,
         "0.0.0.0",
-        8000,
+        9800,
         max_size=None,  # 允许大消息 (但实际 PCM chunk 一般 1-4KB)
         compression=None,  # 实时音频不需要压缩, 减少 CPU
     ):

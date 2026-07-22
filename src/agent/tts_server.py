@@ -298,12 +298,12 @@ async def _serve_session(frontend_ws) -> None:
 
 
 async def main() -> None:
-    logger.info("TTS WebSocket server starting on ws://0.0.0.0:8001/")
+    logger.info("TTS WebSocket server starting on ws://0.0.0.0:9801/")
     logger.info(f"  model={_MODEL}  voice={_VOICE}  format={_FORMAT}  sr={_SAMPLE_RATE}")
     async with websockets.serve(
         _serve_session,
         "0.0.0.0",
-        8001,
+        9801,
         max_size=None,
         compression=None,
         ping_interval=20,

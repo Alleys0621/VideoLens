@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import Artplayer from "artplayer";
-import Hls from "hls.js";
 import { useKeyframeSeek, type KeyframeMeta } from "@/hooks/useKeyframeSeek";
 import { Sparkles, Play } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -73,52 +72,26 @@ export function VideoPlayer({
   onVideoDirChange: (dir: string) => void;
   videoTimeRef?: { current: number };
   /**
-   * 外部控制句柄: ASR 录音开始时调 videoControlRef.current.pause() 暂停视频
-   * 防回声; 录音结束调 resume() 恢复. 没传则不暴露.
+   * 外部控制句柄: pause/resume 用于 ASR 录音防回声,
+   * duckVolume/restoreVolume 用于 TTS 播放时降低视频音量 (2s 淡入淡出).
    */
   videoControlRef?: {
     current: {
       pause: () => void;
       resume: () => void;
       isPaused: () => boolean;
+      duckVolume: () => void;
+      restoreVolume: () => void;
     } | null;
   };
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const artRef = useRef<Artplayer | null>(null);
+  const volumeRampRef = useRef<number | null>(null); // 音量渐变动画 frame id
   const { keyframes, reasoning } = useKeyframeSeek();
 
-  // HLS 优先, mp4 fallback. HEAD 检查 HLS m3u8 是否存在
-  const [actualSrc, setActualSrc] = useState("");
-  const [isHls, setIsHls] = useState(false);
-
-  useEffect(() => {
-    if (!videoDir) {
-      setActualSrc("");
-      return;
-    }
-    const hlsUrl = `/api/hls/${videoDir}/playlist.m3u8`;
-    let cancelled = false;
-    fetch(hlsUrl, { method: "HEAD" })
-      .then((r) => {
-        if (cancelled) return;
-        if (r.ok) {
-          setActualSrc(hlsUrl);
-          setIsHls(true);
-        } else {
-          setActualSrc(`/api/video/${videoDir}`);
-          setIsHls(false);
-        }
-      })
-      .catch(() => {
-        if (cancelled) return;
-        setActualSrc(`/api/video/${videoDir}`);
-        setIsHls(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [videoDir]);
+  // 直接用 mp4 流
+  const actualSrc = videoDir ? `/api/video/${videoDir}` : "";
 
   // === 推理数据解析 (保留原有) ===
   const intentMeta: Record<string, { label: string; color: string }> = {
@@ -144,34 +117,10 @@ export function VideoPlayer({
   useEffect(() => {
     if (!containerRef.current || !actualSrc) return;
 
-    // Hls 实例引用 (用于 cleanup 销毁, 避免内存泄漏)
-    let hls: Hls | null = null;
-
     const art = new Artplayer({
       container: containerRef.current,
       url: actualSrc,
-      // HLS m3u8 用 customType 处理; 非 HLS (mp4 直链) 留空走默认
-      type: isHls ? "m3u8" : "",
-      customType: {
-        m3u8: (video: HTMLVideoElement, url: string) => {
-          // iPad Safari / macOS Safari 原生支持 HLS, 直接给 src
-          if (
-            video.canPlayType("application/vnd.apple.mpegurl")
-          ) {
-            video.src = url;
-            return;
-          }
-          // Chrome / Edge / Firefox 用 hls.js
-          if (Hls.isSupported()) {
-            hls = new Hls({ enableWorker: true });
-            hls.loadSource(url);
-            hls.attachMedia(video);
-          } else {
-            console.error("[VideoPlayer] Browser does not support HLS");
-          }
-        },
-      },
-      autoplay: true, // 选集后自动播放 (浏览器策略允许时; 被拦截则点击即播)
+      autoplay: true,
       volume: 0.7,
       autoSize: false,
       autoMini: false,
@@ -229,26 +178,40 @@ export function VideoPlayer({
       }
     });
 
-    // 暴露 pause / resume / isPaused 给外部 (ASR 录音协调用)
+    // 暴露 pause / resume / isPaused / duckVolume / restoreVolume 给外部
     if (videoControlRef) {
+      const rampVolume = (target: number, duration = 2000) => {
+        const video = art.video as HTMLVideoElement;
+        const start = video.volume;
+        if (Math.abs(start - target) < 0.01) return;
+        if (volumeRampRef.current) cancelAnimationFrame(volumeRampRef.current);
+        const t0 = performance.now();
+        const step = (now: number) => {
+          const p = Math.min((now - t0) / duration, 1);
+          // clamp 到 [0, 1] 防止浮点误差导致 volume > 1 报错
+          video.volume = Math.max(0, Math.min(1, start + (target - start) * p));
+          if (p < 1) {
+            volumeRampRef.current = requestAnimationFrame(step);
+          } else {
+            volumeRampRef.current = null;
+          }
+        };
+        volumeRampRef.current = requestAnimationFrame(step);
+      };
+
       videoControlRef.current = {
         pause: () => {
-          try {
-            art.pause();
-          } catch {
-            /* noop */
-          }
+          try { art.pause(); } catch { /* noop */ }
         },
         resume: () => {
           try {
-            // 只恢复"被 ASR 暂停"的情况, 用户主动暂停的不强行恢复
             if (!art.video.paused) return;
             art.play();
-          } catch {
-            /* noop */
-          }
+          } catch { /* noop */ }
         },
         isPaused: () => art.video.paused,
+        duckVolume: () => rampVolume(0.15),   // TTS 播放时降到 15%
+        restoreVolume: () => rampVolume(0.7), // TTS 停止后恢复到默认 70%
       };
     }
 
@@ -268,15 +231,11 @@ export function VideoPlayer({
         savePlayback(videoDir, a.currentTime || 0, a.duration, { force: true });
       }
       window.removeEventListener("pagehide", onPageHide);
-      art.destroy(false); // false = 不删除容器 DOM
-      if (hls) {
-        hls.destroy();
-        hls = null;
-      }
+      art.destroy(false);
       artRef.current = null;
       if (videoControlRef) videoControlRef.current = null;
     };
-  }, [actualSrc, isHls, videoTimeRef, videoControlRef]);
+  }, [actualSrc, videoTimeRef, videoControlRef]);
 
   return (
     <div className="flex h-full w-full flex-col bg-zinc-950">
