@@ -20,8 +20,8 @@ start.bat
 服务端口：
 - Frontend: http://localhost:3000
 - Backend (LangGraph): http://localhost:2024
-- ASR server (WebSocket): ws://localhost:8000/stream
-- TTS server (WebSocket): ws://localhost:8001/
+- ASR server (WebSocket): ws://localhost:9800/stream
+- TTS server (WebSocket): ws://localhost:9801/
 - cloudflared 隧道（公网，随机域名）
 
 ## 常用命令

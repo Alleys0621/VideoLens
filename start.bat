@@ -6,7 +6,7 @@ REM  - Double-click to run, or run from cmd: start.bat
 REM  - Stop: close the popup cmd windows
 REM
 REM  Startup order:
-REM    [0/5] Cleanup  : kill stale processes on ports 3000/2024/8000/8001
+REM    [0/5] Cleanup  : kill stale processes on ports 3000/2024/9800/9801
 REM    [1/5] Backend  : LangGraph (port 2024)
 REM    [2/5] Frontend : Next.js (port 3000)
 REM    [3/5] ASR      : paraformer streaming (port 8000)
@@ -24,8 +24,8 @@ echo ============================================================
 echo   VideoLens Starting
 echo   Backend  : http://localhost:2024  (LangGraph)
 echo   Frontend : http://localhost:3000  (Next.js)
-echo   ASR      : ws://localhost:8000    (paraformer)
-echo   TTS      : ws://localhost:8001    (qwen-audio-tts)
+echo   ASR      : ws://localhost:9800    (paraformer)
+echo   TTS      : ws://localhost:9801    (qwen-audio-tts)
 echo   Tunnel   : cloudflared (random URL per launch)
 echo ============================================================
 echo.
@@ -41,12 +41,12 @@ for /f "tokens=5" %%a in ('netstat -ano ^| findstr ":2024 " ^| findstr LISTENING
     echo       Killing PID %%a (port 2024)
     taskkill /F /PID %%a >nul 2>&1
 )
-for /f "tokens=5" %%a in ('netstat -ano ^| findstr ":8000 " ^| findstr LISTENING') do (
-    echo       Killing PID %%a (port 8000)
+for /f "tokens=5" %%a in ('netstat -ano ^| findstr ":9800 " ^| findstr LISTENING') do (
+    echo       Killing PID %%a (port 9800)
     taskkill /F /PID %%a >nul 2>&1
 )
-for /f "tokens=5" %%a in ('netstat -ano ^| findstr ":8001 " ^| findstr LISTENING') do (
-    echo       Killing PID %%a (port 8001)
+for /f "tokens=5" %%a in ('netstat -ano ^| findstr ":9801 " ^| findstr LISTENING') do (
+    echo       Killing PID %%a (port 9801)
     taskkill /F /PID %%a >nul 2>&1
 )
 
@@ -60,18 +60,18 @@ ping 127.0.0.1 -n 3 >nul
 
 REM [1/5] Backend - LangGraph Server
 echo [1/5] Starting Backend LangGraph (port 2024)...
-start "VideoLens-Backend-2024" cmd /k ".venv\Scripts\langgraph.exe dev --port 2024"
+start "VideoLens-Backend-2024" cmd /k ".venv\Scripts\langgraph.exe dev --port 2024 --no-browser"
 
 REM [2/5] Frontend - Next.js
 echo [2/5] Starting Frontend Next.js (port 3000)...
 start "VideoLens-Frontend-3000" cmd /k "cd frontend && node_modules\.bin\next.CMD dev"
 
 REM [3/5] ASR WebSocket server (streaming speech recognition)
-echo [3/5] Starting ASR server (port 8000, paraformer streaming)...
+echo [3/5] Starting ASR server (port 9800, paraformer streaming)...
 start "VideoLens-ASR-Server" cmd /k ".venv\Scripts\python.exe -m src.agent.asr_server"
 
 REM [4/5] TTS WebSocket server (streaming speech synthesis)
-echo [4/5] Starting TTS server (port 8001, qwen-audio-tts streaming)...
+echo [4/5] Starting TTS server (port 9801, qwen-audio-tts streaming)...
 start "VideoLens-TTS-Server" cmd /k ".venv\Scripts\python.exe -m src.agent.tts_server"
 
 REM [5/5] cloudflared quick tunnel
@@ -86,7 +86,7 @@ if not exist ".tools\cloudflared.exe" (
 echo [5/5] Starting cloudflared quick tunnel...
 REM cloudflared quick tunnel: random URL per launch, printed in the popup window.
 REM To stop: close the "VideoLens-Tunnel" popup window.
-start "VideoLens-Tunnel" cmd /k ".tools\cloudflared.exe tunnel --url http://localhost:3000"
+start "VideoLens-Tunnel" cmd /k ".tools\cloudflared.exe tunnel --url http://127.0.0.1:3000"
 
 :WAIT_END
 echo.
