@@ -28,6 +28,10 @@ if os.getenv("DASHSCOPE_API_KEY") and not os.getenv("OPENAI_API_KEY"):
 if not os.getenv("OPENAI_BASE_URL"):
     os.environ["OPENAI_BASE_URL"] = "https://dashscope.aliyuncs.com/compatible-mode/v1"
 
+# 检查 API Key 是否设置, 给清晰错误提示
+if not os.getenv("DASHSCOPE_API_KEY"):
+    print("[mem0] 警告: DASHSCOPE_API_KEY 未设置! 请检查系统环境变量.", file=sys.stderr, flush=True)
+
 
 # ============================================================
 # Mem0 单例 (懒加载)
@@ -45,7 +49,12 @@ def get_memory():
     config = {
         "llm": {
             "provider": "openai",
-            "config": {"model": "qwen3.7-plus", "temperature": 0.1},
+            "config": {
+                "model": "qwen3.7-plus",
+                "temperature": 0.1,
+                "api_key": os.getenv("DASHSCOPE_API_KEY"),
+                "openai_base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+            },
         },
         "embedder": {
             "provider": "openai",
