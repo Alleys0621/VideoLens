@@ -43,7 +43,7 @@ if errorlevel 1 (
 set COUNT=0
 set SUCCESSED=0
 
-for /r "data\videos" %%F in (*.mkv *.mp4 *.avi *.mov *.flv *.ts *.wmv *.webm *.m4v *.rmvb *.rm *.mpeg *.mpg *.m2ts *.vob *.3gp *.f4v) do (
+for /r "data\videos" %%F in (*.mkv *.avi *.mov *.flv *.ts *.wmv *.webm *.m4v *.rmvb *.rm *.mpeg *.mpg *.m2ts *.vob *.3gp *.f4v) do (
   REM Skip .bak files
   echo "%%~nxF" | findstr /i "\.bak$" >nul
   if !errorlevel! equ 0 (
