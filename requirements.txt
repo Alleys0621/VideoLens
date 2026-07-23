@@ -22,7 +22,21 @@ coloredlogs>=15.0.1
 # --- Retrieval Eval ---
 jieba>=0.42.1
 
-# --- LangGraph Server (陪看智能体前端 agent-chat-ui 接入, langgraph dev) ---
+# --- LangGraph Server (陪看智能体, langgraph dev) ---
 langgraph>=0.2.0
 langgraph-api>=0.2.0
+langgraph-cli>=0.1.0
 langchain-core>=0.3.0
+langchain-openai>=0.2.0
+
+# --- DashScope SDK (ASR + TTS + LLM) ---
+dashscope>=1.25.11
+
+# --- WebSocket (ASR server + TTS server) ---
+websockets>=13.0
+
+# --- 繁简转换 (ASR 后处理) ---
+opencc-python-reimplemented>=0.1.7
+
+# --- Mem0 (长期记忆) ---
+mem0ai>=0.1.40

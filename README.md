@@ -14,44 +14,82 @@
 
 ## 快速开始
 
-### 环境要求
+### 1. 环境要求
 
-- Python 3.12.x
-- Node.js 18+（pnpm）
-- ffmpeg
+- **Python 3.12.x**（必须 < 3.13）
+- **Node.js 18+** + **pnpm**（`npm install -g pnpm`）
+- **ffmpeg**（系统 PATH 中可访问）
 
-### 安装
+### 2. 克隆仓库
 
 ```bash
-# Python 后端
-uv venv .venv
-.venv\Scripts\activate
-uv pip install -r requirements.txt
-
-# 前端
-cd frontend
-pnpm install
+git clone https://github.com/Alleys0621/VideoLens.git
+cd VideoLens
 ```
 
-### 配置
-
-1. 设置系统环境变量 `DASHSCOPE_API_KEY`（阿里云百炼）
-2. 讯飞声纹凭证写入 `.env`（`XFYUN_*` 字段）
-3. 前端配置参考 `frontend/.env.local.example`
-
-### 启动
+### 3. 安装 Python 依赖
 
 ```bash
-# Windows 一键启动（双击 start.bat 或命令行运行）
+uv venv .venv
+.venv\Scripts\activate          # Windows
+uv pip install -r requirements.txt
+```
+
+### 4. 安装前端依赖
+
+```bash
+cd frontend
+pnpm install
+cd ..
+```
+
+### 5. 配置环境变量
+
+**系统环境变量**（必须）：
+```
+DASHSCOPE_API_KEY=你的阿里云百炼API Key
+```
+
+**项目根目录 `.env`**（讯飞声纹，Pipeline 用，不做 Pipeline 可跳过）：
+```
+XFYUN_APP_ID=你的讯飞AppID
+XFYUN_API_KEY=你的讯飞APIKey
+XFYUN_API_SECRET=你的讯飞APISecret
+```
+
+**前端 `frontend/.env.local`**（从示例复制）：
+```bash
+cp frontend/.env.local.example frontend/.env.local
+```
+默认值本地开发够用，按需修改。
+
+### 6. 放入视频
+
+视频文件放到 `data/videos/{作品名}/{剧集名}.mp4`，例如：
+```
+data/videos/家有儿女/第一季/第01集.mkv
+data/videos/家有儿女/第二季/第001集.mkv
+```
+
+仓库自带知识库 JSON（角色、剧情、对白），**不需要重新跑 Pipeline**。但视频文件本身需自行提供。
+
+### 7. 下载 cloudflared（可选，公网访问用）
+
+从 [Cloudflare releases](https://github.com/cloudflare/cloudflared/releases) 下载 `cloudflared.exe`，放到 `.tools/` 目录。不需要公网访问可跳过。
+
+### 8. 启动
+
+```bash
+# Windows 一键启动
 start.bat
 ```
 
 启动后会开 5 个窗口：
 - Backend（LangGraph :2024）
 - Frontend（Next.js :3000）
-- ASR server（流式语音识别 :8000）
-- TTS server（流式语音合成 :8001）
-- cloudflared 隧道（公网访问，每次随机域名）
+- ASR server（流式语音识别 :9800）
+- TTS server（流式语音合成 :9801）
+- cloudflared 隧道（公网访问，每次随机域名，需步骤 7）
 
 浏览器打开 `http://localhost:3000`，注册登录后选一集开始。
 
@@ -73,7 +111,7 @@ start.bat
 - **全局角色 / 剧情弧**（`data/output/_global/`）：跨集角色画像和剧情线
 - **声纹 / OCR / 场景数据**（`audio.json` / `visual.json` / `scenes.json`）
 
-**不含**视频文件（`data/videos/`），需自行放入视频到 `data/videos/` 目录。
+**不含**视频文件（`data/videos/`），需自行放入。
 
 ## License
 
