@@ -58,6 +58,14 @@ if not errorlevel 1 (
 
 ping 127.0.0.1 -n 3 >nul
 
+REM [0.5/5] 初始化用户数据库 (从模板复制, 如果不存在)
+if not exist ".langgraph_api\store.pckl" (
+    if exist ".langgraph_api\store.pckl.template" (
+        echo [init] Copying store.pckl from template...
+        copy ".langgraph_api\store.pckl.template" ".langgraph_api\store.pckl" >nul
+    )
+)
+
 REM [1/5] Backend - LangGraph Server
 echo [1/5] Starting Backend LangGraph (port 2024)...
 start "VideoLens-Backend-2024" cmd /k ".venv\Scripts\langgraph.exe dev --port 2024 --no-browser"

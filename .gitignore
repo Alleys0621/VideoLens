@@ -34,11 +34,12 @@ data/output/**/keyframes/
 data/output/**/_stage3_dryrun.log
 data/output/_batch_reports/
 
-# === LangGraph checkpoint (对话状态快照, 不通用, 但 store.pckl 要上传) ===
+# === LangGraph: 模板跟仓库, 运行数据不跟踪 ===
 .langgraph_api/.langgraph_checkpoint.*
 .langgraph_api/.langgraph_ops.pckl
 .langgraph_api/.langgraph_retry_counter.pckl
 .langgraph_api/store.vectors.pckl
+.langgraph_api/store.pckl
 
 # Experiments data
 experiments/_archive/
