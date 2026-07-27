@@ -24,6 +24,20 @@ from src.core.helpers.json_utils import load_json
 from src.core.llm.qwen_text import QwenTextClient
 from src.eval.stage3_retrieval import BM25Index, build_searchable_text
 from src.agent.mem0_client import search_relevant_memories, add_conversation_memory
+from src.agent.context_builder import (
+    build_context_sections,
+    sections_to_prompt,
+    derive_watching_context,
+    scene_keyframe_at_time,
+)
+from src.agent.profile_store import (
+    load_user_profile,
+    render_profile_overlay,
+    increment_message_counter,
+    load_show_profile,
+    PROFILE_UPDATE_THRESHOLD,
+)
+from src.agent.profile_updater import maybe_update_user_profile, maybe_update_show_profile
 
 
 # ============================================================
@@ -276,200 +290,131 @@ def _llm_generate(
 
 
 def _llm_kb_answer(
-    llm,
-    query: str,
-    selected: list[dict],
-    video_summary: dict | None,
-    arc_updates: list,
-    chat_history: list[dict],
-    long_term: list[str],
-    video_label: str = "",
-    video_context: str = "",
+    *args, **kwargs,
 ) -> str:
-    """KB 模式: 基于检索到的 events 回答."""
-    system = _get_system_prompt()
-    parts = []
-    if video_label:
-        parts.append(f"## 当前正在看的视频\n{video_label}")
-    if video_context:
-        parts.append(video_context)
-    if video_summary:
-        parts.append(f"## 视频梗概\n{video_summary.get('episode_summary', '')}")
-    evs_text = "\n\n".join(
-        f"- [{e.get('event_id','')}] {e.get('title','')}\n"
-        f"  角色: {', '.join(e.get('participants', []) or [])}\n"
-        f"  摘要: {e.get('summary', '')}\n"
-        f"  动机: {e.get('motivation', '')} ({e.get('motivation_confidence','')})\n"
-        f"  结果: {e.get('outcome', '')}"
-        for e in selected
-    )
-    parts.append(f"## 检索到的相关事件\n{evs_text}")
-    if arc_updates:
-        arcs = "\n".join(f"- {a.get('title','')}: {a.get('summary','')}" for a in arc_updates[:2])
-        parts.append(f"## 剧情弧\n{arcs}")
-    if long_term:
-        mems = "\n".join(f"- {m}" for m in long_term)
-        parts.append(f"## 关于这位用户我之前记得\n{mems}")
-    if chat_history:
-        hist = "\n".join(
-            f"{'用户' if h['role']=='user' else 'Alleys'}: {h['content']}"
-            for h in chat_history[-6:]
+    """已废弃: 上下文拼装统一迁到 context_builder.build_context_sections."""
+    raise RuntimeError("_llm_kb_answer 已废弃, 请用 _llm_answer + build_context_sections")
+
+
+def _llm_chitchat(*args, **kwargs) -> str:
+    raise RuntimeError("_llm_chitchat 已废弃, 请用 _llm_answer + build_context_sections")
+
+
+def _llm_refuse(*args, **kwargs) -> str:
+    raise RuntimeError("_llm_refuse 已废弃, 请用 _llm_answer + build_context_sections")
+
+
+def _llm_web_search(*args, **kwargs) -> tuple[str, list[dict]]:
+    raise RuntimeError("_llm_web_search 已废弃, 请用 _llm_answer + build_context_sections")
+
+
+# ============================================================
+# 统一回复: context 段 + 任务策略 → 单次 streaming LLM
+# ============================================================
+
+# task → (max_tokens, temperature)
+_TASK_PARAMS: dict[str, tuple[int, float]] = {
+    "chitchat": (200, 0.7),
+    "companion": (260, 0.7),
+    "deictic": (360, 0.6),
+    "knowledge": (400, 0.7),
+    "meta": (500, 0.6),
+    "refuse": (160, 0.6),
+}
+
+
+def _requirements(task: str, web: bool = False) -> str:
+    """按 task 给最终回复的硬要求 (含字数上限)."""
+    if web:
+        return (
+            "- 基于上方'联网搜索到的相关内容'回答\n"
+            "- 用Alleys口吻, 自然口语, 不超过 120 字\n"
+            "- 搜到的是剧外信息 (演员/花絮/现实) 就如实告诉用户, 不硬套剧情\n"
+            "- 不暴露'根据搜索结果'这种话, 自然引用即可:"
         )
-        parts.append(f"## 我们刚才聊到\n{hist}")
-    parts.append(
-        f"## 用户现在问\n{query}\n\n"
-        f"## 回答要求 (重要)\n"
-        f"- 必须结合上方'我们刚才聊到'的上下文 (代词/指代关联上文, 用户说'他'你要知道指谁)\n"
-        f"- 必须结合上方'关于这位用户我之前记得'的记忆 (如有)\n"
-        f"- 像延续对话, 不是孤立回答\n"
-        f"- 直接中文, 不超过 100 字, 像朋友聊剧, 不用标题/列表:"
-    )
-    return _llm_generate(
-        prompt="\n\n".join(parts), system=system, stage="companion_kb",
-        max_tokens=400, temperature=0.7, enable_thinking=False, llm=llm,
-    )
+    return {
+        "chitchat": (
+            "- 闲聊, 像朋友, 不超过 60 字\n"
+            "- 你没在看画面: 不要说\"正看到/刚看到/画面里\", 也不要描述当前剧情进度\n"
+            "- 用户说卡了/好了/暂停就事论事回 (如\"嗯, 等你好\"), 不借机演剧情\n"
+            "- 不每句都\"哈哈\"开头, 没情绪信号就正常说话\n"
+            "- 不解释自己为什么这么说, 禁止\"我寻思/逗你乐/脑补/想多了\"这类自我旁白:"
+        ),
+        "companion": (
+            "- 陪着看, 接住用户情绪, 不超过 80 字\n"
+            "- 可以提焦点角色, 但不要描述画面/表情/动作 (你没在看)\n"
+            "- 不复述/预测剧情细节, 不自我旁白, 不\"太真实了/绝了/有那味儿\"这种套话:"
+        ),
+        "deictic": (
+            "- 基于当前事件 / 邻域对白回答, 不超过 100 字\n"
+            "- 指代要说清 (谁在说话/这一幕在干什么)\n"
+            "- 不要延伸到未来剧情:"
+        ),
+        "knowledge": (
+            "- 基于检索到的相关事件回答, 不超过 100 字\n"
+            "- 不延伸到未来剧情, 不剧透\n"
+            "- 像朋友聊剧, 不用标题/列表:"
+        ),
+        "meta": (
+            "- 基于视频梗概概括, 不超过 150 字\n"
+            "- 不剧透后续集:"
+        ),
+        "refuse": (
+            "- 用Alleys口吻诚实承认, 关联上文, 不编造, 40 字内:"
+        ),
+    }.get(task, "- 直接中文回答, 不超过 80 字:")
 
 
-def _llm_chitchat(
-    llm, query: str, chat_history: list[dict], long_term: list[str],
-    video_label: str = "",
-    video_context: str = "",
-) -> str:
-    """闲聊模式: 人设回应 (不查 KB)."""
-    system = _get_system_prompt()
-    parts = []
-    if video_label:
-        parts.append(f"## 当前正在看的视频\n{video_label}")
-    if video_context:
-        parts.append(video_context)
-    if long_term:
-        mems = "\n".join(f"- {m}" for m in long_term)
-        parts.append(f"## 关于这位用户我之前记得\n{mems}")
-    if chat_history:
-        hist = "\n".join(
-            f"{'用户' if h['role']=='user' else 'Alleys'}: {h['content']}"
-            for h in chat_history[-6:]
-        )
-        parts.append(f"## 我们刚才聊到\n{hist}")
-    parts.append(
-        f"## 用户现在说\n{query}\n\n"
-        f"## 回应要求\n"
-        f"- 结合上方'我们刚才聊到'的上下文延续对话\n"
-        f"- 结合'关于这位用户我之前记得'的记忆 (如有)\n"
-        f"- 闲聊, 像朋友, 不超过 60 字:"
-    )
-    result = _llm_generate(
-        prompt="\n\n".join(parts), system=system, stage="companion_chitchat",
-        max_tokens=200, temperature=0.8, enable_thinking=False, llm=llm,
-    )
-    return result or "(嗯嗯)"
-
-
-def _llm_refuse(
+def _llm_answer(
     llm,
+    task: str,
     query: str,
-    chat_history: list[dict] | None = None,
-    long_term: list[str] | None = None,
-    video_label: str = "",
-    video_context: str = "",
-    web_search: bool = False,
+    sections: list[tuple[str, str]],
+    emotion: str = "neutral",
+    user_state: str = "无明显状态",
+    web: bool = False,
+    system_overlay: str = "",
 ) -> str:
-    """拒答模式: KB 没相关内容 + 非闲聊, 诚实承认 (带上下文, 拒答也关联上文角色).
-    web_search=True 时开启联网搜索 (DashScope enable_search), 允许 LLM 联网补充后回答."""
-    system = _get_system_prompt()
-    parts = []
-    if video_label:
-        parts.append(f"## 当前正在看的视频\n{video_label}")
-    if video_context:
-        parts.append(video_context)
-    parts.append(f"用户问: 「{query}」")
-    if long_term:
-        mems = "\n".join(f"- {m}" for m in long_term)
-        parts.append(f"## 关于这位用户我之前记得\n{mems}")
-    if chat_history:
-        hist = "\n".join(
-            f"{'用户' if h['role']=='user' else 'Alleys'}: {h['content']}"
-            for h in chat_history[-4:]
-        )
-        parts.append(f"## 我们刚才聊到\n{hist}")
-    if web_search:
-        parts.append(
-            "\n这集知识库里没找到相关情节. 你可以联网搜索补充信息再回答: "
-            "搜到相关内容就用Alleys口吻自然回答 (<80字, 不暴露搜索来源); "
-            "搜不到或与剧集无关就诚实说不知道, 不编造:"
-        )
-    else:
-        parts.append(
-            "\n这集知识库里没找到相关情节. 用Alleys口吻诚实承认, "
-            "但要关联上文 (如用户说'他', 你要知道指谁), 不编造, 30字内:"
-        )
-    result = _llm_generate(
-        prompt="\n\n".join(parts), system=system, stage="companion_refuse",
-        max_tokens=400 if web_search else 120,
-        temperature=0.6, enable_thinking=False, llm=llm,
-        enable_search=web_search,
-    )
-    return result or "这段我也没看太清诶, 你能给说说吗?"
+    """统一回复: 拼好 context + query + 状态参考 + requirements → 单次 streaming LLM.
 
-
-def _llm_web_search(
-    llm,
-    query: str,
-    video_label: str,
-    chat_history: list[dict],
-    long_term: list[str],
-    video_context: str = "",
-) -> tuple[str, list[dict]]:
-    """联网搜索模式: Tavily 真实搜 query → 结果塞 prompt → LLM 基于 results 回答.
-
-    Returns:
-        (answer, web_results) — web_results 给 reasoning 展示来源 (标题+URL+摘要)。
+    task 决定 max_tokens/temperature/requirements; sections 已由白名单裁剪过.
+    emotion/user_state 来自用户理解模块, 仅作一行参考, 不污染 context 白名单.
+    system_overlay 来自 L1 用户画像 (style 类), 拼到 system prompt 末尾, 自然影响语气.
     """
-    from src.agent.web_search import tavily_search
-
-    # 1. Tavily 搜索 (失败/空结果 → 回退诚实拒答, 不编造)
-    try:
-        results = tavily_search(query, max_results=5)
-    except Exception as e:
-        print(f"[web_search] Tavily 失败, 回退拒答: {e}", flush=True)
-        return _llm_refuse(llm, query, chat_history, long_term, video_label), []
-    if not results:
-        return _llm_refuse(llm, query, chat_history, long_term, video_label), []
-
-    # 2. 结果塞 prompt → LLM 回答 (不用 enable_search, 结果已在 prompt 里)
     system = _get_system_prompt()
-    parts = []
-    if video_label:
-        parts.append(f"## 当前正在看的视频\n{video_label}")
-    if video_context:
-        parts.append(video_context)
-    if long_term:
-        mems = "\n".join(f"- {m}" for m in long_term)
-        parts.append(f"## 关于这位用户我之前记得\n{mems}")
-    if chat_history:
-        hist = "\n".join(
-            f"{'用户' if h['role']=='user' else 'Alleys'}: {h['content']}"
-            for h in chat_history[-4:]
+    if system_overlay:
+        system = f"{system}\n\n{system_overlay}"
+    ctx = sections_to_prompt(sections)
+    # 状态参考: 只在有信号时给 (neutral + 无明显状态 时不注入, 避免噪音)
+    state_hint = ""
+    if emotion != "neutral" or user_state not in ("", "无明显状态"):
+        state_hint = (
+            f"\n\n（用户状态参考：{user_state} · 情绪 {emotion}。"
+            "仅供参考，结合原话判断，不要生硬贴标签，也不要直接复述这句话。）"
         )
-        parts.append(f"## 我们刚才聊到\n{hist}")
-    parts.append(f"## 用户问\n{query}")
-    results_text = "\n\n".join(
-        f"- [{i+1}] {r['title']}\n  {r['url']}\n  {r['content']}"
-        for i, r in enumerate(results)
+    prompt = (
+        f"{ctx}\n\n"
+        f"## 用户现在问\n{query}{state_hint}\n\n"
+        f"## 回答要求\n{_requirements(task, web=web)}"
     )
-    parts.append(f"## 联网搜索到的相关内容\n{results_text}")
-    parts.append(
-        "\n## 回答要求\n"
-        "- 基于上方'联网搜索到的相关内容'回答\n"
-        "- 用Alleys口吻, 自然口语, 不超过 120 字\n"
-        "- 搜到的是剧外信息 (演员/花絮/现实) 就如实告诉用户, 不硬套剧情\n"
-        "- 不暴露'根据搜索结果'这种话, 自然引用即可:"
+    max_tokens, temperature = _TASK_PARAMS.get(task, (300, 0.7))
+    stage = f"companion_{task}" + ("_web" if web else "")
+    result = _llm_generate(
+        prompt=prompt,
+        system=system,
+        stage=stage,
+        max_tokens=max_tokens,
+        temperature=temperature,
+        enable_thinking=False,
+        llm=llm,
+        # 注意: web 分支的搜索结果已在 prompt 里, 不再开 enable_search
+        enable_search=False,
     )
-    answer = _llm_generate(
-        prompt="\n\n".join(parts), system=system, stage="companion_web_search",
-        max_tokens=400, temperature=0.6, enable_thinking=False, llm=llm,
-    )
-    return (answer or "(没搜到啥有用的)"), results
+    if task == "chitchat":
+        return result or "(嗯嗯)"
+    if task == "refuse" and not web:
+        return result or "这段我也没看太清诶, 你能给说说吗?"
+    return result or ""
 
 
 # ============================================================
@@ -485,6 +430,27 @@ def _async_add_memory(user_id: str, query: str, answer: str, video_id: str) -> N
             print(f"[Mem0] async add 失败: {e}", flush=True)
 
     threading.Thread(target=_write, daemon=True).start()
+
+
+def _async_maybe_update_profile(
+    user_id: str, chat_history: list[dict], query: str, answer: str, show: str = "",
+) -> None:
+    """异步累加对话计数, 达阈值触发 L1 + L2 画像增量更新 (不阻塞回复)."""
+    def _run():
+        try:
+            n = increment_message_counter(user_id)
+            if n >= PROFILE_UPDATE_THRESHOLD:
+                hist = list(chat_history or []) + [
+                    {"role": "user", "content": query},
+                    {"role": "assistant", "content": answer},
+                ]
+                maybe_update_user_profile(user_id, hist)
+                if show:
+                    maybe_update_show_profile(user_id, show, hist)
+        except Exception as e:
+            print(f"[profile] async trigger 失败: {e}", flush=True)
+
+    threading.Thread(target=_run, daemon=True).start()
 
 
 def companion_chat(
@@ -538,19 +504,39 @@ def companion_chat(
     selected = []
     web_results: list[dict] = []
     matched_segments: list[dict] = []  # 向量检索命中的对白 (对白级, 注入 prompt)
-    # 并行: LLM 意图理解 + 检索 (两者都是 ~0.7s API 调用, 并行省一半时间)
-    from src.agent.intent_router import llm_route_intent
-    _intent_box: dict = {"v": "kb"}
+    # 并行: LLM 用户理解 (qwen-max, task+emotion+user_state) + 检索 (两者 ~0.7s, 并行省一半)
+    from src.agent.intent_router import llm_route_intent, IntentResult
+    video_label = " · ".join(p for p in video_dir.split("/") if p)
+
+    # L1 用户长期画像 → system overlay (confidence 够才注入, style 类, 不进 context)
+    # L2 作品画像 → context 段 (companion/knowledge 才注入, 见 context_builder 白名单)
+    show = video_dir.split("/")[0] if video_dir else ""
+    profile_overlay = ""
+    show_profile = None
+    if user_id and user_id != "default":
+        profile_overlay = render_profile_overlay(load_user_profile(user_id))
+        if show:
+            show_profile = load_show_profile(user_id, show)
+
+    _intent_box: dict = {
+        "v": IntentResult(
+            task="kb", task_confidence=0.0,
+            emotion="neutral", emotion_confidence=0.0,
+            user_state="无明显状态",
+        ),
+    }
     def _do_intent():
-        _intent_box["v"] = llm_route_intent(query, video_time)
+        _intent_box["v"] = llm_route_intent(
+            query, video_time, video_label=video_label, chat_history=chat_history,
+        )
     _intent_th = threading.Thread(target=_do_intent, daemon=True)
     _intent_th.start()
 
     bm25_hits = index.search(query, top_k=5) if index else []
-    # BM25 top_score 用于意图分流 (KB_SCORE_THRESHOLD=2.0) + reasoning 展示
+    # BM25 top_score 仅用于 reasoning 展示 + knowledge 兜底判空
     top_score = float(bm25_hits[0][1]) if bm25_hits else 0.0
 
-    # 向量检索 (和意图理解并行; 总是全集检索, 意图结果后决定用不用)
+    # 向量检索 (和意图理解并行; knowledge 才会进 prompt, 但先算着, 意图回来再决定用不用)
     try:
         from src.agent.retriever import (
             build_or_load_embeddings, embed_query, vector_search, rrf_fuse,
@@ -559,21 +545,17 @@ def companion_chat(
         query_emb = embed_query(query)
         events_vec_hits = vector_search(query_emb, events_emb, top_k=5)
         events_fused = rrf_fuse(bm25_hits, events_vec_hits, top_k=5)
-        segs_vec_hits = vector_search(query_emb, segs_emb, top_k=5)
-        matched_segments = [
-            segments[i] for i, _ in segs_vec_hits[:5] if i < len(segments)
-        ]
     except Exception as e:
         print(f"[retriever] 向量检索失败, 回退纯 BM25: {e}", flush=True)
         events_fused = bm25_hits  # fallback
 
     # 等意图理解完成 (和检索并行了, 通常同时完成, join 几乎不等)
     _intent_th.join()
-    intent_type = _intent_box["v"]
-
-    # 指代类 (deictic): 清空向量 segments, 只用时间邻域 (避免全集其他时间相同词干扰)
-    if intent_type == "deictic" and video_time is not None and video_time >= 0:
-        matched_segments = []
+    intent_result: IntentResult = _intent_box["v"]
+    # safe_*: 低置信度保守回退 (task→chitchat, emotion→neutral)
+    task = intent_result.safe_task
+    emotion = intent_result.safe_emotion
+    user_state = intent_result.user_state
 
     retrieved = [
         {"event_id": events[i].get("event_id", ""),
@@ -585,49 +567,93 @@ def companion_chat(
 
     t_retrieval = time.time()  # 混合检索完成 (打点)
 
-    # 3. 意图分流 (语义路由 intent_type + BM25 阈值)
-    if intent_type == "meta" and video_summary:
-        intent = "kb_meta"
-        selected = []  # 元问题不用 events, 只用 video_summary
-    elif intent_type == "chitchat":
-        intent = "chitchat"
-    else:
-        intent = _classify_intent(top_score)  # kb/refuse (BM25 阈值)
+    # 3. 任务纠偏: 某些任务在缺数据时退化到更诚实的任务
+    # meta 没梗概 / knowledge 没检索到 → refuse (不编造)
+    if task == "meta" and not video_summary:
+        task = "refuse"
+    if task == "knowledge" and not selected:
+        task = "refuse"
 
-    # 联网搜索时, refuse → web_search (前端推理卡片区分展示 "联网搜索了")
-    if web_search and intent == "refuse":
-        intent = "web_search"
+    # 4. 上下文 (按 task 白名单最小化注入)
+    # video_label 已在理解模块调用前算好
 
-    # 4. 按意图处理 (llm 优先 streaming, 否则 QwenTextClient fallback)
-    long_term = search_relevant_memories(user_id, query, top_k=3)
-    # 当前视频身份 (作品 · 季 · 集), 注入 prompt 让 Alleys 知道用户在看什么
-    video_label = " · ".join(p for p in video_dir.split("/") if p)
+    # 当前画面派生 (无状态): focus_character / current_event / current_keyframe
+    watching = derive_watching_context(video_time, events, scenes, segments)
 
-    # 当前画面上下文 (时间戳 + 邻域对白), 让 Alleys 知道用户此刻看到什么
-    # 总是注入, LLM 自己判断 query 是否和当前画面相关 (用户问的不一定和画面有关)
+    # video_context 只在 deictic 时算 (邻域对白). 其他任务不注入画面上下文.
     video_context = ""
-    if video_time is not None and video_time >= 0 and segments:
+    if task == "deictic" and video_time is not None and video_time >= 0 and segments:
         nearby = _retrieve_segments_by_time(segments, float(video_time), window=15)
         if nearby:
             lines = "\n".join(
                 f"[{float(s.get('begin_time') or 0):.0f}s] {s.get('speaker_pred','?')}: {s.get('text','')}"
                 for s in nearby
             )
-            video_context = f"## 用户当前画面 (约 {float(video_time):.0f}s, 附近对白)\n{lines}"
+            video_context = f"约 {float(video_time):.0f}s, 附近对白:\n{lines}"
 
-    # 语义相关的对白 (向量检索 segments 命中, 解决 BM25 漏的同义/改述召回)
-    if matched_segments:
-        seg_lines = "\n".join(
-            f"[{float(s.get('begin_time') or 0):.0f}s] {s.get('speaker_pred','?')}: {s.get('text','')}"
-            for s in matched_segments
-        )
-        video_context += f"\n\n## 语义相关的对白 (检索命中)\n{seg_lines}"
+    # 长期记忆只在 knowledge/companion 时取 (其他任务不注入, 避免寒暄时被记忆带偏)
+    long_term: list[str] = []
+    if task in ("knowledge", "companion"):
+        try:
+            long_term = search_relevant_memories(user_id, query, top_k=1)
+        except Exception as e:
+            print(f"[mem0] search 失败: {e}", flush=True)
 
-    if intent in ("kb", "kb_meta"):
-        answer = _llm_kb_answer(llm, query, selected, video_summary, arc_updates,
-                                chat_history, long_term, video_label, video_context)
+    # web_search 分支: refuse + 用户开了联网 → Tavily
+    web = bool(web_search) and task == "refuse"
+    web_results: list[dict] = []
+    web_results_text = ""
+    if web:
+        try:
+            from src.agent.web_search import tavily_search
+            results = tavily_search(query, max_results=5)
+        except Exception as e:
+            print(f"[web_search] Tavily 失败, 回退拒答: {e}", flush=True)
+            results = []
+        if results:
+            web_results = results
+            web_results_text = "\n\n".join(
+                f"- [{i+1}] {r['title']}\n  {r['url']}\n  {r['content']}"
+                for i, r in enumerate(results)
+            )
+        else:
+            web = False  # 没搜到, 走普通 refuse
+
+    sections = build_context_sections(
+        task,
+        video_label=video_label,
+        watching=watching,
+        video_context=video_context,
+        long_term=long_term,
+        selected=selected,
+        video_summary=video_summary,
+        chat_history=chat_history,
+        web_results_text=web_results_text,
+        show_profile=show_profile,
+    )
+
+    answer = _llm_answer(
+        llm, task, query, sections,
+        emotion=emotion, user_state=user_state, web=web,
+        system_overlay=profile_overlay,
+    )
+
+    # 5. keyframes / evidence (按 task)
+    evidence: list[dict] = []
+    if task == "deictic":
+        cur_event = watching.get("current_event")
+        keyframes = _events_to_keyframes([cur_event], scenes) if cur_event else []
+        if not keyframes and watching.get("current_keyframe"):
+            keyframes = [watching["current_keyframe"]]
+        if cur_event:
+            for ev in cur_event.get("evidence", []) or []:
+                evidence.append({
+                    "event_id": cur_event.get("event_id"),
+                    "description": ev.get("description", ""),
+                    "scene_ids": ev.get("scene_ids", []),
+                })
+    elif task == "knowledge":
         keyframes = _events_to_keyframes(selected, scenes)
-        evidence = []
         for e in selected:
             for ev in e.get("evidence", []) or []:
                 evidence.append({
@@ -635,29 +661,27 @@ def companion_chat(
                     "description": ev.get("description", ""),
                     "scene_ids": ev.get("scene_ids", []),
                 })
-        # 存长期记忆
-        _async_add_memory(user_id, query, answer, video_dir)
-    elif intent == "chitchat":
-        answer = _llm_chitchat(llm, query, chat_history, long_term, video_label, video_context)
+    else:
         keyframes = []
-        evidence = []
+
+    # 6. 记忆写入策略
+    # chitchat/companion/knowledge/web → 写; refuse (非 web) → 不写 (避免误导未来检索)
+    if task in ("chitchat", "companion", "knowledge") or web:
         _async_add_memory(user_id, query, answer, video_dir)
-    else:  # refuse
-        keyframes = []
-        evidence = []
-        if web_search:
-            # 联网模式: Tavily 真实搜索 → 结果塞 prompt → LLM 基于 results 回答
-            answer, web_results = _llm_web_search(
-                llm, query, video_label, chat_history, long_term, video_context
-            )
-            _async_add_memory(user_id, query, answer, video_dir)
-        else:
-            answer = _llm_refuse(llm, query, chat_history, long_term, video_label, video_context)
-            # 拒答不存记忆 (避免误导未来检索)
+
+    # 7. L1/L2 画像: 非 refuse 对话累计计数, 达阈值异步增量更新 (不阻塞回复)
+    if user_id and user_id != "default" and task != "refuse":
+        _async_maybe_update_profile(user_id, chat_history, query, answer, show=show)
 
     t_end = time.time()
     reasoning = {
-        "intent": intent,
+        "intent": task,
+        "intent_raw": intent_result.task,
+        "task_confidence": round(intent_result.task_confidence, 2),
+        "emotion": emotion,
+        "emotion_raw": intent_result.emotion,
+        "emotion_confidence": round(intent_result.emotion_confidence, 2),
+        "user_state": user_state,
         "query": query,
         "top_score": round(top_score, 3),
         "threshold": KB_SCORE_THRESHOLD,
@@ -665,6 +689,11 @@ def companion_chat(
         "selected": [{"event_id": e.get("event_id"), "title": e.get("title"),
                       "participants": e.get("participants", []),
                       "summary": e.get("summary", "")} for e in selected],
+        "watching": {
+            "focus_character": watching.get("focus_character"),
+            "current_event_id": (watching.get("current_event") or {}).get("event_id"),
+            "current_scene_id": watching.get("current_scene_id"),
+        },
         "evidence": evidence,
         "web_results": web_results,
         "timings": {
@@ -674,7 +703,9 @@ def companion_chat(
         },
     }
     # 全链路打点 (后端)
-    print(f"[companion] query={query!r} intent={intent} top_score={round(top_score, 2)} | "
+    print(f"[companion] query={query!r} task={task}(raw={intent_result.task},c={intent_result.task_confidence:.2f}) "
+          f"emo={emotion}(raw={intent_result.emotion},c={intent_result.emotion_confidence:.2f}) "
+          f"top_score={round(top_score, 2)} focus={watching.get('focus_character')} | "
           f"retrieval={reasoning['timings']['retrieval_ms']}ms | "
           f"llm={reasoning['timings']['llm_ms']}ms | total={reasoning['timings']['total_ms']}ms",
           flush=True)

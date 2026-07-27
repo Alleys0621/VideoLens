@@ -29,6 +29,62 @@ function resolveVideoFile(videoDir: string): string | null {
   return null;
 }
 
+/**
+ * 把 Node 的 fs 读流转成 Web ReadableStream 用于 Response body.
+ *
+ * 关键: 客户端 seek/断开会让 Web stream 被 cancel, 此时如果 fs stream 还在推数据,
+ * 写到一个已关闭的 controller 会抛 "Controller is already closed" (uncaughtException).
+ * 这里手动桥接 + 在 cancel/error 时 destroy fs stream, 并吞掉 controller 已关闭后的写入错误.
+ */
+function nodeStreamToWebResponseStream(
+  nodeStream: Readable,
+  status: number,
+  headers: Record<string, string>,
+): Response {
+  const webStream = new ReadableStream<Uint8Array>({
+    start(controller) {
+      nodeStream.on("data", (chunk: Buffer) => {
+        const desired = controller.desiredSize;
+        if (desired !== null && desired <= 0) {
+          // 简易背压: 暂停, 等下游拉取
+          nodeStream.pause();
+        }
+        try {
+          controller.enqueue(chunk);
+        } catch {
+          // controller 已关闭 (客户端断开), 忽略
+        }
+        const after = controller.desiredSize;
+        if (nodeStream.isPaused() && after !== null && after > 0) {
+          nodeStream.resume();
+        }
+      });
+      nodeStream.on("end", () => {
+        try {
+          controller.close();
+        } catch {
+          // 已关闭
+        }
+      });
+      nodeStream.on("error", (err) => {
+        console.error("[video/stream] fs error:", err);
+        try {
+          controller.error(err);
+        } catch {
+          // 已关闭
+        }
+        nodeStream.destroy();
+      });
+    },
+    cancel() {
+      // 客户端取消 (seek/关页面) — 立刻停掉 fs 读流, 避免后续 enqueue 到已关闭 controller
+      nodeStream.destroy();
+    },
+  });
+
+  return new Response(webStream, { status, headers });
+}
+
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ path: string[] }> },
@@ -56,31 +112,21 @@ export async function GET(
       const chunkSize = end - start + 1;
 
       const nodeStream = fs.createReadStream(filePath, { start, end });
-      const webStream = Readable.toWeb(
-        nodeStream,
-      ) as ReadableStream<Uint8Array>;
 
-      return new Response(webStream, {
-        status: 206,
-        headers: {
-          "Content-Range": `bytes ${start}-${end}/${fileSize}`,
-          "Accept-Ranges": "bytes",
-          "Content-Length": chunkSize.toString(),
-          "Content-Type": contentType,
-        },
+      return nodeStreamToWebResponseStream(nodeStream, 206, {
+        "Content-Range": `bytes ${start}-${end}/${fileSize}`,
+        "Accept-Ranges": "bytes",
+        "Content-Length": chunkSize.toString(),
+        "Content-Type": contentType,
       });
     }
   }
 
   // 无 Range, 返回完整文件
   const nodeStream = fs.createReadStream(filePath);
-  const webStream = Readable.toWeb(nodeStream) as ReadableStream<Uint8Array>;
-  return new Response(webStream, {
-    status: 200,
-    headers: {
-      "Content-Length": fileSize.toString(),
-      "Content-Type": contentType,
-      "Accept-Ranges": "bytes",
-    },
+  return nodeStreamToWebResponseStream(nodeStream, 200, {
+    "Content-Length": fileSize.toString(),
+    "Content-Type": contentType,
+    "Accept-Ranges": "bytes",
   });
 }

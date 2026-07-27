@@ -1,5 +1,3 @@
-import { validate } from "uuid";
-import { getApiKey } from "@/lib/api-key";
 import { Thread } from "@langchain/langgraph-sdk";
 import { useQueryState } from "nuqs";
 import {
@@ -12,10 +10,28 @@ import {
   Dispatch,
   SetStateAction,
 } from "react";
-import { createClient } from "./client";
-import { useAbsoluteApiUrl } from "@/hooks/useAbsoluteApiUrl";
 import { toast } from "sonner";
 import { useAuth } from "./Auth";
+
+/**
+ * Thread 元数据 provider (Postgres 后端).
+ *
+ * 数据流:
+ *   - getThreads: GET /api/threads (查 PG threads 表)
+ *   - syncThread: POST /api/threads/sync (在 SDK onThreadId 时调用, 把新 thread 写到 PG)
+ *   - deleteThread: DELETE /api/threads/:id (PG + LangGraph state 双删)
+ *   - updateThreadMetadata: PATCH /api/threads/:id (custom_title / pinned)
+ *
+ * thread state (messages) 不在这里管, 由 useStream 在切换 thread 时拉取.
+ */
+
+interface ThreadLike {
+  thread_id: string;
+  created_at: string;
+  updated_at: string;
+  metadata: Record<string, unknown> | null;
+  values: unknown;
+}
 
 interface ThreadContextType {
   getThreads: () => Promise<Thread[]>;
@@ -23,9 +39,11 @@ interface ThreadContextType {
   setThreads: Dispatch<SetStateAction<Thread[]>>;
   threadsLoading: boolean;
   setThreadsLoading: Dispatch<SetStateAction<boolean>>;
+  /** 把 LangGraph 创建的 thread 同步到 PG (StreamProvider 在 onThreadId 时调) */
+  syncThread: (threadId: string) => Promise<void>;
   /** 删除 thread：乐观从本地移除，失败回滚 + toast */
   deleteThread: (threadId: string) => Promise<void>;
-  /** 合并式更新 thread.metadata：乐观更新本地，失败回滚 + toast。返回更新后的 thread 或 null */
+  /** 合并式更新 thread.metadata：乐观更新本地，失败回滚 + toast */
   updateThreadMetadata: (
     threadId: string,
     metadata: Record<string, unknown>,
@@ -34,60 +52,40 @@ interface ThreadContextType {
 
 const ThreadContext = createContext<ThreadContextType | undefined>(undefined);
 
-function getThreadSearchMetadata(
-  assistantId: string,
-): { graph_id: string } | { assistant_id: string } {
-  if (validate(assistantId)) {
-    return { assistant_id: assistantId };
-  } else {
-    return { graph_id: assistantId };
-  }
+// /api/threads 返回的形状 (兼容 LangGraph SDK Thread 字段)
+interface ApiThread {
+  thread_id: string;
+  created_at: string;
+  updated_at: string;
+  metadata: Record<string, unknown> | null;
+  values: unknown;
+}
+
+function toSdkThread(t: ApiThread): Thread {
+  // 强制转成 SDK Thread 类型 (history/index.tsx 等组件按这个形状访问)
+  return t as unknown as Thread;
 }
 
 export function ThreadProvider({ children }: { children: ReactNode }) {
-  const envApiUrl: string | undefined = process.env.NEXT_PUBLIC_API_URL;
-  const envAssistantId: string | undefined =
-    process.env.NEXT_PUBLIC_ASSISTANT_ID;
-  const envAuthScheme: string | undefined = process.env.NEXT_PUBLIC_AUTH_SCHEME;
-
-  const [apiUrl] = useQueryState("apiUrl", {
-    defaultValue: envApiUrl || "",
-  });
-  const [assistantId] = useQueryState("assistantId");
-  const [authScheme] = useQueryState("authScheme", {
-    defaultValue: envAuthScheme || "",
-  });
   const [threads, setThreads] = useState<Thread[]>([]);
   const [threadsLoading, setThreadsLoading] = useState(false);
-
-  // 当前登录用户 — thread 按 user_id 隔离
   const { user } = useAuth();
 
-  // 相对路径 (/api) 转绝对 — langgraph SDK new URL() 不支持相对路径
-  const absoluteApiUrl = useAbsoluteApiUrl(apiUrl);
-
   const getThreads = useCallback(async (): Promise<Thread[]> => {
-    const resolvedAssistantId = assistantId || envAssistantId;
-    if (!absoluteApiUrl || !resolvedAssistantId) return [];
-    // 未登录不拉历史 (避免拉到匿名 thread 或越权)
     if (!user) return [];
-    const client = createClient(
-      absoluteApiUrl,
-      getApiKey() ?? undefined,
-      authScheme || undefined,
-    );
-
-    const threads = await client.threads.search({
-      metadata: {
-        ...getThreadSearchMetadata(resolvedAssistantId),
-        // 关键: 按 user_id 过滤, SDK 文档 "Exact match for each key/value" → AND 关系
-        user_id: user.id,
-      },
-      limit: 100,
-    });
-
-    return threads;
-  }, [absoluteApiUrl, assistantId, authScheme, envAssistantId, user]);
+    try {
+      const res = await fetch("/api/chat-threads", { cache: "no-store" });
+      if (!res.ok) {
+        console.error("[threads] GET failed:", res.status);
+        return [];
+      }
+      const data = (await res.json()) as { threads: ApiThread[] };
+      return data.threads.map(toSdkThread);
+    } catch (e) {
+      console.error("[threads] GET error:", e);
+      return [];
+    }
+  }, [user]);
 
   // user 变化时 (登录/登出/切换账号) 自动重拉 threads
   useEffect(() => {
@@ -103,27 +101,55 @@ export function ThreadProvider({ children }: { children: ReactNode }) {
       .finally(() => setThreadsLoading(false));
   }, [user, getThreads]);
 
+  const syncThread = useCallback(
+    async (threadId: string): Promise<void> => {
+      try {
+        const res = await fetch("/api/chat-threads/sync", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ thread_id: threadId }),
+        });
+        if (!res.ok) {
+          console.error("[threads] sync failed:", res.status);
+          return;
+        }
+        const data = (await res.json()) as { thread: ApiThread; ok: boolean };
+        if (data.thread) {
+          // 合并到本地列表 (去重)
+          setThreads((prev) => {
+            const exists = prev.find((t) => t.thread_id === threadId);
+            if (exists) return prev;
+            return [toSdkThread(data.thread), ...prev];
+          });
+        }
+      } catch (e) {
+        console.error("[threads] sync error:", e);
+      }
+    },
+    [],
+  );
+
   // 删除 thread：乐观从本地移除，失败回滚 + toast
   const deleteThread = useCallback(
     async (threadId: string): Promise<void> => {
-      if (!absoluteApiUrl) return;
-      const client = createClient(
-        absoluteApiUrl,
-        getApiKey() ?? undefined,
-        authScheme || undefined,
-      );
+      const snapshot = threads;
       setThreads((prev) => prev.filter((t) => t.thread_id !== threadId));
       try {
-        await client.threads.delete(threadId);
+        const res = await fetch(`/api/chat-threads/${encodeURIComponent(threadId)}`, {
+          method: "DELETE",
+        });
+        if (!res.ok) {
+          const data = (await res.json().catch(() => ({}))) as { error?: string };
+          throw new Error(data.error || `HTTP ${res.status}`);
+        }
       } catch (e) {
-        console.error("deleteThread failed:", e);
+        console.error("[threads] delete failed:", e);
         toast.error("删除对话失败，已恢复");
-        // 回滚：重拉一次列表
-        getThreads().then(setThreads).catch(console.error);
+        setThreads(snapshot); // 回滚
         throw e;
       }
     },
-    [absoluteApiUrl, authScheme, getThreads],
+    [threads],
   );
 
   // 合并式更新 metadata：乐观更新本地，失败回滚 + toast
@@ -132,42 +158,46 @@ export function ThreadProvider({ children }: { children: ReactNode }) {
       threadId: string,
       metadata: Record<string, unknown>,
     ): Promise<Thread | null> => {
-      if (!absoluteApiUrl) return null;
-      const client = createClient(
-        absoluteApiUrl,
-        getApiKey() ?? undefined,
-        authScheme || undefined,
-      );
-      let snapshot: Thread | undefined;
+      const snapshot = threads.find((t) => t.thread_id === threadId);
+      // 乐观更新
       setThreads((prev) =>
-        prev.map((t) => {
-          if (t.thread_id === threadId) {
-            snapshot = t;
-            return { ...t, metadata: { ...t.metadata, ...metadata } };
-          }
-          return t;
-        }),
+        prev.map((t) =>
+          t.thread_id === threadId
+            ? { ...t, metadata: { ...(t.metadata || {}), ...metadata } }
+            : t,
+        ),
       );
       try {
-        const updated = await client.threads.update(threadId, {
-          metadata: { ...snapshot?.metadata, ...metadata },
+        const res = await fetch(`/api/chat-threads/${encodeURIComponent(threadId)}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(metadata),
         });
-        setThreads((prev) =>
-          prev.map((t) => (t.thread_id === threadId ? updated : t)),
-        );
-        return updated;
+        if (!res.ok) {
+          const data = (await res.json().catch(() => ({}))) as { error?: string };
+          throw new Error(data.error || `HTTP ${res.status}`);
+        }
+        const data = (await res.json()) as { thread: ApiThread; ok: boolean };
+        if (data.thread) {
+          const updated = toSdkThread(data.thread);
+          setThreads((prev) =>
+            prev.map((t) => (t.thread_id === threadId ? updated : t)),
+          );
+          return updated;
+        }
+        return null;
       } catch (e) {
-        console.error("updateThreadMetadata failed:", e);
+        console.error("[threads] update failed:", e);
         toast.error("更新对话失败，已恢复");
         if (snapshot) {
           setThreads((prev) =>
-            prev.map((t) => (t.thread_id === threadId ? snapshot! : t)),
+            prev.map((t) => (t.thread_id === threadId ? snapshot : t)),
           );
         }
         throw e;
       }
     },
-    [absoluteApiUrl, authScheme],
+    [threads],
   );
 
   const value = {
@@ -176,6 +206,7 @@ export function ThreadProvider({ children }: { children: ReactNode }) {
     setThreads,
     threadsLoading,
     setThreadsLoading,
+    syncThread,
     deleteThread,
     updateThreadMetadata,
   };
@@ -192,3 +223,6 @@ export function useThreads() {
   }
   return context;
 }
+
+// 防止 nuqs 被误删 import (保留兼容性, 实际未使用)
+void useQueryState;

@@ -6,9 +6,52 @@
 
 ## 项目概述
 
-AlleysVid 是一个 AI 陪看智能体。用户选一集视频，Alleys（AI 搭子）陪你一起看，边看边聊剧情。支持流式语音对话（ASR 说话 → AI 回答 → TTS 播报）、用户系统、播放进度记忆。
+AlleysVid 是一个 AI 陪看智能体。用户选一集视频，Alleys（AI 搭子）陪你一起看，边看边聊剧情。支持流式语音对话（ASR 说话 → AI 回答 → TTS 播报）、用户系统、播放进度记忆、分层用户画像、中文会话标题。
 
-技术栈：LangGraph + Qwen + Next.js + DashScope（ASR/TTS）。
+技术栈：LangGraph + Qwen + Next.js + DashScope（ASR/TTS）+ Postgres。
+
+## 架构与核心设计
+
+### 用户理解层
+
+- `src/agent/intent_router.py`
+  - 强理解：`llm_route_intent()` 调用 **qwen-max**，输出 task / task_confidence / emotion / emotion_confidence / user_state。
+  - 轻量路由：`route_intent()` 用 embedding 余弦匹配预定义意图目录，用于 deictic / meta / chitchat 快速分流，零额外 LLM 调用。
+  - 保守回退：task_confidence < 0.6 时 `safe_task = chitchat`；emotion_confidence < 0.6 时 `safe_emotion = neutral`。
+
+### 上下文白名单（Context Budget）
+
+- `src/agent/context_builder.py`
+  - 原则：**Context is a privilege, not a default.**
+  - `CONTEXT_BUDGET` 按 task 决定哪些上下文段能进入 prompt。
+  - `derive_watching_context()` 从当前播放时间派生轻量画面上下文（焦点角色、当前事件、当前 keyframe）。
+  - 闲聊（chitchat）不给剧情/检索/记忆；问剧情（knowledge）才给检索事件和记忆。
+
+### 分层画像
+
+- L1 用户画像：`src/agent/profile_store.py` + `profile_updater.py::maybe_update_user_profile()`
+  - 表 `user_profiles`：interaction_style / spoiler_tolerance / humor_level / confidence。
+  - 每累计 5 条非 refuse 对话触发一次 `qwen-plus` 增量更新。
+  - `render_profile_overlay()` 只在 confidence ≥ 0.5 时注入 system prompt。
+- L2 作品画像：`profile_updater.py::maybe_update_show_profile()`
+  - 表 `show_profiles`：favorite_characters / character_opinions / confidence。
+  - 仅注入 companion / knowledge 分支。
+
+### 会话标题
+
+- `src/agent/thread_title.py`
+  - 首轮用户消息后异步生成 4–12 字中文标题，写入 `threads.custom_title`。
+  - 使用 `qwen-turbo`，失败 fallback 截断首句。
+
+### Checkpointer
+
+- `src/server/checkpointer.py`：LangGraph 使用 `AsyncPostgresSaver`，对话 state 持久化到 Postgres。
+- 首次连接时自动建 checkpoints / checkpoint_writes / checkpoint_blobs 表。
+
+### 前端代理
+
+- LangGraph SDK 请求走 `frontend/src/app/api/[..._path]/route.ts` 转发到后端 `:2024`。
+- 自定义 thread 元数据端点放在 `frontend/src/app/api/chat-threads/*`，避免与 SDK 代理路由冲突。
 
 ## 启动
 
@@ -51,11 +94,16 @@ cd frontend && node scripts/test-thread-isolation.mjs
 - **包前缀**：`src.`（如 `from src.core.config import get_config`）
 - **中文输出**：所有面向用户的字符串、日志、评估报告都使用中文
 - **改前端代码后必须验证编译**：`npx tsc --noEmit`
+- **改后端 prompt / 人设后必须验证一条真实对话**：确认没有机器人味/幻觉
 - **JSON 输出**：统一用 `src/core/helpers/json_utils.py::save_json`
 - **Windows 中文路径**：`cv2.imwrite` 对中文路径失败，用 `_imwrite_unicode`
 - **DASHSCOPE_API_KEY**：系统环境变量，不写入 `.env`
 - **讯飞凭证**（`XFYUN_*`）：放在 `.env`
 - **声纹组**：按 `data/videos/` 下作品名匹配 `pipeline.yaml` 的 `voiceprint_groups`
+- **Context Budget**：新增 context 段必须先问“哪个 task 需要它”，不要默认注入
+- **画像更新**：L1/L2 画像不每轮写，用 `PROFILE_UPDATE_THRESHOLD` 控制频率，避免 LLM 调用爆炸
+- **Thread 标题**：异步生成，禁止阻塞流式回复
+- **人设边界**：Alleys 不能假装看到画面；没给当前画面 context 时不描述表情/动作/眼神
 
 ## 数据布局（已 gitignore）
 
@@ -65,6 +113,14 @@ data/
 ├── output/{video_dir}/            # 流水线产物 (audio.json / visual.json / stage3_dryrun.json ...)
 └── output/_global/                # 跨集全局产物 (characters / global_arcs / character_profiles)
 ```
+
+Postgres 业务表（由 `db/init.sql` + migrations 管理）：
+- `users`：用户账号
+- `user_profiles`：L1 跨会话画像（聊法 / 剧透 / 接梗）
+- `show_profiles`：L2 作品级画像（喜欢角色 / 角色评价）
+- `playback_progress`：用户 × 视频播放进度
+- `threads`：会话元数据（含 `custom_title` 中文标题）
+- `checkpoints` / `checkpoint_writes` / `checkpoint_blobs`：LangGraph state，由 `AsyncPostgresSaver.setup()` 自动创建
 
 ## 已搁置的实验路线
 

@@ -181,11 +181,14 @@ def _warmup_embeddings():
 def companion_node(state: State, config: RunnableConfig) -> dict:
     """陪看节点: 取最后一条 user message → companion_chat → 返回 AI message."""
     import os
+    import threading
     from src.core.config import get_config
 
     messages = state["messages"]
     last = messages[-1]
     _, query = _extract_msg(last)
+    # 首条用户消息 → 异步生成中文标题写回 threads.custom_title
+    first_turn = len(messages) == 1
 
     # video_dir 多来源兼容: configurable (前端 config.configurable 透传) / state / state.context
     configurable = config.get("configurable", {}) if config else {}
@@ -245,6 +248,22 @@ def companion_node(state: State, config: RunnableConfig) -> dict:
             "video_dir": video_dir,
         },
     )
+
+    # 首轮对话: 异步起一个中文标题 (不阻塞流式回复)
+    if first_turn:
+        configurable = config.get("configurable", {}) if config else {}
+        thread_id = configurable.get("thread_id")
+        if thread_id:
+            try:
+                from src.agent.thread_title import maybe_set_thread_title
+                threading.Thread(
+                    target=maybe_set_thread_title,
+                    args=(thread_id, query),
+                    daemon=True,
+                ).start()
+            except Exception as e:
+                print(f"[graph] title spawn failed: {e}", flush=True)
+
     return {"messages": [ai_msg]}
 
 

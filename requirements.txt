@@ -28,6 +28,11 @@ langgraph-api>=0.2.0
 langgraph-cli>=0.1.0
 langchain-core>=0.3.0
 langchain-openai>=0.2.0
+# SQLite checkpointer: 让 thread state (messages/checkpoints) 在 langgraph dev 重启后保留
+langgraph-checkpoint-sqlite>=3.0.0
+# Postgres checkpointer: 生产环境持久化 (用户数据/对话历史/播放进度)
+langgraph-checkpoint-postgres>=3.0.0
+psycopg[binary]>=3.1.0
 
 # --- DashScope SDK (ASR + TTS + LLM) ---
 dashscope>=1.25.11

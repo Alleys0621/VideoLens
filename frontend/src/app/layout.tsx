@@ -47,7 +47,10 @@ export default function RootLayout({
   return (
     <html lang="zh-CN">
       <head>
-        {/* PWA: iPad Safari 「添加到主屏幕」配置 */}
+        {/* PWA: iOS Safari 「添加到主屏幕」配置 */}
+        {/* mobile-web-app-capable 是当前规范; apple-mobile-web-app-capable 是 iOS 旧版别名,
+            两者并存覆盖更多平台, 并消除 Chrome 对仅用 apple-* 变体的 deprecation 警告。 */}
+        <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta
           name="apple-mobile-web-app-status-bar-style"
@@ -58,7 +61,13 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/alleysvid-logo.png" />
         <link rel="manifest" href="/manifest.json" />
       </head>
-      <body className={`${inter.variable} ${jetbrainsMono.variable} ${exo2.variable}`}>
+      {/* suppressHydrationWarning: 屏蔽第三方浏览器扩展 (Lenovo AI Translate 等)
+          在 body 上注入 ai-translate-* 属性导致的 SSR/CSR 不匹配警告,
+          这是 Next.js 官方推荐的对外部 DOM 改动的处理方式。 */}
+      <body
+        className={`${inter.variable} ${jetbrainsMono.variable} ${exo2.variable}`}
+        suppressHydrationWarning
+      >
         <NuqsAdapter>
           <AuthProvider>
             <TTSProvider>{children}</TTSProvider>

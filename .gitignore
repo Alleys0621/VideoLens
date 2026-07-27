@@ -40,6 +40,9 @@ data/output/_batch_reports/
 .langgraph_api/.langgraph_retry_counter.pckl
 .langgraph_api/store.vectors.pckl
 .langgraph_api/store.pckl
+# 旧 SQLite checkpointer (已切到 Postgres, 保留以防回退)
+.langgraph_api/checkpoints.sqlite
+.langgraph_api/checkpoints.sqlite-*
 
 # Experiments data
 experiments/_archive/

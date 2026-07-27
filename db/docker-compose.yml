@@ -1,0 +1,34 @@
+# VideoLens Postgres
+# 启动: docker compose -f db/docker-compose.yml up -d
+# 停止: docker compose -f db/docker-compose.yml down
+# 清库: docker compose -f db/docker-compose.yml down -v   (-v 删数据卷, 慎用)
+#
+# 首次启动会自动执行 db/init.sql 建表.
+# 数据持久化到命名卷 pgdata, 重启 docker compose 不丢, 只有 down -v 才删.
+
+services:
+  postgres:
+    image: postgres:17-bookworm
+    container_name: videolens-postgres
+    restart: unless-stopped
+    ports:
+      - "25432:5432"
+    environment:
+      POSTGRES_DB: videolens
+      POSTGRES_USER: videolens
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-videolens_dev}
+      # 显式指定 UTF8 + C collation, 避免 Windows 区域设置污染
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
+      TZ: Asia/Shanghai
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U videolens -d videolens"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  pgdata:
+    name: videolens-pgdata

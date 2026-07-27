@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
-import { getServerClient } from "@/lib/langgraph-client";
+import { query } from "@/lib/db";
 
 export const runtime = "nodejs";
 
 /**
  * 用户视频播放进度持久化.
  *
- * 存储位置: LangGraph Store, namespace = ["playback", user_id], key = video_dir
- * value: { position, duration, completed, updated_at }
+ * 存储位置: Postgres `playback_progress` 表
+ *   (user_id, video_dir) 联合主键
+ *   position / duration / completed / updated_at
  *
  * GET /api/playback?video_dir=xxx
  *   → { position, duration, completed, updated_at } 或 { position: null }
@@ -20,17 +21,11 @@ export const runtime = "nodejs";
  * user_id 从 JWT 拿 (HttpOnly cookie), 不信任前端传的 user_id.
  */
 
-interface PlaybackRecord {
+interface PlaybackRow {
   position: number;
   duration: number | null;
   completed: boolean;
   updated_at: string;
-  // 索引签名: 满足 putItem 的 Record<string, unknown> 类型
-  [key: string]: unknown;
-}
-
-function playbackNamespace(userId: string): string[] {
-  return ["playback", userId];
 }
 
 export async function GET(req: NextRequest) {
@@ -44,16 +39,24 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "缺 video_dir 参数" }, { status: 400 });
   }
 
-  const client = getServerClient();
   try {
-    const item = await client.store.getItem(playbackNamespace(user.id), videoDir);
-    if (!item) {
+    const { rows } = await query<PlaybackRow>(
+      `SELECT position, duration, completed, updated_at
+       FROM playback_progress
+       WHERE user_id = $1 AND video_dir = $2`,
+      [user.id, videoDir],
+    );
+    if (rows.length === 0) {
       return NextResponse.json({ position: null });
     }
-    const rec = item.value as PlaybackRecord;
+    const rec = rows[0];
     // 完成的视频从头开始
     if (rec.completed) {
-      return NextResponse.json({ position: 0, duration: rec.duration, completed: true });
+      return NextResponse.json({
+        position: 0,
+        duration: rec.duration,
+        completed: true,
+      });
     }
     return NextResponse.json({
       position: rec.position,
@@ -98,17 +101,22 @@ export async function POST(req: NextRequest) {
     completed = true;
   }
 
-  const rec: PlaybackRecord = {
-    // 完成的视频 position 归零, 下次从头开始
-    position: completed ? 0 : position,
-    duration,
-    completed,
-    updated_at: new Date().toISOString(),
-  };
+  // 完成的视频 position 归零, 下次从头开始
+  const finalPosition = completed ? 0 : position;
 
-  const client = getServerClient();
   try {
-    await client.store.putItem(playbackNamespace(user.id), videoDir, rec);
+    // UPSERT (user_id, video_dir) 联合主键
+    await query(
+      `INSERT INTO playback_progress (user_id, video_dir, position, duration, completed, updated_at)
+       VALUES ($1, $2, $3, $4, $5, now())
+       ON CONFLICT (user_id, video_dir)
+       DO UPDATE SET
+         position   = EXCLUDED.position,
+         duration   = EXCLUDED.duration,
+         completed  = EXCLUDED.completed,
+         updated_at = now()`,
+      [user.id, videoDir, finalPosition, duration, completed],
+    );
     return NextResponse.json({ ok: true, completed });
   } catch (e) {
     console.error("[playback/POST] failed:", e);

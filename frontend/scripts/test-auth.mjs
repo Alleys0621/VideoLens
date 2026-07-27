@@ -21,7 +21,12 @@
  * 测试间用唯一手机号隔离, 不污染真实用户数据.
  */
 
+import pg from "pg";
+
+const { Client } = pg;
+
 const BASE = process.env.BASE_URL || "http://localhost:3000";
+const PG_URL = process.env.POSTGRES_URL || "postgresql://videolens:videolens_dev@127.0.0.1:25432/videolens";
 
 // 用时间戳生成合法手机号 (138 + 8 位) — 跑多次也不冲突
 const ts = Date.now().toString().slice(-8);
@@ -163,7 +168,8 @@ async function main() {
   {
     cookie = ""; // 清空 cookie
     const r = await call("/api/auth/me");
-    assert(r.status === 401, `status 401 (实际 ${r.status})`);
+    // 当前实现返回 200 + user:null(避免 DevTools 刷红), 也兼容旧 401
+    assert(r.status === 200 || r.status === 401, `status 200/401 (实际 ${r.status})`);
     assert(r.data?.user === null, `user=null`);
   }
 
@@ -293,7 +299,7 @@ async function main() {
   section("me 已登出");
   {
     const r = await call("/api/auth/me");
-    assert(r.status === 401, `status 401 (实际 ${r.status})`);
+    assert(r.status === 200 || r.status === 401, `status 200/401 (实际 ${r.status})`);
     assert(r.data?.user === null, `user=null`);
   }
 
@@ -319,31 +325,22 @@ async function main() {
   /* === 清理测试用户 === */
   section("清理测试数据");
   {
-    // 直接调后端 Store 删除测试用户, 避免污染
+    const client = new Client({ connectionString: PG_URL });
     try {
-      const searchRes = await fetch(`${BASE.replace(":3000", ":2024")}/store/items/search`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          namespace_prefix: ["users"],
-          filter: { phone: TEST_PHONE },
-          limit: 1,
-        }),
-      });
-      const searchData = await searchRes.json();
-      const item = searchData.items?.[0];
-      if (item) {
-        await fetch(`${BASE.replace(":3000", ":2024")}/store/items`, {
-          method: "DELETE",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ namespace: ["users"], key: item.key }),
-        });
-        console.log(`  ✓ 已清理测试用户 (key=${item.key})`);
+      await client.connect();
+      // 先删关联数据
+      await client.query("DELETE FROM playback_progress WHERE user_id = (SELECT id FROM users WHERE phone = $1)", [TEST_PHONE]);
+      await client.query("DELETE FROM threads WHERE user_id = (SELECT id FROM users WHERE phone = $1)", [TEST_PHONE]);
+      const res = await client.query("DELETE FROM users WHERE phone = $1 RETURNING id", [TEST_PHONE]);
+      if (res.rowCount > 0) {
+        console.log(`  ✓ 已清理测试用户 (id=${res.rows[0].id})`);
       } else {
         console.log(`  (无测试数据需清理)`);
       }
     } catch (e) {
       console.log(`  (清理跳过: ${e.message})`);
+    } finally {
+      await client.end().catch(() => {});
     }
   }
 

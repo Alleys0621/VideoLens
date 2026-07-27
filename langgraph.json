@@ -2,5 +2,8 @@
   "dependencies": ["."],
   "graphs": {
     "agent": "./src/server/graph.py:graph"
+  },
+  "checkpointer": {
+    "path": "./src/server/checkpointer.py:create_checkpointer"
   }
 }

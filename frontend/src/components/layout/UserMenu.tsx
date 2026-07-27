@@ -28,16 +28,6 @@ export function UserMenu() {
   const [pwdOpen, setPwdOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  // 诊断日志: 看 user/loading 实际状态
-  useEffect(() => {
-    console.log("[UserMenu]", {
-      loading,
-      user: user
-        ? { id: user.id.slice(0, 8), phone: user.phone, name: user.display_name }
-        : null,
-    });
-  }, [user, loading]);
-
   // 点外面关闭下拉
   useEffect(() => {
     if (!open) return;
@@ -73,10 +63,7 @@ export function UserMenu() {
       <div ref={menuRef} className="relative flex-shrink-0">
         <button
           type="button"
-          onClick={() => {
-            console.log("[UserMenu] avatar clicked, open was:", open);
-            setOpen((p) => !p);
-          }}
+          onClick={() => setOpen((p) => !p)}
           className="flex h-10 items-center gap-1.5 rounded-full bg-white/80 pl-1 pr-2 text-zinc-600 ring-1 ring-zinc-200/80 transition-colors hover:bg-white hover:text-zinc-900"
           title={user.display_name}
         >
@@ -102,7 +89,6 @@ export function UserMenu() {
             <button
               type="button"
               onClick={() => {
-                console.log("[UserMenu] change-password clicked");
                 setOpen(false);
                 setPwdOpen(true);
               }}
@@ -114,7 +100,6 @@ export function UserMenu() {
             <button
               type="button"
               onClick={async () => {
-                console.log("[UserMenu] logout clicked");
                 setOpen(false);
                 try {
                   await logout();

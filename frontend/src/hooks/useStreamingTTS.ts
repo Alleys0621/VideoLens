@@ -579,19 +579,36 @@ export function useStreamingTTS(): UseStreamingTTSReturn {
       if (cached) {
         console.log("[useStreamingTTS] cache HIT, playing cached blob");
         cleanup();
-        if (audioRef.current) {
-          audioRef.current.pause();
-          audioRef.current.src = "";
+        // 关键: 旧 audio (通常是 MSE 那个) 必须先摘掉所有事件再停,
+        // 不要设 src="" — 浏览器会把空 src resolve 成页面 URL, 触发 onerror 误报.
+        const old = audioRef.current;
+        if (old) {
+          old.onended = null;
+          old.onerror = null;
+          old.onplay = null;
+          old.onpause = null;
+          old.pause();
         }
+        audioRef.current = null;
+
         const audio = new Audio(cached);
         audioRef.current = audio;
+        // cleanup() 会把 speakingMessageId 置 null, 这里在 cleanup 之后重新绑定,
+        // 否则喇叭动画不会亮起.
+        if (messageId) setSpeakingMessageId(messageId);
         audio.onplay = () => setSpeaking(true);
         audio.onended = () => { setSpeaking(false); setSpeakingMessageId(null); };
-        audio.onerror = () => setSpeaking(false);
+        audio.onerror = () => {
+          console.warn("[useStreamingTTS] cached audio error");
+          setSpeaking(false);
+          setSpeakingMessageId(null);
+        };
         try {
           await audio.play();
         } catch (e) {
           console.warn("[useStreamingTTS] cached play failed", e);
+          setSpeaking(false);
+          setSpeakingMessageId(null);
         }
         return;
       }
