@@ -20,6 +20,10 @@ ENV/
 .DS_Store
 Thumbs.db
 
+# TypeScript / Next.js build cache
+frontend/tsconfig.tsbuildinfo
+*.tsbuildinfo
+
 # === 视频 / 媒体 (太大, 不上传) ===
 data/videos/
 data/models/
@@ -33,6 +37,9 @@ data/output/**/*.npz
 data/output/**/keyframes/
 data/output/**/_stage3_dryrun.log
 data/output/_batch_reports/
+
+# === 本地记忆 / 向量库 / 运行状态 (只跟本地服务器, 不上 git) ===
+data/_mem0_qdrant/
 
 # === LangGraph: 模板跟仓库, 运行数据不跟踪 ===
 .langgraph_api/.langgraph_checkpoint.*
