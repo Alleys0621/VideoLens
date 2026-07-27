@@ -29,6 +29,7 @@ export function getPool(): Pool {
     max: 10,
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 5000,
+    keepAlive: true, // 减少反复建连开销
   });
   // 不让单个查询错误搞崩整个进程
   _pool.on("error", (err) => {

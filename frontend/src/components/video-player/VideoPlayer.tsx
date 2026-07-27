@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Artplayer from "artplayer";
 import { useKeyframeSeek, type KeyframeMeta } from "@/hooks/useKeyframeSeek";
 import { Sparkles, Play } from "lucide-react";
@@ -90,8 +90,10 @@ export function VideoPlayer({
   const volumeRampRef = useRef<number | null>(null); // 音量渐变动画 frame id
   const { keyframes, reasoning } = useKeyframeSeek();
 
-  // 直接用 mp4 流
-  const actualSrc = videoDir ? `/api/video/${videoDir}` : "";
+  const actualSrc = useMemo(() => {
+    if (!videoDir) return "";
+    return `/api/video/${videoDir}`;
+  }, [videoDir]);
 
   // === 推理数据解析 (保留原有) ===
   const intentMeta: Record<string, { label: string; color: string }> = {

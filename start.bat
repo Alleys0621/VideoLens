@@ -3,7 +3,7 @@ chcp 65001 >nul
 REM ============================================================
 REM  VideoLens One-Click Start Script
 REM  - Double-click to run, or run from cmd: start.bat
-REM  - Stop: close the popup cmd windows
+REM  - Stop: close the minimized service windows from taskbar AND this main window
 REM
 REM  Startup order:
 REM    [0/6] Cleanup  : kill stale processes on ports 3000/2024/9800/9801
@@ -93,20 +93,21 @@ if "%PG_READY%"=="0" (
 )
 
 REM [2/6] Backend - LangGraph Server
-echo [2/6] Starting Backend LangGraph (port 2024)...
-start "VideoLens-Backend-2024" cmd /k "set POSTGRES_URL=%POSTGRES_URL% && .venv\Scripts\langgraph.exe dev --port 2024 --no-browser"
+REM /min: 最小化窗口启动, 避免一次性弹出多个终端
+echo [2/6] Starting Backend LangGraph (port 2024, minimized)...
+start /min "VideoLens-Backend-2024" cmd /k "set POSTGRES_URL=%POSTGRES_URL% && .venv\Scripts\langgraph.exe dev --port 2024 --no-browser"
 
 REM [3/6] Frontend - Next.js
-echo [3/6] Starting Frontend Next.js (port 3000)...
-start "VideoLens-Frontend-3000" cmd /k "cd frontend && node_modules\.bin\next.CMD dev"
+echo [3/6] Starting Frontend Next.js (port 3000, minimized)...
+start /min "VideoLens-Frontend-3000" cmd /k "cd frontend && node_modules\.bin\next.CMD dev"
 
 REM [4/6] ASR WebSocket server (streaming speech recognition)
-echo [4/6] Starting ASR server (port 9800, paraformer streaming)...
-start "VideoLens-ASR-Server" cmd /k ".venv\Scripts\python.exe -m src.agent.asr_server"
+echo [4/6] Starting ASR server (port 9800, minimized)...
+start /min "VideoLens-ASR-Server" cmd /k ".venv\Scripts\python.exe -m src.agent.asr_server"
 
 REM [5/6] TTS WebSocket server (streaming speech synthesis)
-echo [5/6] Starting TTS server (port 9801, qwen-audio-tts streaming)...
-start "VideoLens-TTS-Server" cmd /k ".venv\Scripts\python.exe -m src.agent.tts_server"
+echo [5/6] Starting TTS server (port 9801, minimized)...
+start /min "VideoLens-TTS-Server" cmd /k ".venv\Scripts\python.exe -m src.agent.tts_server"
 
 REM [6/6] cloudflared quick tunnel
 if not exist ".tools\cloudflared.exe" (
@@ -117,28 +118,28 @@ if not exist ".tools\cloudflared.exe" (
     goto :WAIT_END
 )
 
-echo [6/6] Starting cloudflared quick tunnel...
-REM cloudflared quick tunnel: random URL per launch, printed in the popup window.
-REM To stop: close the "VideoLens-Tunnel" popup window.
-start "VideoLens-Tunnel" cmd /k ".tools\cloudflared.exe tunnel --url http://127.0.0.1:3000"
+echo [6/6] Starting cloudflared quick tunnel (minimized)...
+REM cloudflared quick tunnel: random URL per launch, printed in the minimized window.
+REM To stop: close the "VideoLens-Tunnel" window from taskbar.
+start /min "VideoLens-Tunnel" cmd /k ".tools\cloudflared.exe tunnel --url http://127.0.0.1:3000"
 
 :WAIT_END
 echo.
 echo ============================================================
-echo   All services started:
+echo   All services started (minimized to taskbar):
 echo     - Postgres : container "videolens-postgres" (docker ps)
-echo     - Backend  : popup "VideoLens-Backend-2024"
-echo     - Frontend : popup "VideoLens-Frontend-3000"
-echo     - ASR      : popup "VideoLens-ASR-Server"
-echo     - TTS      : popup "VideoLens-TTS-Server"
-echo     - Tunnel   : popup "VideoLens-Tunnel" (URL printed there)
+echo     - Backend  : minimized "VideoLens-Backend-2024"
+echo     - Frontend : minimized "VideoLens-Frontend-3000"
+echo     - ASR      : minimized "VideoLens-ASR-Server"
+echo     - TTS      : minimized "VideoLens-TTS-Server"
+echo     - Tunnel   : minimized "VideoLens-Tunnel" (URL printed there)
 echo.
 echo   Access:
 echo     [Local]    http://localhost:3000
 echo     [Public]   See the URL in "VideoLens-Tunnel" window
 echo                (changes each launch, e.g. https://xxx.trycloudflare.com)
 echo.
-echo   Stop: close popup windows AND this main window
+echo   Stop: close minimized windows from taskbar AND this main window
 echo ============================================================
 echo.
 pause
