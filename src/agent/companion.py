@@ -8,8 +8,6 @@
   2. 推理可视化 — reasoning 结构化 (意图 / 检索 top-K / 选中 / 证据)
   3. 意图分流 + 拒答 — BM25 score + 闲聊规则 → KB / chitchat / refuse 三分支 (暂不联网)
   4. 人设回复 — Alleys人设 + 情绪感知 (prompt 在 yaml::companion_xiaoying_system)
-
-角色归一 / BM25 检索逻辑从 scripts/frontend_app.py 迁移, frontend_app 后续改为 import 本模块.
 """
 
 from __future__ import annotations
@@ -54,7 +52,7 @@ KB_SCORE_THRESHOLD = 2.0
 # 意图理解 (deictic/meta/chitchat) → 语义路由 (intent_router.py), 不再用正则.
 # kb/refuse 仍用 BM25 top_score 阈值判断, 后续可改 LLM-based.
 
-# 角色归一 (从 frontend_app.py 迁移)
+# 角色归一（项目早期硬编码映射）
 _PINYIN_MAP = {
     "xue": "夏雪", "mei": "刘梅", "xing": "刘星", "yu": "夏雨", "donghai": "夏东海",
     "liumei": "刘梅", "liu_mei": "刘梅", "lumei": "刘梅",
