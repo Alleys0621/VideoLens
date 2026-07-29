@@ -48,6 +48,9 @@ data/_mem0_qdrant/
 # Experiments (临时实验沙盒, 历史归档移到 data/_research_archive/)
 experiments/
 
+# === 本地工具二进制 (自行下载, 例如 cloudflared.exe) ===
+.tools/
+
 # === 本地设计讨论文档 (不上 git) ===
 ALLEYSVID_DESIGN_DIALOG.md
 
