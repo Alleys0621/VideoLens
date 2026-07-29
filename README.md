@@ -120,7 +120,19 @@ docker compose -f db/docker-compose.yml up -d
 - 容器名 `videolens-postgres`，映射 `127.0.0.1:25432`（避开本机 5432/15432 冲突）。
 - 数据持久化在 Docker 卷 `videolens-pgdata`，`docker compose down` 不丢，只有 `down -v` 才删。
 
-### 5. 一键启动所有服务
+### 5. （可选）安装 cloudflared 公网隧道
+
+> 只在需要**公网访问**时才需要；同一 WiFi/内网直接用 `http://localhost:3000` 或局域网 IP 即可。
+
+从 GitHub Releases 自动下载最新 Windows 版到 `.tools/cloudflared.exe`：
+
+```powershell
+.\scripts\install-cloudflared.bat
+```
+
+或手动下载：访问 [cloudflare/cloudflared releases](https://github.com/cloudflare/cloudflared/releases)，下载 `cloudflared-windows-amd64.exe`，重命名为 `cloudflared.exe` 放到 `.tools/` 目录下。
+
+### 6. 一键启动所有服务
 
 ```powershell
 .\start.bat
@@ -131,7 +143,7 @@ docker compose -f db/docker-compose.yml up -d
 - Frontend Next.js `:3000`
 - ASR `:9800`
 - TTS `:9801`
-- cloudflared 隧道（需自备 `.tools/cloudflared.exe`，不要公网可忽略）
+- cloudflared 隧道（第 5 步已装则自动启动；不要公网可忽略）
 
 浏览器打开 http://localhost:3000 → 注册登录 → 选一集 → 开聊。
 
