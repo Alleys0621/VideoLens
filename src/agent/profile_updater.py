@@ -89,10 +89,10 @@ def maybe_update_user_profile(user_id: str, chat_history: list[dict]) -> None:
             max_tokens=120,
             enable_thinking=False,
         )
-        m = re.search(r"\{[^{}]*\}", raw or "")
-        if not m:
+        from src.core.helpers.text_utils import extract_json_obj
+        obj = extract_json_obj(raw or "")
+        if not obj:
             return
-        obj = json.loads(m.group(0))
 
         # 合并: 新值优先, 新值非法时保留旧值
         style = _pick(obj.get("interaction_style"), _VALID_STYLE) or old.get("interaction_style")
@@ -178,10 +178,10 @@ def maybe_update_show_profile(
             max_tokens=200,
             enable_thinking=False,
         )
-        m = re.search(r"\{.*\}", raw or "", flags=re.S)
-        if not m:
+        from src.core.helpers.text_utils import extract_json_obj
+        obj = extract_json_obj(raw or "")
+        if not obj:
             return
-        obj = json.loads(m.group(0))
 
         # favorite_characters: 合并去重, 保留最多 8 个
         new_fav = [c for c in (obj.get("favorite_characters") or []) if isinstance(c, str) and c.strip()]

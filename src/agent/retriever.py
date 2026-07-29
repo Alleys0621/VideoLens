@@ -7,6 +7,7 @@ RRF 融合 BM25 + 向量双路 rank, 兼顾关键词精确匹配 + 语义匹配.
 
 from __future__ import annotations
 
+import functools
 import os
 import numpy as np
 
@@ -60,6 +61,7 @@ def _cache_path(video_dir: str) -> str:
     return os.path.join(cfg.output_root, video_dir, "retrieval_emb.npz")
 
 
+@functools.lru_cache(maxsize=8)
 def build_or_load_embeddings(
     video_dir: str,
 ) -> tuple[np.ndarray, np.ndarray, list[str], list[str]]:
@@ -67,6 +69,8 @@ def build_or_load_embeddings(
 
     首次调用时 embedding (慢, ~3-10s), 持久化 .npz; 后续加载 (<100ms).
     events/segments 数量变化 (重新建库) 时自动重建.
+    内存缓存: 同 video_dir 的多次调用直接返回 (lru_cache, maxsize=8).
+    调用方必须把返回的 ndarray 当只读 (vector_search 等只做矩阵乘法, 安全).
 
     Returns:
         (events_emb, segs_emb, events_text, segs_text)

@@ -29,7 +29,7 @@ class AppConfig:
     # LLM 接入点 (默认经典 DashScope 公共端点; 用 Bailian 专属应用时改为专属域名)
     dashscope_base_url: str = "https://dashscope.aliyuncs.com/compatible-mode/v1"
     # 意图路由专用模型 (轻量, 可单独换 qwen-flash / glm-4-flash 等)
-    model_intent: str = "qwen-max"
+    model_intent: str = "qwen3.7-flash"
 
     # Models
     model_omni_plus: str = "qwen3.5-omni-plus"
@@ -44,6 +44,17 @@ class AppConfig:
     intent_mode: str = "hybrid"
     hybrid_threshold: float = 0.65
     flash_threshold: float = 0.75
+
+    # 调试 / 运行时开关
+    perf_enabled: bool = False             # VIDEOLENS_PERF: 模块级耗时打点进 payload
+    warmup_disabled: bool = False          # DISABLE_WARMUP: 跳过启动预热
+
+    # 外部凭证 (从 .env 读, 不进 pipeline.yaml)
+    openai_api_key: str = ""               # Mem0 / OpenAI 兼容客户端
+    tavily_api_key: str = ""               # Web 搜索
+    xfyun_app_id: str = ""
+    xfyun_api_key: str = ""
+    xfyun_api_secret: str = ""
 
     # Stage 2: 视觉处理 (Stage 1 参数全部通过 CLI --chunk / 硬编码传入, 不进 config)
     min_scene_len: float = 1.0
@@ -102,9 +113,16 @@ def load_config() -> AppConfig:
         model_text_flash=models.get("text_flash", "qwen3.7-flash"),
         model_ocr=models.get("ocr", "qwen3-vl-plus"),
         model_embedding=models.get("embedding", "qwen3.7-text-embedding"),
-        intent_mode=routing_cfg.get("intent_mode", "hybrid"),
-        hybrid_threshold=float(routing_cfg.get("hybrid_threshold", 0.65)),
-        flash_threshold=float(routing_cfg.get("flash_threshold", 0.75)),
+        intent_mode=routing_cfg.get("intent_mode", os.getenv("INTENT_MODE", "hybrid")),
+        hybrid_threshold=float(routing_cfg.get("hybrid_threshold", os.getenv("INTENT_HYBRID_THRESHOLD", "0.65"))),
+        flash_threshold=float(routing_cfg.get("flash_threshold", os.getenv("MAIN_LLM_FLASH_THRESHOLD", "0.75"))),
+        perf_enabled=os.getenv("VIDEOLENS_PERF", "0") == "1",
+        warmup_disabled=os.getenv("DISABLE_WARMUP", "0") == "1",
+        openai_api_key=os.getenv("OPENAI_API_KEY", ""),
+        tavily_api_key=os.getenv("TAVILY_API_KEY", ""),
+        xfyun_app_id=os.getenv("XFYUN_APP_ID", ""),
+        xfyun_api_key=os.getenv("XFYUN_API_KEY", ""),
+        xfyun_api_secret=os.getenv("XFYUN_API_SECRET", ""),
         min_scene_len=s2.get("min_scene_len", 1.0),
         samples_per_scene=s2.get("samples_per_scene", 8),
         transnet_threshold=s2.get("transnet_threshold", 0.5),

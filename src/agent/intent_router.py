@@ -147,12 +147,11 @@ def fast_route_intent(
     """纯 embedding 任务路由 (Path 1): 只决定 task, emotion/user_state 用兜底.
 
     若 query_emb 未提供, 会现场调用 embedding API (多一次调用, 测试时尽量复用).
-    低于 threshold 时 task 回退为 kb ( companion.py 中 safe_task 会再转成 chitchat).
+    低于 threshold 时 task 回退为 kb (companion.py 中 safe_task 会再转成 chitchat).
     """
     if query_emb is None:
-        from src.agent.retriever import _embed_texts
-        embs = _embed_texts([query])
-        query_emb = embs[0]
+        from src.agent.retriever import embed_query
+        query_emb = embed_query(query)
 
     task, score = route_intent(query_emb, threshold=threshold)
     if task is None:
@@ -190,7 +189,9 @@ def hybrid_route_intent(
         from src.core.config import get_config
         fallback_threshold = get_config().hybrid_threshold
     emb_result = fast_route_intent(query, query_emb=query_emb)
-    if emb_result.task_confidence >= fallback_threshold and emb_result.task != "kb":
+    # task=="kb" 时 score 必 < fast_route_intent.threshold (0.55) < fallback_threshold,
+    # 前半个条件已过滤, 无需再判 task.
+    if emb_result.task_confidence >= fallback_threshold:
         return emb_result
     return llm_route_intent(
         query, video_time, video_label=video_label, chat_history=chat_history
@@ -353,8 +354,6 @@ def llm_route_intent(
     )
 
     try:
-        import json
-        import re as _re
         from src.core.config import get_config
         from src.core.llm.base_client import BaseLLMClient
 
@@ -369,9 +368,10 @@ def llm_route_intent(
             max_tokens=120,
             enable_thinking=False,
         )
-        # 解析 JSON (LLM 偶尔带 ```json 或多余文本)
-        m = _re.search(r"\{[^{}]*\}", raw or "")
-        if not m:
+        # 解析 JSON (LLM 偶尔带 ```json 或多余文本; 用 extract_json_obj 处理嵌套/代码块)
+        from src.core.helpers.text_utils import extract_json_obj
+        obj = extract_json_obj(raw or "")
+        if not obj:
             return IntentResult(
                 task=_parse_task(raw),
                 task_confidence=0.0,
@@ -379,7 +379,6 @@ def llm_route_intent(
                 emotion_confidence=0.0,
                 user_state="无明显状态",
             )
-        obj = json.loads(m.group(0))
 
         task = _parse_task(str(obj.get("task", "")))
         if task not in _VALID_TASKS:

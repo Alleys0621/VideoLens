@@ -14,6 +14,7 @@
 
 from __future__ import annotations
 
+import functools
 import os
 import re
 import threading
@@ -73,8 +74,12 @@ _XIAOYING_FALLBACK = (
 # 数据加载
 # ============================================================
 
+@functools.lru_cache(maxsize=8)
 def _load_episode_data(video_dir: str) -> tuple[list, list, list, list]:
     """加载一集的 events / actions / scenes / audio_segments.
+
+    内存缓存: 同 video_dir 的多次调用直接返回 (lru_cache, maxsize=8).
+    若 stage3_dryrun.json 被重新生成, 需 `_load_episode_data.cache_clear()`.
 
     Returns:
         (events, actions, scenes, segments) —
@@ -485,7 +490,9 @@ def companion_chat(
     import time
     t_start = time.time()
 
-    # --- 模块级耗时打点 (临时, 用于定位检索阶段瓶颈) ---
+    _cfg = get_config()
+    _PERF = _cfg.perf_enabled
+    # --- 模块级耗时打点 (VIDEOLENS_PERF=1 启用; 不进生产 payload) ---
     _pc = time.perf_counter
     _ts: dict[str, float] = {}
 
@@ -544,7 +551,6 @@ def companion_chat(
     # Path 1: 纯 embedding task 路由
     # Path 1+fallback: embedding 先路由, 低置信度 fallback 到 LLM (推荐)
     # Path 2/3: 保持 LLM 意图理解 (默认)
-    _cfg = get_config()
     _intent_mode = _cfg.intent_mode
     _hybrid_threshold = _cfg.hybrid_threshold
     query_emb = None
@@ -615,13 +621,11 @@ def companion_chat(
     user_state = intent_result.user_state
 
     # 主 LLM 选择: 按 intent 置信度切 flash/plus (graph.py 维护实例池)
-    # confidence >= cfg.flash_threshold (默认 0.75) → flash (快, 防 over-engineering)
-    # 否则 → plus (防幻觉)
+    # llm_chooser 返回 (llm, model_key), 直接复用 model_key 填 reasoning, 不再反推阈值
     _main_llm_model = "default"
     if llm_chooser is not None:
         try:
-            llm = llm_chooser(intent_result.task_confidence)
-            _main_llm_model = "flash" if intent_result.task_confidence >= _cfg.flash_threshold else "plus"
+            llm, _main_llm_model = llm_chooser(intent_result.task_confidence)
         except Exception as e:
             # 回退到原 llm (若 llm 也为 None, _llm_generate 会走 QwenTextClient)
             print(f"[companion] llm_chooser 失败, 回退默认: {e}", flush=True)
@@ -766,16 +770,17 @@ def companion_chat(
         },
         "evidence": evidence,
         "web_results": web_results,
-        "module_timings": _ts,
+        "module_timings": _ts if _PERF else None,
         "timings": {
             "retrieval_ms": round((t_retrieval - t_start) * 1000),
             "llm_ms": round((t_end - t_retrieval) * 1000),
             "total_ms": round((t_end - t_start) * 1000),
         },
     }
-    # 全链路打点 (后端)
-    _ts_summary = " | ".join(f"{k}={round(v)}ms" for k, v in _ts.items())
-    print(f"[companion:timings] {_ts_summary}", flush=True)
+    # 全链路打点 (后端, VIDEOLENS_PERF=1 才输出)
+    if _PERF:
+        _ts_summary = " | ".join(f"{k}={round(v)}ms" for k, v in _ts.items())
+        print(f"[companion:timings] {_ts_summary}", flush=True)
     print(f"[companion] query={query!r} task={task}(raw={intent_result.task},c={intent_result.task_confidence:.2f}) "
           f"emo={emotion}(raw={intent_result.emotion},c={intent_result.emotion_confidence:.2f}) "
           f"top_score={round(top_score, 2)} focus={watching.get('focus_character')} "

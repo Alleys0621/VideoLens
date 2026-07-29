@@ -105,6 +105,17 @@ cd frontend && node scripts/test-thread-isolation.mjs
 - **Thread 标题**：异步生成，禁止阻塞流式回复
 - **人设边界**：Alleys 不能假装看到画面；没给当前画面 context 时不描述表情/动作/眼神
 
+### 代码规范（强制）
+
+- **配置集中**：所有 env var / yaml 配置必经 `AppConfig`（`src/core/config.py::load_config`），业务代码禁止 `os.getenv` 直读
+- **LLM 客户端**：统一用 `BaseLLMClient` / `QwenTextClient` / `QwenVLClient`；禁止业务代码直接 `import dashscope`（embedding 例外，但必须封装在 `retriever.py::_embed_texts` 内）
+- **日志**：用 `from src.core.logging import get_logger; logger = get_logger(__name__)`；禁止 `print`（一次性调试可用，但不得 commit）
+- **JSON 持久化**：文件 IO 统一 `save_json` / `load_json`（`src/core/helpers/json_utils.py`）；WebSocket/HTTP 响应消息可继续用 `json.dumps`
+- **异常**：禁止裸 `except:` / `except Exception:`；必须 `except X as e:` + `logger.warning`/`.exception`
+- **类型注解**：新式 `X | None`，禁止 `Optional[X]`
+- **调试打点**：临时计时不得进生产 payload（如 `reasoning` 返回字段），必须用 env 开关（如 `VIDEOLENS_PERF`）门控
+- **JSON 提取**：从 LLM 输出提取 JSON 用 `extract_json_obj`（`src/core/helpers/text_utils.py`），禁止手写 `re.search(r"\{...\}")`
+
 ## 数据布局（已 gitignore）
 
 ```

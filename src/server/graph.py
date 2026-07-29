@@ -111,17 +111,18 @@ def _get_streaming_llm(model_key: str = "plus"):
     return _LLM_POOL[model_key]
 
 
-def _choose_main_llm_by_confidence(confidence: float):
+def _choose_main_llm_by_confidence(confidence: float) -> tuple[object, str]:
     """根据 intent 置信度选主 LLM 实例.
 
-    confidence >= cfg.flash_threshold (默认 0.75) → flash
-    否则 → plus
+    Returns:
+        (llm, model_key) — model_key ∈ {"flash", "plus"}, 供上游填充 reasoning 字段,
+        避免重复读取阈值反推.
     """
     from src.core.config import get_config
     threshold = get_config().flash_threshold
     if confidence >= threshold:
-        return _get_streaming_llm("flash")
-    return _get_streaming_llm("plus")
+        return _get_streaming_llm("flash"), "flash"
+    return _get_streaming_llm("plus"), "plus"
 
 
 def _warmup():
@@ -130,8 +131,8 @@ def _warmup():
     预热 Mem0 (向量库 + embedding client, ~5s) + LLM client (ChatOpenAI).
     第一次问答不用等懒加载. 预热失败非致命 (问答时仍会懒加载).
     """
-    import os
-    if os.getenv("DISABLE_WARMUP"):
+    from src.core.config import get_config
+    if get_config().warmup_disabled:
         print("[warmup] 跳过 (DISABLE_WARMUP=1)", flush=True)
         return
     # 1. Mem0 (最重)
