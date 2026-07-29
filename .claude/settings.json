@@ -1,0 +1,28 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "grep -oE '\"file_path\"[[:space:]]*:[[:space:]]*\"[^\"]*\"' | grep -qE 'frontend/[^\"]*\\.(ts|tsx)\"' && (cd frontend && npx tsc --noEmit) || true",
+            "timeout": 120,
+            "statusMessage": "类型检查中 (tsc --noEmit)..."
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".venv/Scripts/python .claude/hooks/lint_python.py 2>/dev/null || true",
+            "timeout": 30,
+            "statusMessage": "Python 代码规范检查..."
+          }
+        ]
+      }
+    ]
+  }
+}
