@@ -544,8 +544,8 @@ def run_stage2(video_dir: str, output_dir: str, audio_result: dict = None, skip_
                     old = json.load(f)
                 captions = old.get("captions", {}) or {}
                 print(f"[Stage 2e] caption 跳过 (复用现有 {len(captions)} 条)")
-            except Exception:
-                print("[Stage 2e] caption 跳过 (无法读取旧 visual.json, 留空)")
+            except Exception as e:
+                logger.warning(f"[Stage 2e] caption 跳过 (无法读取旧 visual.json, 留空): {e}")
         else:
             print("[Stage 2e] caption 跳过 (无现有 visual.json, 留空)")
     else:

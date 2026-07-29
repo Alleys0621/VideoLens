@@ -280,8 +280,8 @@ async def _serve_session(frontend_ws) -> None:
                     ensure_ascii=False,
                 )
             )
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug(f"[{task_id}] frontend_ws 已断开, 跳过错误广播: {e}")
     except Exception as e:
         logger.exception(f"[{task_id}] session error")
         try:
@@ -291,8 +291,8 @@ async def _serve_session(frontend_ws) -> None:
                     ensure_ascii=False,
                 )
             )
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug(f"[{task_id}] frontend_ws 已断开, 跳过错误广播: {e}")
     finally:
         logger.info(f"Frontend disconnected: {peer}")
 

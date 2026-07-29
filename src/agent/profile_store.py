@@ -26,11 +26,8 @@ PROFILE_INJECT_MIN_CONFIDENCE = 0.5  # confidence 低于此值不注入 system o
 
 
 def _conninfo() -> str:
-    return (
-        os.getenv("POSTGRES_URL")
-        or os.getenv("DATABASE_URI")
-        or "postgresql://videolens:videolens_dev@127.0.0.1:25432/videolens"
-    )
+    from src.core.config import get_config
+    return get_config().postgres_url
 
 
 def _is_uuid(v: str | None) -> bool:

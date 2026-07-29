@@ -26,9 +26,13 @@ from dataclasses import dataclass
 
 from openai import OpenAI
 
+from src.core.config import get_config
 from src.core.cost import get_cost_tracker
 from src.core.helpers.text_utils import extract_json_obj
 from src.core.llm.base_client import _report_usage
+from src.core.logging import get_logger
+
+logger = get_logger()
 from src.core.path_utils import resolve_video_path
 
 if not hasattr(sys.stdout, 'reconfigure'):
@@ -381,7 +385,8 @@ def omni_recognize(client, pp_path, segments, chunks, user_template):
                 continue
             with open(tmp.name, "rb") as f:
                 b64 = base64.b64encode(f.read()).decode()
-        except Exception:
+        except Exception as e:
+            logger.warning(f"ffmpeg chunk 切分失败, 跳过: {e}")
             continue
         finally:
             if os.path.isfile(tmp.name):
@@ -485,7 +490,8 @@ def run_iflytek(dialogues, audio_path, app_id, api_key, api_secret, group_id, na
             else:
                 pred, score = "", 0
             results.append({"pred": pred, "score": round(score, 4)})
-        except Exception:
+        except Exception as e:
+            logger.warning(f"ASR chunk 预测失败, 用空兜底: {e}")
             results.append({"pred": "", "score": 0.0})
 
         time.sleep(0.1)
@@ -591,9 +597,10 @@ def run_stage1(video_dir: str, output_dir: str, skip_theme: bool = False, chunk_
         print(f"[Stage 1a] 音频已存在: {audio_path} ({dur:.1f}s)")
 
     # 初始化 Omni 客户端
+    _cfg = get_config()
     client = OpenAI(
-        api_key=os.getenv("DASHSCOPE_API_KEY", ""),
-        base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
+        api_key=_cfg.dashscope_api_key,
+        base_url=_cfg.dashscope_base_url,
     )
 
     # Step 1b: 片头/片尾曲检测
@@ -642,9 +649,9 @@ def run_stage1(video_dir: str, output_dir: str, skip_theme: bool = False, chunk_
     if group_id:
         iflytek_results = run_iflytek(
             dialogues, audio_path,
-            os.getenv("XFYUN_APP_ID", ""),
-            os.getenv("XFYUN_API_KEY", ""),
-            os.getenv("XFYUN_API_SECRET", ""),
+            _cfg.xfyun_app_id,
+            _cfg.xfyun_api_key,
+            _cfg.xfyun_api_secret,
             group_id, name_map,
         )
     else:

@@ -19,7 +19,6 @@ import json
 import os
 import re
 from dataclasses import dataclass, field
-from typing import Optional
 
 from src.core.logging import get_logger
 
@@ -80,8 +79,8 @@ class SceneEval:
     anchor_type: str
     anchor_timestamp: float
     ocr_text: str
-    anchor_text: Optional[str]
-    ref_text: Optional[str]
+    anchor_text: str | None
+    ref_text: str | None
     overlap: float
     is_miss_candidate: bool = False
     note: str = ""
@@ -142,7 +141,7 @@ def _find_ref_at(ref_segs: list[dict], t: float, window: float = MATCH_WINDOW):
     return out
 
 
-def _best_ref_match(ocr_text: str, candidates: list[dict]) -> tuple[Optional[dict], float]:
+def _best_ref_match(ocr_text: str, candidates: list[dict]) -> tuple[dict | None, float]:
     """在候选参考段中找最佳字符重叠."""
     best_seg, best_ov = None, 0.0
     for seg in candidates:

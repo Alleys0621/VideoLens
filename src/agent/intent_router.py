@@ -176,14 +176,9 @@ def hybrid_route_intent(
 ) -> IntentResult:
     """Path 1 + fallback: embedding 先路由, 置信度低时 fallback 到 LLM.
 
-    工业常用模式: 不是 embedding or LLM, 而是 embedding first → confidence?
-    → 高置信度直接用 embedding, 低置信度走 LLM 兜底.
-
+    工业常用模式: embedding first → confidence? → 高置信度直通, 低置信度走 LLM.
     fallback_threshold 默认 None → 读 cfg.hybrid_threshold (pipeline.yaml).
-    当前 0.65 的依据 (probe_threshold_sweep, 50 条混合数据):
-        - 准确率 96% (vs 纯 LLM 87.5%, 纯 emb 84%)
-        - 70% query 走 emb 直通 (~1ms), 30% 回退 LLM
-        - 平均 485ms (vs 纯 LLM 1976ms, 快 4 倍)
+    阈值依据见 scripts/probe_threshold_sweep.py (50 条混合数据, 0.65 时准确率 96%).
     """
     if fallback_threshold is None:
         from src.core.config import get_config

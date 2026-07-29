@@ -548,9 +548,7 @@ def companion_chat(
         ),
     }
 
-    # Path 1: 纯 embedding task 路由
-    # Path 1+fallback: embedding 先路由, 低置信度 fallback 到 LLM (推荐)
-    # Path 2/3: 保持 LLM 意图理解 (默认)
+    # 意图路由: embedding 直通 (快) / hybrid (emb→LLM fallback, 默认) / llm (强模型全程)
     _intent_mode = _cfg.intent_mode
     _hybrid_threshold = _cfg.hybrid_threshold
     query_emb = None

@@ -55,6 +55,7 @@ class AppConfig:
     xfyun_app_id: str = ""
     xfyun_api_key: str = ""
     xfyun_api_secret: str = ""
+    postgres_url: str = ""                 # 业务库连接串
 
     # Stage 2: 视觉处理 (Stage 1 参数全部通过 CLI --chunk / 硬编码传入, 不进 config)
     min_scene_len: float = 1.0
@@ -123,6 +124,11 @@ def load_config() -> AppConfig:
         xfyun_app_id=os.getenv("XFYUN_APP_ID", ""),
         xfyun_api_key=os.getenv("XFYUN_API_KEY", ""),
         xfyun_api_secret=os.getenv("XFYUN_API_SECRET", ""),
+        postgres_url=(
+            os.getenv("POSTGRES_URL")
+            or os.getenv("DATABASE_URI")
+            or "postgresql://videolens:videolens_dev@127.0.0.1:25432/videolens"
+        ),
         min_scene_len=s2.get("min_scene_len", 1.0),
         samples_per_scene=s2.get("samples_per_scene", 8),
         transnet_threshold=s2.get("transnet_threshold", 0.5),

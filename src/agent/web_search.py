@@ -5,7 +5,7 @@
 
 from __future__ import annotations
 
-import os
+from src.core.config import get_config
 
 
 def tavily_search(query: str, max_results: int = 5) -> list[dict]:
@@ -14,7 +14,7 @@ def tavily_search(query: str, max_results: int = 5) -> list[dict]:
     Raises:
         RuntimeError: TAVILY_API_KEY 未配置 或 搜索失败。
     """
-    api_key = os.getenv("TAVILY_API_KEY")
+    api_key = get_config().tavily_api_key
     if not api_key:
         raise RuntimeError(
             "TAVILY_API_KEY 未配置 (https://tavily.com 注册, 免费额度)"

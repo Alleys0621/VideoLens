@@ -22,14 +22,21 @@ sys.path.insert(0, str(PROJECT_ROOT))
 from dotenv import load_dotenv
 load_dotenv(PROJECT_ROOT / ".env")
 
+from src.core.config import get_config
+from src.core.logging import get_logger
+
+logger = get_logger(__name__)
+
+_cfg = get_config()
+
 # 让 Mem0 内部的 OpenAI client 走 DashScope
-if os.getenv("DASHSCOPE_API_KEY") and not os.getenv("OPENAI_API_KEY"):
-    os.environ["OPENAI_API_KEY"] = os.getenv("DASHSCOPE_API_KEY")
+if _cfg.dashscope_api_key and not os.getenv("OPENAI_API_KEY"):
+    os.environ["OPENAI_API_KEY"] = _cfg.dashscope_api_key
 if not os.getenv("OPENAI_BASE_URL"):
-    os.environ["OPENAI_BASE_URL"] = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+    os.environ["OPENAI_BASE_URL"] = _cfg.dashscope_base_url
 
 # 检查 API Key 是否设置, 给清晰错误提示
-if not os.getenv("DASHSCOPE_API_KEY"):
+if not _cfg.dashscope_api_key:
     print("[mem0] 警告: DASHSCOPE_API_KEY 未设置! 请检查系统环境变量.", file=sys.stderr, flush=True)
 
 
@@ -52,16 +59,16 @@ def get_memory():
             "config": {
                 "model": "qwen3.7-plus",
                 "temperature": 0.1,
-                "api_key": os.getenv("DASHSCOPE_API_KEY"),
-                "openai_base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+                "api_key": _cfg.dashscope_api_key,
+                "openai_base_url": _cfg.dashscope_base_url,
             },
         },
         "embedder": {
             "provider": "openai",
             "config": {
                 "model": "text-embedding-v3",
-                "api_key": os.getenv("DASHSCOPE_API_KEY"),
-                "openai_base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+                "api_key": _cfg.dashscope_api_key,
+                "openai_base_url": _cfg.dashscope_base_url,
             },
         },
         "vector_store": {
@@ -117,7 +124,8 @@ def search_relevant_memories(
         results = m.search(query, filters={"user_id": user_id})
         memories = results.get("results", [])[:top_k]
         return [r.get("memory", "") for r in memories if r.get("memory")]
-    except Exception:
+    except Exception as e:
+        logger.warning(f"Mem0 search 失败, 返回空: {e}")
         return []
 
 
@@ -162,8 +170,8 @@ def _load_xiaoying_prompt() -> str:
         p = get_config().prompts.get("companion_xiaoying_system", {})
         if isinstance(p, dict) and p.get("user"):
             return p["user"]
-    except Exception:
-        pass
+    except Exception as e:
+        logger.debug(f"加载 yaml prompt 失败, 用 fallback: {e}")
     return _XIAOYING_FALLBACK
 
 

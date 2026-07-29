@@ -81,7 +81,8 @@ def _decode_response(resp: dict) -> dict:
             continue
         try:
             result["data"] = json.loads(base64.b64decode(text_b64).decode("utf-8"))
-        except Exception:
+        except Exception as e:
+            logger.debug(f"声纹 payload 非 JSON, 保留原文: {e}")
             result["data"] = text_b64
         break
 
