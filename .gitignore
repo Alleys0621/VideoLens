@@ -43,19 +43,10 @@ data/output/_batch_reports/
 data/_mem0_qdrant/
 
 # === LangGraph: 模板跟仓库, 运行数据不跟踪 ===
-.langgraph_api/.langgraph_checkpoint.*
-.langgraph_api/.langgraph_ops.pckl
-.langgraph_api/.langgraph_retry_counter.pckl
-.langgraph_api/store.vectors.pckl
-.langgraph_api/store.pckl
-# 旧 SQLite checkpointer (已切到 Postgres, 保留以防回退)
-.langgraph_api/checkpoints.sqlite
-.langgraph_api/checkpoints.sqlite-*
+.langgraph_api/
 
-# Experiments data
-experiments/_archive/
-experiments/results/
-experiments/test_omni_result/
+# Experiments (临时实验沙盒, 历史归档移到 data/_research_archive/)
+experiments/
 
 # === 本地设计讨论文档 (不上 git) ===
 ALLEYSVID_DESIGN_DIALOG.md
