@@ -44,29 +44,22 @@ def generate_thread_title(query: str) -> str:
     if not q:
         return "新对话"
     try:
-        import dashscope
-        from dashscope.api_entities.dashscope_response import Message
-        from src.core.config import get_config
-        dashscope.api_key = get_config().dashscope_api_key
+        from src.core.llm.base_client import BaseLLMClient
         system = (
             "你给一段陪看对话起一个简短中文标题。要求: 4-10 字, 概括话题或情绪, "
             "像聊天记录标题; 不要书名号/引号/标点; 不要以'关于'开头; 只输出标题本身, 不要解释。"
         )
         user = f"用户这句话: {q}\n标题:"
-        resp = dashscope.Generation.call(
-            model="qwen-turbo",
+        client = BaseLLMClient(model="qwen3-flash")
+        raw = client.chat(
             messages=[
-                Message(role="system", content=system),
-                Message(role="user", content=user),
+                {"role": "system", "content": system},
+                {"role": "user", "content": user},
             ],
-            max_tokens=20,
             temperature=0.3,
-            result_format="message",
+            max_tokens=20,
             enable_thinking=False,
         )
-        raw = ""
-        if resp.status_code == 200:
-            raw = resp.output.choices[0].message.content
         return _sanitize_title(raw, q)
     except Exception as e:
         print(f"[thread_title] 生成失败, 用 fallback: {e}", flush=True)

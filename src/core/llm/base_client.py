@@ -65,7 +65,7 @@ class BaseLLMClient:
         self.model = model or config.model_text
         self.client = OpenAI(
             api_key=api_key or config.dashscope_api_key,
-            base_url=base_url or "https://dashscope.aliyuncs.com/compatible-mode/v1",
+            base_url=base_url or config.dashscope_base_url,
         )
 
     def chat(

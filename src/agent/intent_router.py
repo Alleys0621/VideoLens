@@ -21,6 +21,28 @@ import numpy as np
 # ============================================================
 
 INTENT_CATALOGUE: dict[str, dict] = {
+    "chitchat": {
+        "descriptions": [
+            "用户打招呼, 表达情绪, 闲聊",
+            "你好, 谢谢, 辛苦了, 加油",
+            "哈哈, 嘿嘿, 拜拜, 早安晚安",
+            "情绪表达, 鼓励, 感谢, 问候",
+            "用户问你是谁, 你会什么, 今天天气",
+            "用户问 Alleys 的爱好, 喜不喜欢看剧, 喜欢看什么",
+            "你喜欢看电视剧吗, 你喜欢看什么类型的剧",
+            "日常寒暄, 不针对当前剧情内容提问",
+        ],
+        "desc": "闲聊 → 不查 KB, 直接人设回应",
+    },
+    "companion": {
+        "descriptions": [
+            "用户对剧情或角色随口反应, 吐槽, 发表感想",
+            "这段太好笑了, 我好喜欢这个角色, 真感人",
+            "演员演得不错, 这个角色好讨厌",
+            "跟着剧情一起感叹, 不是明确提问",
+        ],
+        "desc": "陪伴型反应 → 可给少量剧情上下文, 不重检索",
+    },
     "deictic": {
         "descriptions": [
             "用户指着当前视频画面提问, 问这一刻发生了什么",
@@ -28,8 +50,19 @@ INTENT_CATALOGUE: dict[str, dict] = {
             "刚才那个镜头, 此刻的对白, 这一刻的表情",
             "视频里这个人是谁, 这个场景在干什么",
             "暂停在这里问画面内容, 这一句台词",
+            "这一幕在演什么, 这个角色现在在干嘛",
         ],
         "desc": "指代当前画面 → 只用时间邻域检索 (跳过全集向量)",
+    },
+    "knowledge": {
+        "descriptions": [
+            "用户明确问剧情, 角色, 因果关系",
+            "刘星考试考了多少分, 夏雪为什么闹别扭",
+            "这一集主要冲突是什么, 夏东海怎么教育刘星",
+            "后面会发生什么, 这个角色结局如何",
+            "谁做了什么, 为什么这样做, 这件事的前因后果",
+        ],
+        "desc": "剧情知识 → 检索 events + segments 回答",
     },
     "meta": {
         "descriptions": [
@@ -40,14 +73,14 @@ INTENT_CATALOGUE: dict[str, dict] = {
         ],
         "desc": "元问题 → 用 video_summary 回答 (不用 events 检索)",
     },
-    "chitchat": {
+    "refuse": {
         "descriptions": [
-            "用户打招呼, 表达情绪, 闲聊",
-            "你好, 谢谢, 辛苦了, 加油",
-            "哈哈, 嘿嘿, 拜拜, 早安晚安",
-            "情绪表达, 鼓励, 感谢, 问候",
+            "用户问剧外信息, 演员现实身份, 拍摄花絮, 制作背景",
+            "演员叫什么名字, 导演是谁, 这部剧什么时候拍的, 在哪里拍的",
+            "推荐其他剧, 问怎么买票, 问外部世界知识或新闻",
+            "询问与当前视频剧情完全无关的现实信息",
         ],
-        "desc": "闲聊 → 不查 KB, 直接人设回应",
+        "desc": "拒答 → 不查 KB, 礼貌说明",
     },
 }
 
@@ -104,6 +137,64 @@ def route_intent(
     if best_score >= threshold:
         return best_intent, best_score
     return None, best_score  # 不确定, 走默认
+
+
+def fast_route_intent(
+    query: str,
+    query_emb: np.ndarray | None = None,
+    threshold: float = 0.55,
+) -> IntentResult:
+    """纯 embedding 任务路由 (Path 1): 只决定 task, emotion/user_state 用兜底.
+
+    若 query_emb 未提供, 会现场调用 embedding API (多一次调用, 测试时尽量复用).
+    低于 threshold 时 task 回退为 kb ( companion.py 中 safe_task 会再转成 chitchat).
+    """
+    if query_emb is None:
+        from src.agent.retriever import _embed_texts
+        embs = _embed_texts([query])
+        query_emb = embs[0]
+
+    task, score = route_intent(query_emb, threshold=threshold)
+    if task is None:
+        task = "kb"
+    # embedding 路由的 task_confidence 用余弦分; 低于 0.6 时 safe_task 会回退 chitchat
+    return IntentResult(
+        task=task,
+        task_confidence=round(score, 3),
+        emotion="neutral",
+        emotion_confidence=0.0,
+        user_state="无明显状态",
+    )
+
+
+def hybrid_route_intent(
+    query: str,
+    query_emb: np.ndarray,
+    fallback_threshold: float | None = None,
+    video_time: float | None = None,
+    video_label: str = "",
+    chat_history: list[dict] | None = None,
+) -> IntentResult:
+    """Path 1 + fallback: embedding 先路由, 置信度低时 fallback 到 LLM.
+
+    工业常用模式: 不是 embedding or LLM, 而是 embedding first → confidence?
+    → 高置信度直接用 embedding, 低置信度走 LLM 兜底.
+
+    fallback_threshold 默认 None → 读 cfg.hybrid_threshold (pipeline.yaml).
+    当前 0.65 的依据 (probe_threshold_sweep, 50 条混合数据):
+        - 准确率 96% (vs 纯 LLM 87.5%, 纯 emb 84%)
+        - 70% query 走 emb 直通 (~1ms), 30% 回退 LLM
+        - 平均 485ms (vs 纯 LLM 1976ms, 快 4 倍)
+    """
+    if fallback_threshold is None:
+        from src.core.config import get_config
+        fallback_threshold = get_config().hybrid_threshold
+    emb_result = fast_route_intent(query, query_emb=query_emb)
+    if emb_result.task_confidence >= fallback_threshold and emb_result.task != "kb":
+        return emb_result
+    return llm_route_intent(
+        query, video_time, video_label=video_label, chat_history=chat_history
+    )
 
 
 # ============================================================
@@ -203,7 +294,7 @@ def llm_route_intent(
     video_label: str = "",
     chat_history: list[dict] | None = None,
 ) -> IntentResult:
-    """强模型语义理解 (qwen-max): 一次调用输出 task / emotion / user_state.
+    """强模型语义理解 (模型由 cfg.model_intent 决定, 默认 qwen3.7-flash): 一次调用输出 task / emotion / user_state.
 
     和检索并行, 不增加额外延迟. 返回 IntentResult, 字段独立:
       - task/task_confidence: 驱动上下文白名单 (Context Budget).
@@ -264,24 +355,20 @@ def llm_route_intent(
     try:
         import json
         import re as _re
-        import dashscope
-        from dashscope.api_entities.dashscope_response import Message
         from src.core.config import get_config
-        dashscope.api_key = get_config().dashscope_api_key
-        resp = dashscope.Generation.call(
-            model="qwen-max",
+        from src.core.llm.base_client import BaseLLMClient
+
+        cfg = get_config()
+        client = BaseLLMClient(model=cfg.model_intent)
+        raw = client.chat(
             messages=[
-                Message(role="system", content=system),
-                Message(role="user", content=user),
+                {"role": "system", "content": system},
+                {"role": "user", "content": user},
             ],
-            max_tokens=120,
             temperature=0,
-            result_format="message",
+            max_tokens=120,
             enable_thinking=False,
         )
-        raw = ""
-        if resp.status_code == 200:
-            raw = resp.output.choices[0].message.content
         # 解析 JSON (LLM 偶尔带 ```json 或多余文本)
         m = _re.search(r"\{[^{}]*\}", raw or "")
         if not m:

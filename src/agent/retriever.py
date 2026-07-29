@@ -15,26 +15,30 @@ from src.core.helpers.json_utils import load_json
 
 
 # ============================================================
-# Embedding (DashScope text-embedding-v3)
+# Embedding (DashScope qwen3.7-text-embedding)
 # ============================================================
 
 def _embed_texts(texts: list[str]) -> np.ndarray:
-    """调 DashScope text-embedding-v3 批量 embedding. 返回 (N, 1024) float32."""
+    """调 DashScope 批量 embedding. 返回 (N, D) float32, D 由模型决定.
+
+    模型名来自 config/pipeline.yaml: models.embedding (cfg.model_embedding).
+    """
     if not texts:
-        return np.zeros((0, 1024), dtype=np.float32)
+        return np.zeros((0, 0), dtype=np.float32)
     import dashscope
 
     cfg = get_config()
     dashscope.api_key = cfg.dashscope_api_key
+    embed_model = cfg.model_embedding
 
     all_emb: list[list[float]] = []
-    batch_size = 10  # DashScope text-embedding-v3 batch 上限
+    batch_size = 10  # DashScope embedding batch 上限
     for i in range(0, len(texts), batch_size):
         batch = texts[i : i + batch_size]
-        resp = dashscope.TextEmbedding.call(model="text-embedding-v3", input=batch)
+        resp = dashscope.TextEmbedding.call(model=embed_model, input=batch)
         if resp.status_code != 200:
             raise RuntimeError(
-                f"text-embedding-v3 调用失败: status={resp.status_code}, "
+                f"{embed_model} 调用失败: status={resp.status_code}, "
                 f"code={resp.code}, msg={resp.message}"
             )
         for item in resp.output["embeddings"]:

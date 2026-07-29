@@ -5,7 +5,25 @@ models:
   omni_flash: "qwen3.5-omni-flash"     # ASR + 情感 + 时间戳
   vlm: "qwen-vl-max"                   # 视觉描述 (Caption)
   ocr: "qwen3-vl-plus"                 # 字幕 OCR (输入便宜, 多帧采样友好)
-  text: "qwen3.7-plus"                 # 文本生成 (Stage 3 P1/P2)
+  text: "qwen3.7-plus"                 # 文本生成 (主回复 LLM 默认 + Stage 3 P1/P2)
+  text_flash: "qwen3.7-flash"          # 主回复 LLM 高置信分支 (轻量, 快)
+  intent: "qwen3.7-flash"              # 意图识别 / 用户理解 (轻量, 速度优先)
+  embedding: "qwen3.7-text-embedding"  # 向量 embedding (检索 + intent catalogue)
+
+# 意图路由 + 主 LLM 选择
+# intent_mode:
+#   llm       : 纯 LLM 路由 (默认, 准确但慢 ~2s)
+#   embedding : 纯 embedding 路由 (快 <50ms, 但角色名错位等脏数据会跪)
+#   hybrid    : embedding 优先, cosine < 阈值时回退 LLM (推荐)
+# hybrid_threshold: embedding 直通阈值, 0.65 是 50 条混合数据扫描的甜点位
+#   (准确率 96%, 平均 485ms, 70% query 走 emb 直通)
+# flash_threshold: 主 LLM 切换阈值, task_confidence >= 此值 → text_flash, 否则 text
+#   依据: qwen3.7 与 v3 cosine 标定结论 (分布漂移 <0.025, 阈值不需要校准)
+routing:
+  intent_mode: "hybrid"
+  hybrid_threshold: 0.65
+  flash_threshold: 0.75
+
 
 # 声纹库配置: 每个影视作品有独立的讯飞声纹组和角色映射
 # key = 视频子目录名 (data/videos/ 下的文件夹名)
@@ -38,8 +56,8 @@ voiceprint_groups:
 
 stage2:
   min_scene_len: 1.0                   # 最短场景时长 (秒)
-  samples_per_scene: 8                 # 每个场景提取的关键帧数 (回退路径)
-  transnet_threshold: 0.5              # TransNetV2 边界阈值 (回退路径)
+  samples_per_scene: 8                 # 每个场景提取的关键帧数 
+  transnet_threshold: 0.5              # TransNetV2 边界阈值 
   transnet_model_path: "models/transnetv2.onnx"
 
 paths:
@@ -73,5 +91,8 @@ pricing:
     image_input: 1.4
     text_output: 11.2
   qwen3.7-plus:
-    text_input: 1
-    text_output: 4
+    text_input: 2
+    text_output: 8
+  qwen3.7-flash:
+    text_input: 0.2
+    text_output: 0.8

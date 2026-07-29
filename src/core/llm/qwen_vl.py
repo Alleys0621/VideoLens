@@ -19,7 +19,7 @@ class QwenVLClient:
         config = get_config()
         self.model = model or config.model_vlm
         self.api_key = api_key or config.dashscope_api_key
-        self.base_url = base_url or "https://dashscope.aliyuncs.com/compatible-mode/v1"
+        self.base_url = base_url or config.dashscope_base_url
         self._client = OpenAI(api_key=self.api_key, base_url=self.base_url)
 
     def analyze_image(

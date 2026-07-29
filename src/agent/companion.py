@@ -459,6 +459,7 @@ def companion_chat(
     user_id: str = "default",
     chat_history: list[dict] | None = None,
     llm=None,
+    llm_chooser=None,
     web_search: bool = False,
     video_time: float | None = None,
 ) -> dict:
@@ -471,6 +472,9 @@ def companion_chat(
         chat_history: 短期对话历史 [{role, content}, ...]
         llm: LangChain ChatModel (如 ChatOpenAI); 提供时走 streaming (LangGraph 自动拦截 token),
              None 时 fallback 到 QwenTextClient 非流式
+        llm_chooser: 可选回调, 签名 (task_confidence: float) -> LangChain ChatModel.
+            由 graph.py 维护 flash/plus 双实例池, 按 intent 置信度切换主 LLM
+            (confidence >= 0.75 → flash, 否则 → plus). 与 llm 参数互斥, llm_chooser 优先.
 
     Returns:
         {answer, reasoning, keyframes}
@@ -481,12 +485,19 @@ def companion_chat(
     import time
     t_start = time.time()
 
+    # --- 模块级耗时打点 (临时, 用于定位检索阶段瓶颈) ---
+    _pc = time.perf_counter
+    _ts: dict[str, float] = {}
+
     # 1. 加载数据 + 归一
+    t0 = _pc()
     events_raw, _actions, scenes, segments = _load_episode_data(video_dir)
     char_map = _build_char_map()
     events = _normalize_events(events_raw, char_map)
+    _ts["load_normalize"] = (_pc() - t0) * 1000
 
     # video_summary / arc_updates (可选, 单集 KB 文件)
+    t0 = _pc()
     cfg = get_config()
     ep_dir = os.path.join(cfg.output_root, video_dir)
     kb_path = os.path.join(ep_dir, "stage3_kb.json")
@@ -496,9 +507,13 @@ def companion_chat(
         kb = load_json(kb_path)
         video_summary = kb.get("video_summary")
         arc_updates = kb.get("arc_updates", []) or []
+    _ts["load_kb"] = (_pc() - t0) * 1000
 
     # 2. 混合检索: BM25 (events) + 向量 (events + segments) → RRF 融合
+    t0 = _pc()
     index = BM25Index([build_searchable_text(e) for e in events]) if events else None
+    _ts["build_bm25"] = (_pc() - t0) * 1000
+
     retrieved = []
     top_score = 0.0
     selected = []
@@ -525,37 +540,91 @@ def companion_chat(
             user_state="无明显状态",
         ),
     }
+
+    # Path 1: 纯 embedding task 路由
+    # Path 1+fallback: embedding 先路由, 低置信度 fallback 到 LLM (推荐)
+    # Path 2/3: 保持 LLM 意图理解 (默认)
+    _cfg = get_config()
+    _intent_mode = _cfg.intent_mode
+    _hybrid_threshold = _cfg.hybrid_threshold
+    query_emb = None
+    if _intent_mode in ("embedding", "hybrid"):
+        from src.agent.retriever import embed_query
+        t1 = _pc()
+        query_emb = embed_query(query)
+        _ts["vec_embed_query"] = (_pc() - t1) * 1000
+
+    t_intent_start = _pc()
     def _do_intent():
-        _intent_box["v"] = llm_route_intent(
-            query, video_time, video_label=video_label, chat_history=chat_history,
-        )
+        if _intent_mode == "embedding":
+            from src.agent.intent_router import fast_route_intent
+            _intent_box["v"] = fast_route_intent(query, query_emb=query_emb)
+        elif _intent_mode == "hybrid":
+            from src.agent.intent_router import hybrid_route_intent
+            _intent_box["v"] = hybrid_route_intent(
+                query, query_emb=query_emb, fallback_threshold=_hybrid_threshold,
+                video_time=video_time, video_label=video_label, chat_history=chat_history,
+            )
+        else:
+            _intent_box["v"] = llm_route_intent(
+                query, video_time, video_label=video_label, chat_history=chat_history,
+            )
     _intent_th = threading.Thread(target=_do_intent, daemon=True)
     _intent_th.start()
 
+    t0 = _pc()
     bm25_hits = index.search(query, top_k=5) if index else []
     # BM25 top_score 仅用于 reasoning 展示 + knowledge 兜底判空
     top_score = float(bm25_hits[0][1]) if bm25_hits else 0.0
+    _ts["bm25_search"] = (_pc() - t0) * 1000
 
     # 向量检索 (和意图理解并行; knowledge 才会进 prompt, 但先算着, 意图回来再决定用不用)
+    t0 = _pc()
     try:
         from src.agent.retriever import (
-            build_or_load_embeddings, embed_query, vector_search, rrf_fuse,
+            build_or_load_embeddings, vector_search, rrf_fuse,
         )
+        t1 = _pc()
         events_emb, segs_emb, _ev_text, _sg_text = build_or_load_embeddings(video_dir)
-        query_emb = embed_query(query)
+        _ts["vec_load_emb"] = (_pc() - t1) * 1000
+        if query_emb is None:
+            from src.agent.retriever import embed_query
+            t1 = _pc()
+            query_emb = embed_query(query)
+            _ts["vec_embed_query"] = (_pc() - t1) * 1000
+        t1 = _pc()
         events_vec_hits = vector_search(query_emb, events_emb, top_k=5)
+        _ts["vec_search"] = (_pc() - t1) * 1000
+        t1 = _pc()
         events_fused = rrf_fuse(bm25_hits, events_vec_hits, top_k=5)
+        _ts["vec_rrf"] = (_pc() - t1) * 1000
     except Exception as e:
         print(f"[retriever] 向量检索失败, 回退纯 BM25: {e}", flush=True)
         events_fused = bm25_hits  # fallback
+    _ts["vector_retrieval"] = (_pc() - t0) * 1000
 
     # 等意图理解完成 (和检索并行了, 通常同时完成, join 几乎不等)
+    t0 = _pc()
     _intent_th.join()
+    _ts["intent_wait"] = (_pc() - t0) * 1000
+    _ts["intent_total"] = (_pc() - t_intent_start) * 1000
     intent_result: IntentResult = _intent_box["v"]
     # safe_*: 低置信度保守回退 (task→chitchat, emotion→neutral)
     task = intent_result.safe_task
     emotion = intent_result.safe_emotion
     user_state = intent_result.user_state
+
+    # 主 LLM 选择: 按 intent 置信度切 flash/plus (graph.py 维护实例池)
+    # confidence >= cfg.flash_threshold (默认 0.75) → flash (快, 防 over-engineering)
+    # 否则 → plus (防幻觉)
+    _main_llm_model = "default"
+    if llm_chooser is not None:
+        try:
+            llm = llm_chooser(intent_result.task_confidence)
+            _main_llm_model = "flash" if intent_result.task_confidence >= _cfg.flash_threshold else "plus"
+        except Exception as e:
+            # 回退到原 llm (若 llm 也为 None, _llm_generate 会走 QwenTextClient)
+            print(f"[companion] llm_chooser 失败, 回退默认: {e}", flush=True)
 
     retrieved = [
         {"event_id": events[i].get("event_id", ""),
@@ -678,6 +747,7 @@ def companion_chat(
         "intent": task,
         "intent_raw": intent_result.task,
         "task_confidence": round(intent_result.task_confidence, 2),
+        "main_llm_model": _main_llm_model,
         "emotion": emotion,
         "emotion_raw": intent_result.emotion,
         "emotion_confidence": round(intent_result.emotion_confidence, 2),
@@ -696,6 +766,7 @@ def companion_chat(
         },
         "evidence": evidence,
         "web_results": web_results,
+        "module_timings": _ts,
         "timings": {
             "retrieval_ms": round((t_retrieval - t_start) * 1000),
             "llm_ms": round((t_end - t_retrieval) * 1000),
@@ -703,9 +774,12 @@ def companion_chat(
         },
     }
     # 全链路打点 (后端)
+    _ts_summary = " | ".join(f"{k}={round(v)}ms" for k, v in _ts.items())
+    print(f"[companion:timings] {_ts_summary}", flush=True)
     print(f"[companion] query={query!r} task={task}(raw={intent_result.task},c={intent_result.task_confidence:.2f}) "
           f"emo={emotion}(raw={intent_result.emotion},c={intent_result.emotion_confidence:.2f}) "
-          f"top_score={round(top_score, 2)} focus={watching.get('focus_character')} | "
+          f"top_score={round(top_score, 2)} focus={watching.get('focus_character')} "
+          f"main_llm={_main_llm_model} | "
           f"retrieval={reasoning['timings']['retrieval_ms']}ms | "
           f"llm={reasoning['timings']['llm_ms']}ms | total={reasoning['timings']['total_ms']}ms",
           flush=True)

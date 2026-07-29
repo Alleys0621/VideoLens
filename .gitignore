@@ -9,6 +9,7 @@ __pycache__/
 .venv/
 venv/
 ENV/
+.claude/
 
 # Environments
 .env
@@ -55,6 +56,9 @@ data/_mem0_qdrant/
 experiments/_archive/
 experiments/results/
 experiments/test_omni_result/
+
+# === 本地设计讨论文档 (不上 git) ===
+ALLEYSVID_DESIGN_DIALOG.md
 
 # Logs
 *.log

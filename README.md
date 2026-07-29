@@ -1,8 +1,35 @@
 # AlleysVid — AI 陪看智能体
 
-> **V1.2** — 陪看智能体心智层升级：语义意图理解、上下文白名单、分层用户画像、中文会话标题
+> **V1.2.1** — 路由与模型层优化：意图路由 hybrid 化、主 LLM 按置信度切 flash/plus、embedding 升级、配置统一进 yaml
 
 边看剧边聊天的 AI 陪看搭子。选一集视频，Alleys 陪你一起看，随时聊剧情、问角色、吐槽笑点。
+
+## 版本记录
+
+### V1.2.1（2026-07-29）
+
+**意图路由 hybrid 化**
+- 新增 `hybrid_route_intent`：embedding 优先，cosine < 阈值时回退 LLM
+- 实测 50 条混合数据：准确率 96%（vs 纯 LLM 87.5%、纯 emb 84%），70% query 走 emb 直通，平均 485ms（vs 纯 LLM 1976ms，快 4 倍）
+- 默认阈值 0.65（基于数据扫描甜点位）
+
+**主 LLM 按置信度切 flash/plus**
+- intent 置信度 ≥ 0.75 → qwen3.7-flash（首 token 快 2-4 倍）
+- 否则 → qwen3.7-plus（防幻觉）
+- 26 条 task×cosine 矩阵测试定位 flash 崩塌边界：低置信区间 flash 易幻觉/越界，plus 更稳
+
+**Embedding 升级**
+- `text-embedding-v3` → `qwen3.7-text-embedding`
+- 100 条数据标定：两模型 cosine 分布几乎一致（中位漂移 0.010），所有阈值上 qwen3.7 准确率都 ≥ v3
+- 阈值不需要重新校准
+
+**配置统一进 yaml**
+- 路由/模型相关配置全部从 `.env` 迁到 `config/pipeline.yaml`
+- `.env` 只留 `DASHSCOPE_API_KEY` / `DASHSCOPE_BASE_URL`
+
+### V1.2（2026-06）
+
+陪看智能体心智层升级：语义意图理解、上下文白名单、分层用户画像、中文会话标题。
 
 ## 功能
 
@@ -11,6 +38,8 @@
 - **用户系统**：手机号注册登录，每人独立的对话历史和记忆
 - **播放进度记忆**：切走再回来，从上次的位置继续看
 - **语义意图理解**：qwen-max 同时识别用户任务类型、当下情绪和一句话状态，让回复更对症
+- **Hybrid 意图路由（V1.2.1）**：embedding 优先 + LLM 兜底，准确率 96%，70% query 直通 emb（~1ms），整体路由快 4 倍
+- **主 LLM 按置信度切换（V1.2.1）**：高置信走 qwen3.7-flash（快），低置信走 qwen3.7-plus（稳）
 - **上下文白名单（Context Budget）**：按任务类型决定 Alleys 本轮能看到哪些剧情上下文，避免闲聊时硬塞知识库
 - **分层用户画像**：L1 跨会话聊法偏好 + L2 单部作品角色偏好，记忆跟着人走，但不喧宾夺主
 - **中文会话标题**：首条消息后自动起一个 4–12 字中文标题，方便历史会话列表辨认
@@ -153,7 +182,10 @@ echo y | python -m scripts.cleanup_orphan_threads
 ## 技术栈
 
 - **AI 对话**：LangGraph + Qwen（通义千问）
-- **语义理解**：qwen-max（任务 / 情绪 / 状态）+ embedding 语义路由
+- **意图路由**：qwen3.7-flash（LLM 兜底）+ embedding 余弦匹配（直通），hybrid 模式
+- **主回复 LLM**：qwen3.7-plus（默认/低置信）+ qwen3.7-flash（高置信），按 intent 置信度切换
+- **Embedding**：qwen3.7-text-embedding（意图路由 catalogue + 检索向量）
+- **语义理解**：qwen-max（任务 / 情绪 / 状态）
 - **语音识别**：DashScope paraformer-realtime-v2（流式 WebSocket）
 - **语音合成**：DashScope qwen-audio-3.0-tts-flash + longanhuan_v3.6（流式 WebSocket）
 - **前端**：Next.js + TailwindCSS + Artplayer

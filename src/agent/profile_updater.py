@@ -78,24 +78,17 @@ def maybe_update_user_profile(user_id: str, chat_history: list[dict]) -> None:
     )
 
     try:
-        import dashscope
-        from dashscope.api_entities.dashscope_response import Message
-        from src.core.config import get_config
-        dashscope.api_key = get_config().dashscope_api_key
-        resp = dashscope.Generation.call(
-            model="qwen-plus",
+        from src.core.llm.base_client import BaseLLMClient
+        client = BaseLLMClient(model="qwen-plus")
+        raw = client.chat(
             messages=[
-                Message(role="system", content=system),
-                Message(role="user", content=user),
+                {"role": "system", "content": system},
+                {"role": "user", "content": user},
             ],
-            max_tokens=120,
             temperature=0,
-            result_format="message",
+            max_tokens=120,
             enable_thinking=False,
         )
-        raw = ""
-        if resp.status_code == 200:
-            raw = resp.output.choices[0].message.content
         m = re.search(r"\{[^{}]*\}", raw or "")
         if not m:
             return
@@ -174,24 +167,17 @@ def maybe_update_show_profile(
     )
 
     try:
-        import dashscope
-        from dashscope.api_entities.dashscope_response import Message
-        from src.core.config import get_config
-        dashscope.api_key = get_config().dashscope_api_key
-        resp = dashscope.Generation.call(
-            model="qwen-plus",
+        from src.core.llm.base_client import BaseLLMClient
+        client = BaseLLMClient(model="qwen-plus")
+        raw = client.chat(
             messages=[
-                Message(role="system", content=system),
-                Message(role="user", content=user),
+                {"role": "system", "content": system},
+                {"role": "user", "content": user},
             ],
-            max_tokens=200,
             temperature=0,
-            result_format="message",
+            max_tokens=200,
             enable_thinking=False,
         )
-        raw = ""
-        if resp.status_code == 200:
-            raw = resp.output.choices[0].message.content
         m = re.search(r"\{.*\}", raw or "", flags=re.S)
         if not m:
             return

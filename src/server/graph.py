@@ -10,6 +10,7 @@ video_dir 通过 LangGraph 的 configurable 注入 (前端选视频 → stream.s
 
 from __future__ import annotations
 
+import os
 import re
 from typing import Annotated, TypedDict
 
@@ -78,29 +79,49 @@ def _messages_to_chat_history(messages: list) -> list[dict]:
     return out
 
 
-_LLM_INSTANCE = None
+_LLM_POOL: dict[str, object] = {}
 
 
-def _get_streaming_llm():
+def _get_streaming_llm(model_key: str = "plus"):
     """获取 LangChain ChatOpenAI 单例 (指向 DashScope, streaming=True).
 
-    首次调用创建并缓存, 后续复用 (预热时已创建, 问答时直接拿).
-    LangGraph 自动拦截 ChatModel token 流 → messages streamMode → 前端逐字渲染.
+    维护 flash/plus 两个实例 (按 intent 置信度切换主 LLM):
+        - flash: cfg.model_text_flash (默认 qwen3.7-flash), 高置信度时用
+          首 token 快 2-4 倍, 简单 query 质量足够.
+        - plus : cfg.model_text (默认 qwen3.7-plus), 默认/低置信度时用, 防幻觉.
+    切换阈值: cfg.flash_threshold (默认 0.75).
     """
-    global _LLM_INSTANCE
-    if _LLM_INSTANCE is not None:
-        return _LLM_INSTANCE
+    if model_key in _LLM_POOL:
+        return _LLM_POOL[model_key]
     from langchain_openai import ChatOpenAI
     from src.core.config import get_config
 
     cfg = get_config()
-    _LLM_INSTANCE = ChatOpenAI(
-        model=cfg.model_text,
+    if model_key == "flash":
+        model_name = cfg.model_text_flash
+    else:  # "plus" 或默认
+        model_name = cfg.model_text
+
+    _LLM_POOL[model_key] = ChatOpenAI(
+        model=model_name,
         api_key=cfg.dashscope_api_key,
-        base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
+        base_url=cfg.dashscope_base_url,
         streaming=True,
     )
-    return _LLM_INSTANCE
+    return _LLM_POOL[model_key]
+
+
+def _choose_main_llm_by_confidence(confidence: float):
+    """根据 intent 置信度选主 LLM 实例.
+
+    confidence >= cfg.flash_threshold (默认 0.75) → flash
+    否则 → plus
+    """
+    from src.core.config import get_config
+    threshold = get_config().flash_threshold
+    if confidence >= threshold:
+        return _get_streaming_llm("flash")
+    return _get_streaming_llm("plus")
 
 
 def _warmup():
@@ -120,10 +141,11 @@ def _warmup():
         print("[warmup] Mem0 预热完成", flush=True)
     except Exception as e:
         print(f"[warmup] Mem0 预热失败 (非致命): {e}", flush=True)
-    # 2. LLM client (ChatOpenAI 对象创建, 快)
+    # 2. LLM client (ChatOpenAI 对象创建, 快) — 预热 flash + plus 两个实例
     try:
-        _get_streaming_llm()
-        print("[warmup] LLM client 预热完成", flush=True)
+        _get_streaming_llm("plus")
+        _get_streaming_llm("flash")
+        print("[warmup] LLM client 预热完成 (plus + flash)", flush=True)
     except Exception as e:
         print(f"[warmup] LLM client 预热失败: {e}", flush=True)
     # 2.5 LLM 意图理解预热 (消除首次 dashscope 连接冷启动 2.4s → 0.8s)
@@ -225,7 +247,7 @@ def companion_node(state: State, config: RunnableConfig) -> dict:
             video_dir=video_dir,
             user_id=configurable.get("user_id", "default"),
             chat_history=chat_history,
-            llm=_get_streaming_llm(),  # LangGraph 自动拦截 token → 前端逐字渲染
+            llm_chooser=_choose_main_llm_by_confidence,  # 按置信度选 flash/plus
             web_search=bool(configurable.get("web_search", False)),  # 联网模式 toggle
             video_time=configurable.get("video_time"),  # 当前播放时间戳 (邻域对白检索)
         )
