@@ -82,14 +82,14 @@ def extract_audio(video_path, output_path):
 
 def detect_theme_songs(client, audio_path, total_duration, prompt_text):
     """检测片头曲和片尾曲, 返回 (content_start, content_end, theme_info)"""
-    print("[Stage 1b] 片头/片尾曲检测...")
+    logger.info("[Stage 1b] 片头/片尾曲检测...")
 
     theme_info = {"opening": None, "ending": None}
     content_start = 0.0
     content_end = total_duration
 
     if total_duration <= THEME_WINDOW * 2:
-        print(f"  音频过短 ({total_duration:.1f}s), 跳过主题曲检测")
+        logger.info(f"  音频过短 ({total_duration:.1f}s), 跳过主题曲检测")
         return content_start, content_end, theme_info
 
     for window_type, offset in [("opening", 0), ("ending", max(0, total_duration - THEME_WINDOW))]:
@@ -108,7 +108,7 @@ def detect_theme_songs(client, audio_path, total_duration, prompt_text):
             with open(tmp.name, "rb") as f:
                 b64 = base64.b64encode(f.read()).decode()
         except Exception as e:
-            print(f"  {window_type} 片段截取失败: {e}")
+            logger.warning(f"  {window_type} 片段截取失败: {e}")
             continue
         finally:
             if os.path.isfile(tmp.name):
@@ -152,12 +152,12 @@ def detect_theme_songs(client, audio_path, total_duration, prompt_text):
             except json.JSONDecodeError:
                 parsed = extract_json_obj(full_text)
             if not parsed:
-                print(f"  {window_type}: 解析失败")
+                logger.warning(f"  {window_type}: 解析失败")
                 continue
 
             ts = parsed.get("theme_song", parsed)
             if not ts.get("exist"):
-                print(f"  {window_type}: 未检测到主题曲")
+                logger.info(f"  {window_type}: 未检测到主题曲")
                 continue
 
             local_start = float(ts.get("start_time", 0))
@@ -172,10 +172,10 @@ def detect_theme_songs(client, audio_path, total_duration, prompt_text):
                 "end_time": round(orig_end, 1),
                 "duration": round(orig_end - orig_start, 1),
             }
-            print(f"  {window_type}: {theme_type} [{orig_start:.1f}s - {orig_end:.1f}s] ({orig_end - orig_start:.1f}s)")
+            logger.info(f"  {window_type}: {theme_type} [{orig_start:.1f}s - {orig_end:.1f}s] ({orig_end - orig_start:.1f}s)")
 
         except Exception as e:
-            print(f"  {window_type} 检测失败: {e}")
+            logger.warning(f"  {window_type} 检测失败: {e}")
 
     if theme_info["opening"]:
         content_start = theme_info["opening"]["end_time"]
@@ -183,13 +183,13 @@ def detect_theme_songs(client, audio_path, total_duration, prompt_text):
         content_end = theme_info["ending"]["start_time"]
 
     if content_start >= content_end:
-        print(f"  主题曲范围异常 ({content_start:.1f} >= {content_end:.1f}), 使用完整音频")
+        logger.warning(f"  主题曲范围异常 ({content_start:.1f} >= {content_end:.1f}), 使用完整音频")
         content_start = 0.0
         content_end = total_duration
         theme_info = {"opening": None, "ending": None}
 
     content_dur = content_end - content_start
-    print(f"  正文范围: [{content_start:.1f}s - {content_end:.1f}s] ({content_dur:.1f}s)")
+    logger.info(f"  正文范围: [{content_start:.1f}s - {content_end:.1f}s] ({content_dur:.1f}s)")
     return content_start, content_end, theme_info
 
 
@@ -222,7 +222,7 @@ class Segment:
 
 def preprocess_audio(audio_path, output_dir):
     """静默检测, 生成预处理音频 + 时间映射 + 候选切割点"""
-    print("[Stage 1c] 音频预处理...")
+    logger.info("[Stage 1c] 音频预处理...")
 
     r = subprocess.run([
         "ffmpeg", "-i", audio_path,
@@ -263,7 +263,7 @@ def preprocess_audio(audio_path, output_dir):
 
     filtered = [(s, e) for s, e in speech_segs if (e - s) >= SPEECH_REMOVE_MAX]
     filtered_dur = sum(e - s for s, e in filtered)
-    print(f"  总时长: {total_dur:.1f}s, 静音段: {len(silences)}, 有声段: {len(filtered)}, 预处理后: {filtered_dur:.1f}s")
+    logger.info(f"  总时长: {total_dur:.1f}s, 静音段: {len(silences)}, 有声段: {len(filtered)}, 预处理后: {filtered_dur:.1f}s")
 
     segments = []
     new_t = 0.0
@@ -360,7 +360,7 @@ def map_to_original(local_time, chunk_start_new, segments):
 # ══════════════════════════════════════════════════════════════
 
 def omni_recognize(client, pp_path, segments, chunks, user_template):
-    print("[Stage 1d] Omni 识别...")
+    logger.info("[Stage 1d] Omni 识别...")
     all_dialogues = []
     total_in = total_out = 0
     total_latency = 0
@@ -445,12 +445,12 @@ def omni_recognize(client, pp_path, segments, chunks, user_template):
                     })
 
             if (ci + 1) % 10 == 0:
-                print(f"  chunk {ci+1}/{len(chunks)} done, {len(all_dialogues)} segments")
+                logger.info(f"  chunk {ci+1}/{len(chunks)} done, {len(all_dialogues)} segments")
 
         except Exception as e:
-            print(f"  chunk {ci} fail: {e}")
+            logger.warning(f"  chunk {ci} fail: {e}")
 
-    print(f"  完成: {len(all_dialogues)} 段, ¥{total_cost:.4f}, {total_latency:.0f}s")
+    logger.info(f"  完成: {len(all_dialogues)} 段, ¥{total_cost:.4f}, {total_latency:.0f}s")
     return all_dialogues, {"input_tokens": total_in, "output_tokens": total_out, "cost": total_cost}
 
 
@@ -462,7 +462,7 @@ def run_iflytek(dialogues, audio_path, app_id, api_key, api_secret, group_id, na
     from src.voiceprint.client import VoiceprintClient, cut_audio_segment
 
     _name_map = name_map or NAME_MAP
-    print(f"[Stage 1e] 讯飞声纹识别... (group={group_id}, {len(_name_map)} 角色)")
+    logger.info(f"[Stage 1e] 讯飞声纹识别... (group={group_id}, {len(_name_map)} 角色)")
     client = VoiceprintClient(app_id, api_key, api_secret, group_id, verbose=False)
     tmp_dir = tempfile.mkdtemp(prefix="spk_pipe_")
 
@@ -497,11 +497,11 @@ def run_iflytek(dialogues, audio_path, app_id, api_key, api_secret, group_id, na
         time.sleep(0.1)
         if (idx + 1) % 20 == 0:
             identified = sum(1 for r in results if r["pred"])
-            print(f"  {idx+1}/{len(dialogues)} done, {identified} identified")
+            logger.info(f"  {idx+1}/{len(dialogues)} done, {identified} identified")
 
     shutil.rmtree(tmp_dir, ignore_errors=True)
     identified = sum(1 for r in results if r["pred"])
-    print(f"  完成: {identified}/{len(dialogues)} 段有声纹预测")
+    logger.info(f"  完成: {identified}/{len(dialogues)} 段有声纹预测")
     return results
 
 
@@ -577,24 +577,24 @@ def run_stage1(video_dir: str, output_dir: str, skip_theme: bool = False, chunk_
     result_path = os.path.join(output_dir, "audio.json")
     os.makedirs(output_dir, exist_ok=True)
 
-    print("=" * 60)
-    print(f"Stage 1: 音频处理")
-    print(f"视频: {video_dir}")
-    print(f"模型: {OMNI_MODEL}, Chunk: {chunk_dur}s")
-    print("=" * 60)
+    logger.info("=" * 60)
+    logger.info(f"Stage 1: 音频处理")
+    logger.info(f"视频: {video_dir}")
+    logger.info(f"模型: {OMNI_MODEL}, Chunk: {chunk_dur}s")
+    logger.info("=" * 60)
 
     # Step 1: 提取音频
     if not os.path.isfile(audio_path):
-        print("[Stage 1a] 提取音频...")
+        logger.info("[Stage 1a] 提取音频...")
         dur = extract_audio(video_path, audio_path)
-        print(f"  音频: {audio_path} ({dur:.1f}s)")
+        logger.info(f"  音频: {audio_path} ({dur:.1f}s)")
     else:
         dur = float(subprocess.run(
             ["ffprobe", "-i", audio_path, "-show_entries", "format=duration",
              "-v", "quiet", "-of", "csv=p=0"],
             capture_output=True, text=True,
         ).stdout.strip())
-        print(f"[Stage 1a] 音频已存在: {audio_path} ({dur:.1f}s)")
+        logger.info(f"[Stage 1a] 音频已存在: {audio_path} ({dur:.1f}s)")
 
     # 初始化 Omni 客户端
     _cfg = get_config()
@@ -618,7 +618,7 @@ def run_stage1(video_dir: str, output_dir: str, skip_theme: bool = False, chunk_
     if content_start > 0 or content_end < dur:
         content_audio_path = os.path.join(output_dir, "audio_content.wav")
         if not os.path.isfile(content_audio_path):
-            print(f"  截取正文音频: [{content_start:.1f}s - {content_end:.1f}s]")
+            logger.info(f"  截取正文音频: [{content_start:.1f}s - {content_end:.1f}s]")
             extract_content_audio(audio_path, content_start, content_end, content_audio_path)
         pipeline_audio = content_audio_path
     else:
@@ -629,7 +629,7 @@ def run_stage1(video_dir: str, output_dir: str, skip_theme: bool = False, chunk_
 
     # 切块
     chunks = smart_chunk(pp_duration, chunk_dur, candidate_cuts)
-    print(f"  {len(chunks)} 个 chunk (目标 {chunk_dur}s)")
+    logger.info(f"  {len(chunks)} 个 chunk (目标 {chunk_dur}s)")
 
     # Step 1d: Omni
     with open("config/prompts.yaml", "r", encoding="utf-8") as f:
@@ -640,7 +640,7 @@ def run_stage1(video_dir: str, output_dir: str, skip_theme: bool = False, chunk_
 
     # 映射回原始时间轴
     if content_start > 0:
-        print(f"  映射时间轴: +{content_start:.1f}s offset")
+        logger.info(f"  映射时间轴: +{content_start:.1f}s offset")
         for d in dialogues:
             d["start_time"] = round(d["start_time"] + content_start, 3)
             d["end_time"] = round(d["end_time"] + content_start, 3)
@@ -655,7 +655,7 @@ def run_stage1(video_dir: str, output_dir: str, skip_theme: bool = False, chunk_
             group_id, name_map,
         )
     else:
-        print("[Stage 1e] 未配置声纹库，跳过声纹识别")
+        logger.info("[Stage 1e] 未配置声纹库，跳过声纹识别")
         iflytek_results = [{"pred": "", "score": 0.0}] * len(dialogues)
 
     # 输出
@@ -677,15 +677,15 @@ def run_stage1(video_dir: str, output_dir: str, skip_theme: bool = False, chunk_
     with_pred = sum(1 for o in segments_out if o["speaker_pred"])
     by_spk = Counter(o["speaker_pred"] for o in segments_out if o["speaker_pred"])
 
-    print(f"\n{'=' * 60}")
-    print(f"结果: {result_path}")
-    print(f"总段数: {len(segments_out)}, 有声纹预测: {with_pred}")
+    logger.info(f"\n{'=' * 60}")
+    logger.info(f"结果: {result_path}")
+    logger.info(f"总段数: {len(segments_out)}, 有声纹预测: {with_pred}")
     if theme_info["opening"] or theme_info["ending"]:
-        print(f"主题曲: {theme_info}")
-    print(f"角色分布:")
+        logger.info(f"主题曲: {theme_info}")
+    logger.info(f"角色分布:")
     for spk, cnt in by_spk.most_common():
-        print(f"  {spk}: {cnt} 段")
-    print(f"费用: ¥{usage['cost']:.4f}")
-    print(f"{'=' * 60}")
+        logger.info(f"  {spk}: {cnt} 段")
+    logger.info(f"费用: ¥{usage['cost']:.4f}")
+    logger.info(f"{'=' * 60}")
 
     return result_data

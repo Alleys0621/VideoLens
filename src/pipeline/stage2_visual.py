@@ -473,10 +473,10 @@ def run_stage2(video_dir: str, output_dir: str, audio_result: dict = None, skip_
     if not os.path.isfile(video_path):
         raise FileNotFoundError(f"视频文件不存在: {video_path}")
 
-    print("=" * 60)
-    print("Stage 2: 视觉处理")
-    print(f"视频: {video_dir}")
-    print("=" * 60)
+    logger.info("=" * 60)
+    logger.info("Stage 2: 视觉处理")
+    logger.info(f"视频: {video_dir}")
+    logger.info("=" * 60)
 
     # ---- 路径选择: 有声纹 segments 走锚点驱动, 否则回退 SBD ----
     audio_segs = (audio_result or {}).get("segments") or []
@@ -485,7 +485,7 @@ def run_stage2(video_dir: str, output_dir: str, audio_result: dict = None, skip_
 
     if use_anchor:
         # ===== 新路径: 声纹锚点驱动 =====
-        print(f"[Stage 2a] 声纹锚点生成 (segments={len(audio_segs)}) ...")
+        logger.info(f"[Stage 2a] 声纹锚点生成 (segments={len(audio_segs)}) ...")
         content_range = (audio_result or {}).get("content_range") or {}
         anchors = build_anchors(
             audio_segs,
@@ -493,45 +493,45 @@ def run_stage2(video_dir: str, output_dir: str, audio_result: dict = None, skip_
         )
         from collections import Counter
         type_ct = Counter(a.anchor_type for a in anchors)
-        print(f"  生成 {len(anchors)} 个锚点: "
-              f"midpoint={type_ct.get('midpoint', 0)}, "
-              f"switch={type_ct.get('switch', 0)}, "
-              f"silence={type_ct.get('silence', 0)}")
+        logger.info(f"  生成 {len(anchors)} 个锚点: "
+                    f"midpoint={type_ct.get('midpoint', 0)}, "
+                    f"switch={type_ct.get('switch', 0)}, "
+                    f"silence={type_ct.get('silence', 0)}")
 
-        print("[Stage 2b] 按锚点采样关键帧 ...")
+        logger.info("[Stage 2b] 按锚点采样关键帧 ...")
         scenes = extract_anchor_keyframes(video_path, anchors, output_dir, video_id=video_dir)
         total_kf = sum(len(s.get("keyframe_paths", [])) for s in scenes)
-        print(f"  写入 {total_kf} 张关键帧 (每锚点 1 帧)")
+        logger.info(f"  写入 {total_kf} 张关键帧 (每锚点 1 帧)")
     else:
         # ===== 旧路径回退: TransNetV2 + 均匀采样 =====
-        print(f"[Stage 2a] 场景检测 (TransNetV2, 回退模式) ...")
+        logger.info(f"[Stage 2a] 场景检测 (TransNetV2, 回退模式) ...")
         detector = create_detector(config)
         scene_objs = detector.detect_scenes(video_path)
         scenes = [s.to_dict() for s in scene_objs]
-        print(f"  检测到 {len(scenes)} 个场景")
+        logger.info(f"  检测到 {len(scenes)} 个场景")
 
-        print("[Stage 2b] 关键帧提取 (回退: 均匀采样) ...")
+        logger.info("[Stage 2b] 关键帧提取 (回退: 均匀采样) ...")
         scenes = extract_keyframes(
             video_path, scenes, output_dir,
             samples_per_scene=config.samples_per_scene,
         )
         total_kf = sum(len(s.get("keyframe_paths", [])) for s in scenes)
-        print(f"  提取 {total_kf} 个关键帧")
+        logger.info(f"  提取 {total_kf} 个关键帧")
 
         if hasattr(detector, "release"):
             detector.release()
-            print("  检测器模型已释放")
+            logger.info("  检测器模型已释放")
 
-        print("[Stage 2c] 帧过滤 (回退: 首中末) ...")
+        logger.info("[Stage 2c] 帧过滤 (回退: 首中末) ...")
         scenes = filter_subtitle_frames(scenes, audio_result)
 
     # 保存场景数据
     save_json(scenes, os.path.join(output_dir, "scenes.json"))
 
     # Step 2d: OCR (多帧采样, 用 qwen3-vl-plus)
-    print(f"[Stage 2d] 字幕 OCR (model={config.model_ocr}, 多帧采样)...")
+    logger.info(f"[Stage 2d] 字幕 OCR (model={config.model_ocr}, 多帧采样)...")
     ocr_results = run_ocr(scenes, config, video_path=video_path)
-    print(f"  OCR 完成: {len(ocr_results)} 个场景有结果")
+    logger.info(f"  OCR 完成: {len(ocr_results)} 个场景有结果")
 
     # Step 2e: 视觉描述
     captions = {}
@@ -543,15 +543,15 @@ def run_stage2(video_dir: str, output_dir: str, audio_result: dict = None, skip_
                 with open(existing_visual, "r", encoding="utf-8") as f:
                     old = json.load(f)
                 captions = old.get("captions", {}) or {}
-                print(f"[Stage 2e] caption 跳过 (复用现有 {len(captions)} 条)")
+                logger.info(f"[Stage 2e] caption 跳过 (复用现有 {len(captions)} 条)")
             except Exception as e:
                 logger.warning(f"[Stage 2e] caption 跳过 (无法读取旧 visual.json, 留空): {e}")
         else:
-            print("[Stage 2e] caption 跳过 (无现有 visual.json, 留空)")
+            logger.info("[Stage 2e] caption 跳过 (无现有 visual.json, 留空)")
     else:
-        print("[Stage 2e] 视觉描述生成...")
+        logger.info("[Stage 2e] 视觉描述生成...")
         captions = run_captions(scenes, audio_result, config)
-        print(f"  Caption 完成: {len(captions)} 个场景有描述")
+        logger.info(f"  Caption 完成: {len(captions)} 个场景有描述")
 
     # 合并输出
     visual_data = {
@@ -561,9 +561,9 @@ def run_stage2(video_dir: str, output_dir: str, audio_result: dict = None, skip_
     }
     save_json(visual_data, os.path.join(output_dir, "visual.json"))
 
-    print(f"\n{'=' * 60}")
-    print(f"结果: {os.path.join(output_dir, 'visual.json')}")
-    print(f"场景数: {len(scenes)}, OCR: {len(ocr_results)}, Caption: {len(captions)}")
-    print(f"{'=' * 60}")
+    logger.info(f"\n{'=' * 60}")
+    logger.info(f"结果: {os.path.join(output_dir, 'visual.json')}")
+    logger.info(f"场景数: {len(scenes)}, OCR: {len(ocr_results)}, Caption: {len(captions)}")
+    logger.info(f"{'=' * 60}")
 
     return visual_data

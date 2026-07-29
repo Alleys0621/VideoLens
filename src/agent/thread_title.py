@@ -14,6 +14,9 @@ from __future__ import annotations
 import re
 
 from src.agent.profile_store import _conninfo, _is_uuid
+from src.core.logging import get_logger
+
+logger = get_logger()
 
 
 def _sanitize_title(raw: str, query: str) -> str:
@@ -62,7 +65,7 @@ def generate_thread_title(query: str) -> str:
         )
         return _sanitize_title(raw, q)
     except Exception as e:
-        print(f"[thread_title] 生成失败, 用 fallback: {e}", flush=True)
+        logger.warning(f"[thread_title] 生成失败, 用 fallback: {e}")
         return _fallback_title(q)
 
 
@@ -82,11 +85,11 @@ def set_thread_title_if_empty(thread_id: str, title: str) -> None:
                 )
                 conn.commit()
     except Exception as e:
-        print(f"[thread_title] 写入失败: {e}", flush=True)
+        logger.warning(f"[thread_title] 写入失败: {e}")
 
 
 def maybe_set_thread_title(thread_id: str, query: str) -> None:
     """生成 + 写入 (供异步线程调用)."""
     title = generate_thread_title(query)
     set_thread_title_if_empty(thread_id, title)
-    print(f"[thread_title] set {thread_id[:8]} -> {title}", flush=True)
+    logger.info(f"[thread_title] set {thread_id[:8]} -> {title}")

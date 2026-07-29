@@ -13,6 +13,10 @@ from dataclasses import dataclass
 
 import numpy as np
 
+from src.core.logging import get_logger
+
+logger = get_logger()
+
 
 # ============================================================
 # 意图目录: intent_name → {descriptions, desc}
@@ -102,10 +106,9 @@ def build_intent_vectors() -> dict[str, np.ndarray]:
     for intent, info in INTENT_CATALOGUE.items():
         embs = _embed_texts(info["descriptions"])
         _intent_vectors[intent] = embs.mean(axis=0)  # 多条描述取平均
-    print(
+    logger.info(
         f"[intent_router] 预建 {len(_intent_vectors)} 个语义意图向量: "
-        f"{list(_intent_vectors.keys())}",
-        flush=True,
+        f"{list(_intent_vectors.keys())}"
     )
     return _intent_vectors
 
@@ -399,5 +402,5 @@ def llm_route_intent(
             user_state=user_state,
         )
     except Exception as e:
-        print(f"[intent_router] LLM 理解失败, 走最小上下文: {e}", flush=True)
+        logger.warning(f"[intent_router] LLM 理解失败, 走最小上下文: {e}")
         return _FALLBACK

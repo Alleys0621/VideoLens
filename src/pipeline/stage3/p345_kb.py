@@ -24,7 +24,10 @@ from src.core.config import get_config
 from src.core.cost import get_cost_tracker, reset_cost_tracker
 from src.core.helpers.json_utils import load_json, save_json
 from src.core.llm.qwen_text import QwenTextClient
+from src.core.logging import get_logger
 from src.pipeline.stage3.llm_json import call_llm_json
+
+logger = get_logger()
 
 
 # ============================================================
@@ -61,12 +64,12 @@ def run_p3(client: QwenTextClient, video_id: str, events: list[dict],
               .replace("{events_json}", events_brief)
               .replace("{global_arcs_json}", arcs_brief))
 
-    print(f"[P3] PlotArc 匹配 ({len(events)} events, {len(global_arcs)} 已有 arcs)...", flush=True)
+    logger.info(f"[P3] PlotArc 匹配 ({len(events)} events, {len(global_arcs)} 已有 arcs)...")
     result = call_llm_json(client, prompt, stage="stage3_p3_plot_arc",
                           max_tokens=6000, expected_key="arc_updates")
     if not isinstance(result, list):
         result = result.get("arc_updates", []) if isinstance(result, dict) else []
-    print(f"[P3] 产出 {len(result)} arc_updates", flush=True)
+    logger.info(f"[P3] 产出 {len(result)} arc_updates")
     return result
 
 
@@ -99,13 +102,13 @@ def run_p4(client: QwenTextClient, video_id: str, events: list[dict],
               .replace("{events_json}", events_brief)
               .replace("{arc_updates_json}", arcs_brief))
 
-    print(f"[P4] Video 摘要生成...", flush=True)
+    logger.info(f"[P4] Video 摘要生成...")
     result = call_llm_json(client, prompt, stage="stage3_p4_video_summary", max_tokens=3000)
     if not isinstance(result, dict):
         result = {"video_id": video_id, "title": "", "episode_summary": ""}
-    print(f"[P4] title={result.get('title', '')!r}, "
-          f"n_chars={len(result.get('character_refs', []))}, "
-          f"n_arcs={len(result.get('main_arcs', []))}", flush=True)
+    logger.info(f"[P4] title={result.get('title', '')!r}, "
+                f"n_chars={len(result.get('character_refs', []))}, "
+                f"n_arcs={len(result.get('main_arcs', []))}")
     return result
 
 
@@ -125,13 +128,13 @@ def run_p5(client: QwenTextClient, existing_characters: list[dict],
               .replace("{all_arc_updates_json}",
                        json.dumps(all_arc_updates, ensure_ascii=False, indent=2)))
 
-    print(f"[P5] Global characters + arcs 更新 (输入 {len(video_summaries)} videos, "
-          f"{len(existing_characters)} 已有角色)...", flush=True)
+    logger.info(f"[P5] Global characters + arcs 更新 (输入 {len(video_summaries)} videos, "
+                f"{len(existing_characters)} 已有角色)...")
     result = call_llm_json(client, prompt, stage="stage3_p5_global", max_tokens=8000)
     if not isinstance(result, dict):
         result = {"characters": [], "global_arcs": []}
-    print(f"[P5] characters={len(result.get('characters', []))}, "
-          f"global_arcs={len(result.get('global_arcs', []))}", flush=True)
+    logger.info(f"[P5] characters={len(result.get('characters', []))}, "
+                f"global_arcs={len(result.get('global_arcs', []))}")
     return result
 
 
@@ -197,8 +200,8 @@ def run_p345(video_dir: str, enable_thinking: bool = False) -> dict:
         raise ValueError("stage3_dryrun.json 中没有 events")
 
     video_id = dryrun.get("video_id", video_dir)
-    print(f"\n{'='*60}\nStage 3 P3-P5: {video_id}\n  events: {len(events)}\n  "
-          f"thinking: {enable_thinking}\n{'='*60}", flush=True)
+    logger.info(f"{'='*60}\nStage 3 P3-P5: {video_id}\n  events: {len(events)}\n  "
+                f"thinking: {enable_thinking}\n{'='*60}")
 
     # 加载 prompt
     prompts = cfg.prompts
@@ -210,8 +213,8 @@ def run_p345(video_dir: str, enable_thinking: bool = False) -> dict:
 
     # 加载全局状态
     existing_chars, existing_arcs, existing_vids = _load_global_state()
-    print(f"[Init] global state: {len(existing_chars)} chars, "
-          f"{len(existing_arcs)} arcs, {len(existing_vids)} videos", flush=True)
+    logger.info(f"[Init] global state: {len(existing_chars)} chars, "
+                f"{len(existing_arcs)} arcs, {len(existing_vids)} videos")
 
     # P3: PlotArc
     arc_updates = run_p3(client, video_id, events, existing_arcs, p3_prompt)
@@ -253,7 +256,7 @@ def run_p345(video_dir: str, enable_thinking: bool = False) -> dict:
     _save_global_state(new_chars, new_arcs, updated_vids)
 
     # 打印 cost
-    print(f"\n{'='*60}\nCost Report\n{'='*60}", flush=True)
-    print(get_cost_tracker().report(), flush=True)
+    logger.info(f"{'='*60}\nCost Report\n{'='*60}")
+    logger.info(get_cost_tracker().report())
 
     return kb

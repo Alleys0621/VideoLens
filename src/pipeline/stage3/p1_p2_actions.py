@@ -21,7 +21,10 @@ from src.core.config import get_config
 from src.core.cost import get_cost_tracker, reset_cost_tracker
 from src.core.helpers.json_utils import load_json, save_json
 from src.core.llm.qwen_text import QwenTextClient
+from src.core.logging import get_logger
 from src.pipeline.stage3.llm_json import parse_json_with_repair
+
+logger = get_logger()
 
 
 # ============================================================
@@ -184,7 +187,7 @@ def call_p1(client: QwenTextClient, prompt_template: str, payload: dict,
         except Exception as e:
             last_err = e
             if attempt < max_retries:
-                print(f"          [RETRY {attempt+1}/{max_retries}] {e}", flush=True)
+                logger.warning(f"          [RETRY {attempt+1}/{max_retries}] {e}")
                 continue
     raise last_err
 
@@ -207,7 +210,7 @@ def call_p2(client: QwenTextClient, prompt_template: str, payload: dict,
         except Exception as e:
             last_err = e
             if attempt < max_retries:
-                print(f"          [RETRY {attempt+1}/{max_retries}] {e}", flush=True)
+                logger.warning(f"          [RETRY {attempt+1}/{max_retries}] {e}")
                 continue
     raise last_err
 
@@ -249,11 +252,11 @@ def run_p1p2(
 
     audio = load_json(audio_path)
     visual = load_json(visual_path)
-    print(f"[INFO] video_id = {video_dir}")
-    print(f"[INFO] 加载 audio.json: {len(audio.get('segments', []))} segments")
-    print(f"[INFO] 加载 visual.json: {len(visual.get('scenes', []))} scenes, "
-          f"{sum(1 for v in visual.get('ocr', {}).values() if v and v != '无字幕')} 条非空 OCR, "
-          f"{len(visual.get('captions', {}))} 条 caption")
+    logger.info(f"[INFO] video_id = {video_dir}")
+    logger.info(f"[INFO] 加载 audio.json: {len(audio.get('segments', []))} segments")
+    logger.info(f"[INFO] 加载 visual.json: {len(visual.get('scenes', []))} scenes, "
+                f"{sum(1 for v in visual.get('ocr', {}).values() if v and v != '无字幕')} 条非空 OCR, "
+                f"{len(visual.get('captions', {}))} 条 caption")
 
     # 加载 prompt
     p1_prompt = config.prompts["stage3_p1_action_extract"]["user"]
@@ -278,27 +281,27 @@ def run_p1p2(
     n_total = len(candidates)
     n_skipped = sum(1 for c in candidates if c["skip"])
     skip_rate = n_skipped * 100 / n_total if n_total else 0
-    print(f"\n[STEP 1] 规则预过滤: 跳过 {n_skipped}/{n_total} ({skip_rate:.1f}%)")
+    logger.info(f"[STEP 1] 规则预过滤: 跳过 {n_skipped}/{n_total} ({skip_rate:.1f}%)")
     reason_counts = Counter(c["reason"] for c in candidates if c["skip"])
     for r, n in reason_counts.most_common():
-        print(f"          {r}: {n}")
+        logger.info(f"          {r}: {n}")
 
     # ---------- 1.5 anchor 去重 ----------
     deduped_candidates = deduplicate_anchors(candidates, scenes)
     n_after_dedup = len(deduped_candidates)
     n_dup_removed = (n_total - n_skipped) - n_after_dedup
-    print(f"[STEP 1.5] anchor 去重: 移除 {n_dup_removed} 个同 segment 重复锚点, "
-          f"剩余 {n_after_dedup} 候选")
+    logger.info(f"[STEP 1.5] anchor 去重: 移除 {n_dup_removed} 个同 segment 重复锚点, "
+                f"剩余 {n_after_dedup} 候选")
 
     # ---------- 2. P1 Batch 抽 Action ----------
     unsent_indices = [c["idx"] for c in deduped_candidates]
     if limit_p1 > 0:
         unsent_indices = unsent_indices[:limit_p1]
-        print(f"[STEP 2] --limit-p1={limit_p1}, 只跑前 {len(unsent_indices)} 个候选")
+        logger.info(f"[STEP 2] --limit-p1={limit_p1}, 只跑前 {len(unsent_indices)} 个候选")
 
     p1_batches = [unsent_indices[i:i + p1_batch]
                   for i in range(0, len(unsent_indices), p1_batch)]
-    print(f"[STEP 2] P1: {len(unsent_indices)} 候选 → {len(p1_batches)} 批 (batch_size={p1_batch})")
+    logger.info(f"[STEP 2] P1: {len(unsent_indices)} 候选 → {len(p1_batches)} 批 (batch_size={p1_batch})")
 
     actions = []
     p1_errors = 0
@@ -307,13 +310,13 @@ def run_p1p2(
         try:
             results = call_p1(client, p1_prompt, payload)
         except Exception as e:
-            print(f"[ERROR] P1 batch {bi} 失败: {e}")
+            logger.error(f"[ERROR] P1 batch {bi} 失败: {e}")
             p1_errors += 1
             continue
 
         if len(results) != len(batch_indices):
-            print(f"[WARN] P1 batch {bi}: 输入 {len(batch_indices)} 条, "
-                  f"输出 {len(results)} 条, 数量不一致")
+            logger.warning(f"[WARN] P1 batch {bi}: 输入 {len(batch_indices)} 条, "
+                           f"输出 {len(results)} 条, 数量不一致")
 
         for result in results:
             if result.get("skip"):
@@ -322,15 +325,15 @@ def run_p1p2(
             if action:
                 actions.append(action)
 
-        print(f"          batch {bi}/{len(p1_batches)} 完成, 累计 {len(actions)} actions")
+        logger.info(f"          batch {bi}/{len(p1_batches)} 完成, 累计 {len(actions)} actions")
 
-    print(f"[STEP 2] P1 总计: {len(actions)} actions ({p1_errors} 批失败)")
+    logger.info(f"[STEP 2] P1 总计: {len(actions)} actions ({p1_errors} 批失败)")
 
     # ---------- 3. P2 聚 Event ----------
     p2_batches = [actions[i:i + p2_batch]
                   for i in range(0, len(actions), p2_batch)]
-    print(f"\n[STEP 3] P2: {len(actions)} actions → {len(p2_batches)} 批 "
-          f"(batch_size={p2_batch})")
+    logger.info(f"[STEP 3] P2: {len(actions)} actions → {len(p2_batches)} 批 "
+                f"(batch_size={p2_batch})")
 
     events = []
     characters_to_resolve = []
@@ -345,22 +348,22 @@ def run_p1p2(
         try:
             result = call_p2(client, p2_prompt, payload)
         except Exception as e:
-            print(f"[ERROR] P2 batch {bi} 失败: {e}")
+            logger.error(f"[ERROR] P2 batch {bi} 失败: {e}")
             p2_errors += 1
             continue
 
         batch_events = result.get("events", [])
         events.extend(batch_events)
         characters_to_resolve.extend(result.get("characters_to_resolve", []))
-        print(f"          batch {bi}/{len(p2_batches)} 完成, 累计 {len(events)} events")
+        logger.info(f"          batch {bi}/{len(p2_batches)} 完成, 累计 {len(events)} events")
 
-    print(f"[STEP 3] P2 总计: {len(events)} events, "
-          f"{len(characters_to_resolve)} 个待归一角色 ({p2_errors} 批失败)")
+    logger.info(f"[STEP 3] P2 总计: {len(events)} events, "
+                f"{len(characters_to_resolve)} 个待归一角色 ({p2_errors} 批失败)")
 
     # ---------- 3.5 event_id 跨 batch 重编号 ----------
     for i, e in enumerate(events):
         e["event_id"] = f"{video_dir}_e{i:03d}"
-    print(f"[STEP 3.5] event_id 跨 batch 重编号完成: e000–e{len(events)-1:03d}")
+    logger.info(f"[STEP 3.5] event_id 跨 batch 重编号完成: e000–e{len(events)-1:03d}")
 
     # Action 类型分布
     action_dist = Counter(a.get("action", "?") for a in actions)
@@ -394,13 +397,13 @@ def run_p1p2(
     if save:
         out_path = os.path.join(output_dir, "stage3_dryrun.json")
         save_json(result_data, out_path)
-        print(f"\n[INFO] 结果已保存: {out_path}")
+        logger.info(f"[INFO] 结果已保存: {out_path}")
 
     # Cost 报告
     tracker = get_cost_tracker()
-    print("\n" + "=" * 70)
-    print("Cost 报告")
-    print("=" * 70)
-    print(tracker.report())
+    logger.info("=" * 70)
+    logger.info("Cost 报告")
+    logger.info("=" * 70)
+    logger.info(tracker.report())
 
     return result_data

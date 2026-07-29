@@ -37,7 +37,7 @@ if not os.getenv("OPENAI_BASE_URL"):
 
 # 检查 API Key 是否设置, 给清晰错误提示
 if not _cfg.dashscope_api_key:
-    print("[mem0] 警告: DASHSCOPE_API_KEY 未设置! 请检查系统环境变量.", file=sys.stderr, flush=True)
+    logger.warning("[mem0] 警告: DASHSCOPE_API_KEY 未设置! 请检查系统环境变量.")
 
 
 # ============================================================

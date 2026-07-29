@@ -18,6 +18,9 @@ from src.agent.profile_store import (
     load_show_profile,
     save_show_profile,
 )
+from src.core.logging import get_logger
+
+logger = get_logger()
 
 
 _VALID_STYLE = {"吐槽型", "分析型", "陪伴型", "提问型", "混合"}
@@ -113,13 +116,12 @@ def maybe_update_user_profile(user_id: str, chat_history: list[dict]) -> None:
             humor_level=humor,
             confidence=conf,
         )
-        print(
+        logger.info(
             f"[profile] 更新 user={user_id[:8]} style={style} spoiler={spoiler} "
-            f"humor={humor} conf={conf:.2f}",
-            flush=True,
+            f"humor={humor} conf={conf:.2f}"
         )
     except Exception as e:
-        print(f"[profile] 更新失败 (非致命): {e}", flush=True)
+        logger.warning(f"[profile] 更新失败 (非致命): {e}")
 
 
 def maybe_update_show_profile(
@@ -213,10 +215,9 @@ def maybe_update_show_profile(
             character_opinions=ops,
             confidence=conf,
         )
-        print(
+        logger.info(
             f"[show_profile] 更新 user={user_id[:8]} show={show} "
-            f"fav={fav} ops={len(ops)} conf={conf:.2f}",
-            flush=True,
+            f"fav={fav} ops={len(ops)} conf={conf:.2f}"
         )
     except Exception as e:
-        print(f"[show_profile] 更新失败 (非致命): {e}", flush=True)
+        logger.warning(f"[show_profile] 更新失败 (非致命): {e}")

@@ -20,6 +20,9 @@ from langgraph.graph import END, START, StateGraph
 from langgraph.graph.message import add_messages
 
 from src.agent.companion import companion_chat
+from src.core.logging import get_logger
+
+logger = get_logger()
 
 
 class State(TypedDict):
@@ -133,34 +136,34 @@ def _warmup():
     """
     from src.core.config import get_config
     if get_config().warmup_disabled:
-        print("[warmup] 跳过 (DISABLE_WARMUP=1)", flush=True)
+        logger.info("[warmup] 跳过 (DISABLE_WARMUP=1)")
         return
     # 1. Mem0 (最重)
     try:
         from src.agent.mem0_client import get_memory
         get_memory()
-        print("[warmup] Mem0 预热完成", flush=True)
+        logger.info("[warmup] Mem0 预热完成")
     except Exception as e:
-        print(f"[warmup] Mem0 预热失败 (非致命): {e}", flush=True)
+        logger.warning(f"[warmup] Mem0 预热失败 (非致命): {e}")
     # 2. LLM client (ChatOpenAI 对象创建, 快) — 预热 flash + plus 两个实例
     try:
         _get_streaming_llm("plus")
         _get_streaming_llm("flash")
-        print("[warmup] LLM client 预热完成 (plus + flash)", flush=True)
+        logger.info("[warmup] LLM client 预热完成 (plus + flash)")
     except Exception as e:
-        print(f"[warmup] LLM client 预热失败: {e}", flush=True)
+        logger.warning(f"[warmup] LLM client 预热失败: {e}")
     # 2.5 LLM 意图理解预热 (消除首次 dashscope 连接冷启动 2.4s → 0.8s)
     try:
         from src.agent.intent_router import llm_route_intent
         llm_route_intent("预热", None)
-        print("[warmup] 意图理解预热完成", flush=True)
+        logger.info("[warmup] 意图理解预热完成")
     except Exception as e:
-        print(f"[warmup] 意图理解预热失败 (非致命): {e}", flush=True)
+        logger.warning(f"[warmup] 意图理解预热失败 (非致命): {e}")
     # 3. embedding 缓存 (扫描所有已建库视频, 提前建向量索引到 .npz)
     try:
         _warmup_embeddings()
     except Exception as e:
-        print(f"[warmup] embedding 预热失败 (非致命): {e}", flush=True)
+        logger.warning(f"[warmup] embedding 预热失败 (非致命): {e}")
 
 
 def _warmup_embeddings():
@@ -187,18 +190,18 @@ def _warmup_embeddings():
                 episodes.append(rel)
 
     if not episodes:
-        print("[warmup] 没有已建库视频, 跳过 embedding 预热", flush=True)
+        logger.info("[warmup] 没有已建库视频, 跳过 embedding 预热")
         return
 
     from src.agent.retriever import build_or_load_embeddings
 
-    print(f"[warmup] 预热 embedding: 发现 {len(episodes)} 集", flush=True)
+    logger.info(f"[warmup] 预热 embedding: 发现 {len(episodes)} 集")
     for i, ep in enumerate(episodes, 1):
         try:
             build_or_load_embeddings(ep)
-            print(f"[warmup] embedding {i}/{len(episodes)}: {ep} OK", flush=True)
+            logger.info(f"[warmup] embedding {i}/{len(episodes)}: {ep} OK")
         except Exception as e:
-            print(f"[warmup] embedding {i}/{len(episodes)}: {ep} 失败: {e}", flush=True)
+            logger.warning(f"[warmup] embedding {i}/{len(episodes)}: {ep} 失败: {e}")
 
 
 def companion_node(state: State, config: RunnableConfig) -> dict:
@@ -285,7 +288,7 @@ def companion_node(state: State, config: RunnableConfig) -> dict:
                     daemon=True,
                 ).start()
             except Exception as e:
-                print(f"[graph] title spawn failed: {e}", flush=True)
+                logger.warning(f"[graph] title spawn failed: {e}")
 
     return {"messages": [ai_msg]}
 

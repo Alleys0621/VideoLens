@@ -13,6 +13,9 @@ import numpy as np
 
 from src.core.config import get_config
 from src.core.helpers.json_utils import load_json
+from src.core.logging import get_logger
+
+logger = get_logger()
 
 
 # ============================================================
@@ -96,16 +99,15 @@ def build_or_load_embeddings(
             return data["events_emb"], data["segs_emb"], events_text, segs_text
 
     # 慢路径: 首次建 embedding
-    print(
+    logger.info(
         f"[retriever] 建 embedding: {len(events_text)} events + "
-        f"{len(segs_text)} segments (首次, 后续走缓存)",
-        flush=True,
+        f"{len(segs_text)} segments (首次, 后续走缓存)"
     )
     events_emb = _embed_texts(events_text)
     segs_emb = _embed_texts(segs_text)
     os.makedirs(os.path.dirname(cache), exist_ok=True)
     np.savez(cache, events_emb=events_emb, segs_emb=segs_emb)
-    print(f"[retriever] embedding 已缓存: {cache}", flush=True)
+    logger.info(f"[retriever] embedding 已缓存: {cache}")
     return events_emb, segs_emb, events_text, segs_text
 
 

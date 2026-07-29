@@ -20,6 +20,10 @@ from typing import Any
 import psycopg
 from psycopg.types.json import Json
 
+from src.core.logging import get_logger
+
+logger = get_logger()
+
 
 PROFILE_UPDATE_THRESHOLD = 5  # 每累计 5 条非 refuse 对话触发一次增量更新
 PROFILE_INJECT_MIN_CONFIDENCE = 0.5  # confidence 低于此值不注入 system overlay
@@ -66,7 +70,7 @@ def load_user_profile(user_id: str) -> dict[str, Any] | None:
                     "messages_since_update": int(row[4] or 0),
                 }
     except Exception as e:
-        print(f"[profile_store] load 失败: {e}", flush=True)
+        logger.warning(f"[profile_store] load 失败: {e}")
         return None
 
 
@@ -113,7 +117,7 @@ def increment_message_counter(user_id: str) -> int:
                 conn.commit()
                 return int(row[0]) if row else 0
     except Exception as e:
-        print(f"[profile_store] increment 失败: {e}", flush=True)
+        logger.warning(f"[profile_store] increment 失败: {e}")
         return 0
 
 
@@ -129,7 +133,7 @@ def reset_message_counter(user_id: str) -> None:
                 )
                 conn.commit()
     except Exception as e:
-        print(f"[profile_store] reset 失败: {e}", flush=True)
+        logger.warning(f"[profile_store] reset 失败: {e}")
 
 
 def save_profile(
@@ -160,7 +164,7 @@ def save_profile(
                 )
                 conn.commit()
     except Exception as e:
-        print(f"[profile_store] save 失败: {e}", flush=True)
+        logger.warning(f"[profile_store] save 失败: {e}")
 
 
 # ============================================================
@@ -188,7 +192,7 @@ def load_show_profile(user_id: str, show: str) -> dict[str, Any] | None:
                     "confidence": float(row[2] or 0),
                 }
     except Exception as e:
-        print(f"[profile_store] load_show 失败: {e}", flush=True)
+        logger.warning(f"[profile_store] load_show 失败: {e}")
         return None
 
 
@@ -223,4 +227,4 @@ def save_show_profile(
                 )
                 conn.commit()
     except Exception as e:
-        print(f"[profile_store] save_show 失败: {e}", flush=True)
+        logger.warning(f"[profile_store] save_show 失败: {e}")

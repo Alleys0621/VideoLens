@@ -22,6 +22,7 @@ from datetime import datetime
 
 from src.core.config import get_config
 from src.core.helpers.json_utils import load_json
+from src.core.logging import get_logger
 from src.core.llm.qwen_text import QwenTextClient
 from src.eval.stage3_retrieval import BM25Index, build_searchable_text
 from src.agent.mem0_client import search_relevant_memories, add_conversation_memory
@@ -39,6 +40,8 @@ from src.agent.profile_store import (
     PROFILE_UPDATE_THRESHOLD,
 )
 from src.agent.profile_updater import maybe_update_user_profile, maybe_update_show_profile
+
+logger = get_logger()
 
 
 # ============================================================
@@ -432,7 +435,7 @@ def _async_add_memory(user_id: str, query: str, answer: str, video_id: str) -> N
         try:
             add_conversation_memory(user_id, query, answer, video_id=video_id)
         except Exception as e:
-            print(f"[Mem0] async add 失败: {e}", flush=True)
+            logger.warning(f"[Mem0] async add 失败: {e}")
 
     threading.Thread(target=_write, daemon=True).start()
 
@@ -453,7 +456,7 @@ def _async_maybe_update_profile(
                 if show:
                     maybe_update_show_profile(user_id, show, hist)
         except Exception as e:
-            print(f"[profile] async trigger 失败: {e}", flush=True)
+            logger.warning(f"[profile] async trigger 失败: {e}")
 
     threading.Thread(target=_run, daemon=True).start()
 
@@ -603,7 +606,7 @@ def companion_chat(
         events_fused = rrf_fuse(bm25_hits, events_vec_hits, top_k=5)
         _ts["vec_rrf"] = (_pc() - t1) * 1000
     except Exception as e:
-        print(f"[retriever] 向量检索失败, 回退纯 BM25: {e}", flush=True)
+        logger.warning(f"[retriever] 向量检索失败, 回退纯 BM25: {e}")
         events_fused = bm25_hits  # fallback
     _ts["vector_retrieval"] = (_pc() - t0) * 1000
 
@@ -626,7 +629,7 @@ def companion_chat(
             llm, _main_llm_model = llm_chooser(intent_result.task_confidence)
         except Exception as e:
             # 回退到原 llm (若 llm 也为 None, _llm_generate 会走 QwenTextClient)
-            print(f"[companion] llm_chooser 失败, 回退默认: {e}", flush=True)
+            logger.warning(f"[companion] llm_chooser 失败, 回退默认: {e}")
 
     retrieved = [
         {"event_id": events[i].get("event_id", ""),
@@ -668,7 +671,7 @@ def companion_chat(
         try:
             long_term = search_relevant_memories(user_id, query, top_k=1)
         except Exception as e:
-            print(f"[mem0] search 失败: {e}", flush=True)
+            logger.warning(f"[mem0] search 失败: {e}")
 
     # web_search 分支: refuse + 用户开了联网 → Tavily
     web = bool(web_search) and task == "refuse"
@@ -679,7 +682,7 @@ def companion_chat(
             from src.agent.web_search import tavily_search
             results = tavily_search(query, max_results=5)
         except Exception as e:
-            print(f"[web_search] Tavily 失败, 回退拒答: {e}", flush=True)
+            logger.warning(f"[web_search] Tavily 失败, 回退拒答: {e}")
             results = []
         if results:
             web_results = results
@@ -778,13 +781,12 @@ def companion_chat(
     # 全链路打点 (后端, VIDEOLENS_PERF=1 才输出)
     if _PERF:
         _ts_summary = " | ".join(f"{k}={round(v)}ms" for k, v in _ts.items())
-        print(f"[companion:timings] {_ts_summary}", flush=True)
-    print(f"[companion] query={query!r} task={task}(raw={intent_result.task},c={intent_result.task_confidence:.2f}) "
-          f"emo={emotion}(raw={intent_result.emotion},c={intent_result.emotion_confidence:.2f}) "
-          f"top_score={round(top_score, 2)} focus={watching.get('focus_character')} "
-          f"main_llm={_main_llm_model} | "
-          f"retrieval={reasoning['timings']['retrieval_ms']}ms | "
-          f"llm={reasoning['timings']['llm_ms']}ms | total={reasoning['timings']['total_ms']}ms",
-          flush=True)
+        logger.info(f"[companion:timings] {_ts_summary}")
+    logger.info(f"[companion] query={query!r} task={task}(raw={intent_result.task},c={intent_result.task_confidence:.2f}) "
+                f"emo={emotion}(raw={intent_result.emotion},c={intent_result.emotion_confidence:.2f}) "
+                f"top_score={round(top_score, 2)} focus={watching.get('focus_character')} "
+                f"main_llm={_main_llm_model} | "
+                f"retrieval={reasoning['timings']['retrieval_ms']}ms | "
+                f"llm={reasoning['timings']['llm_ms']}ms | total={reasoning['timings']['total_ms']}ms")
 
     return {"answer": answer, "reasoning": reasoning, "keyframes": keyframes}

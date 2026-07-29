@@ -23,8 +23,11 @@ from src.core.config import get_config
 from src.core.cost import get_cost_tracker, reset_cost_tracker
 from src.core.helpers.json_utils import load_json, save_json
 from src.core.llm.qwen_text import QwenTextClient
+from src.core.logging import get_logger
 from src.pipeline.stage3.llm_json import call_llm_json
 from src.pipeline.stage3.p345_kb import _global_dir
+
+logger = get_logger()
 
 
 def _aggregate_all_episodes() -> tuple[list[dict], list[dict], list[str]]:
@@ -102,7 +105,7 @@ def run_p6(enable_thinking: bool = False) -> dict:
             f"未找到 {chars_path}; 先跑 P5 (run_p345 或 scripts.stage3_p345) 建立角色清单"
         )
     characters = load_json(chars_path)
-    print(f"[P6] 加载 characters.json: {len(characters)} 个角色")
+    logger.info(f"[P6] 加载 characters.json: {len(characters)} 个角色")
 
     # 2. 聚合所有集的 events + actions
     events, actions, episode_ids = _aggregate_all_episodes()
@@ -110,8 +113,8 @@ def run_p6(enable_thinking: bool = False) -> dict:
         raise ValueError(
             "未找到任何 stage3_dryrun.json; 先跑 P1+P2 (run_p1p2 或 scripts.stage3_p1p2)"
         )
-    print(f"[P6] 聚合 {len(episode_ids)} 集: {len(events)} events, {len(actions)} actions")
-    print(f"[P6] 涉及集: {episode_ids}")
+    logger.info(f"[P6] 聚合 {len(episode_ids)} 集: {len(events)} events, {len(actions)} actions")
+    logger.info(f"[P6] 涉及集: {episode_ids}")
 
     # 3. characters 精简 (只留 P6 匹配需要的字段, 去掉 relationships 等大字段)
     chars_brief = [
@@ -135,14 +138,14 @@ def run_p6(enable_thinking: bool = False) -> dict:
 
     # 5. 单次 LLM 调用 (all-in-one)
     client = QwenTextClient()
-    print(f"[P6] 调用 LLM (all-in-one, thinking={enable_thinking})...")
+    logger.info(f"[P6] 调用 LLM (all-in-one, thinking={enable_thinking})...")
     result = call_llm_json(
         client, prompt, stage="stage3_p6_profile",
         max_tokens=8000, expected_key="profiles",
         enable_thinking=enable_thinking,
     )
     profiles = result if isinstance(result, list) else []
-    print(f"[P6] LLM 产出 {len(profiles)} 个角色画像")
+    logger.info(f"[P6] LLM 产出 {len(profiles)} 个角色画像")
 
     # 6. 保存
     output = {
@@ -159,12 +162,12 @@ def run_p6(enable_thinking: bool = False) -> dict:
     }
     out_path = os.path.join(gdir, "character_profiles.json")
     save_json(output, out_path)
-    print(f"[P6] 保存 → {out_path}")
+    logger.info(f"[P6] 保存 → {out_path}")
 
     # Cost 报告
-    print("\n" + "=" * 70)
-    print("Cost 报告")
-    print("=" * 70)
-    print(get_cost_tracker().report())
+    logger.info("=" * 70)
+    logger.info("Cost 报告")
+    logger.info("=" * 70)
+    logger.info(get_cost_tracker().report())
 
     return output

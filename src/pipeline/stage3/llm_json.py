@@ -12,6 +12,9 @@ P1 因有"results 数量必须等于 batch 大小"的特殊校验, 在 p1_p2_act
 from __future__ import annotations
 
 from src.core.helpers.text_utils import extract_json_obj
+from src.core.logging import get_logger
+
+logger = get_logger()
 
 
 def _try_repair_json_braces(raw: str) -> str | None:
@@ -84,5 +87,5 @@ def call_llm_json(
         except Exception as e:
             last_err = e
             if attempt < max_retries:
-                print(f"          [RETRY {attempt+1}/{max_retries}] {e}", flush=True)
+                logger.warning(f"          [RETRY {attempt+1}/{max_retries}] {e}")
     raise last_err

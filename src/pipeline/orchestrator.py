@@ -9,12 +9,15 @@ Stage 3: 结构化知识库
 import os
 import sys
 
+from src.core.logging import get_logger
 from src.core.path_utils import (
     get_show_name,
     load_voiceprint_config,
 )
 
 sys.stdout.reconfigure(encoding="utf-8")
+
+logger = get_logger()
 
 
 def run_pipeline(video_dir: str, stage: int = 0, skip_theme: bool = False, chunk_dur: int = 60, vp_threshold: float = 0.4):
@@ -34,7 +37,7 @@ def run_pipeline(video_dir: str, stage: int = 0, skip_theme: bool = False, chunk
     show_name = get_show_name(video_dir)
     group_id, name_map = load_voiceprint_config(show_name)
     if show_name:
-        print(f"影视作品: {show_name}, 声纹组: {group_id or '无'}")
+        logger.info(f"影视作品: {show_name}, 声纹组: {group_id or '无'}")
 
     audio_result = None
     visual_result = None
