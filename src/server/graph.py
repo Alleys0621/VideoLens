@@ -138,11 +138,12 @@ def _warmup():
     if get_config().warmup_disabled:
         logger.info("[warmup] 跳过 (DISABLE_WARMUP=1)")
         return
-    # 1. Mem0 (最重)
+    # 1. Mem0 (最重) — client 初始化 + dummy search 触发 Qdrant 索引加载 (否则首条消息 retrieval 冷启动 47s)
     try:
-        from src.agent.mem0_client import get_memory
+        from src.agent.mem0_client import get_memory, search_relevant_memories
         get_memory()
-        logger.info("[warmup] Mem0 预热完成")
+        search_relevant_memories("warmup", "预热")
+        logger.info("[warmup] Mem0 预热完成 (含 search)")
     except Exception as e:
         logger.warning(f"[warmup] Mem0 预热失败 (非致命): {e}")
     # 2. LLM client (ChatOpenAI 对象创建, 快) — 预热 flash + plus 两个实例
@@ -159,6 +160,13 @@ def _warmup():
         logger.info("[warmup] 意图理解预热完成")
     except Exception as e:
         logger.warning(f"[warmup] 意图理解预热失败 (非致命): {e}")
+    # 2.6 Embedding query 预热 (消除首次 DashScope embedding API 连接冷启动)
+    try:
+        from src.agent.retriever import embed_query
+        embed_query("预热")
+        logger.info("[warmup] embedding query 预热完成")
+    except Exception as e:
+        logger.warning(f"[warmup] embedding query 预热失败 (非致命): {e}")
     # 3. embedding 缓存 (扫描所有已建库视频, 提前建向量索引到 .npz)
     try:
         _warmup_embeddings()

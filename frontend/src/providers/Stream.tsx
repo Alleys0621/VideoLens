@@ -48,21 +48,23 @@ async function checkGraphStatus(
   apiUrl: string,
   apiKey: string | null,
   authScheme?: string,
+  maxRetries = 20,
+  intervalMs = 3000,
 ): Promise<boolean> {
-  try {
-    const headers = new Headers();
-    if (apiKey) headers.set("X-Api-Key", apiKey);
-    if (authScheme) headers.set("X-Auth-Scheme", authScheme);
+  const headers = new Headers();
+  if (apiKey) headers.set("X-Api-Key", apiKey);
+  if (authScheme) headers.set("X-Auth-Scheme", authScheme);
 
-    const res = await fetch(`${apiUrl}/info`, {
-      headers,
-    });
-
-    return res.ok;
-  } catch (e) {
-    console.error(e);
-    return false;
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      const res = await fetch(`${apiUrl}/info`, { headers });
+      if (res.ok) return true;
+    } catch (e) {
+      // backend 还没起来, 继续重试
+    }
+    await new Promise((r) => setTimeout(r, intervalMs));
   }
+  return false;
 }
 
 const StreamSession = ({
