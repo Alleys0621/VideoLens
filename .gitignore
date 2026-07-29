@@ -54,6 +54,9 @@ experiments/
 # === 本地设计讨论文档 (不上 git) ===
 ALLEYSVID_DESIGN_DIALOG.md
 
+# === 产品定位文档 (当前为内部讨论稿,暂不上 git) ===
+ALLEYSVID_PRODUCT.md
+
 # Logs
 *.log
 

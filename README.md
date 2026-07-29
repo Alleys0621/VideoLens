@@ -130,7 +130,7 @@ docker compose -f db/docker-compose.yml up -d
 .\scripts\install-cloudflared.bat
 ```
 
-或手动下载：访问 [cloudflare/cloudflared releases](https://github.com/cloudflare/cloudflared/releases)，下载 `cloudflared-windows-amd64.exe`，重命名为 `cloudflared.exe` 放到 `.tools/` 目录下。
+或手动下载（建议手动下载哈，因为要挂梯子的，不挂梯子下载巨慢）：访问 [cloudflare/cloudflared releases](https://github.com/cloudflare/cloudflared/releases)，下载 `cloudflared-windows-amd64.exe`，重命名为 `cloudflared.exe` 放到 `.tools/` 目录下。
 
 ### 6. 一键启动所有服务
 
