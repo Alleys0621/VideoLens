@@ -8,7 +8,7 @@ import { Client } from "@langchain/langgraph-sdk";
  * 用服务账号直连 LangGraph Store 做用户数据 CRUD.
  *
  * 读环境变量:
- *   LANGGRAPH_API_URL       — 必填, 默认 http://localhost:2024
+ *   LANGGRAPH_API_URL       — 必填, 默认 http://127.0.0.1:2024
  *   LANGSMITH_API_KEY       — 可选, 本地 langgraph dev 不需要
  *   LANGGRAPH_AUTH_SCHEME   — 可选, 例如 langsmith-api-key
  */
@@ -19,7 +19,7 @@ export function getServerClient(): Client {
   const apiUrl =
     process.env.LANGGRAPH_API_URL ||
     process.env.NEXT_PUBLIC_API_URL ||
-    "http://localhost:2024";
+    "http://127.0.0.1:2024";
   const apiKey = process.env.LANGSMITH_API_KEY || undefined;
   const authScheme = process.env.LANGGRAPH_AUTH_SCHEME || undefined;
 

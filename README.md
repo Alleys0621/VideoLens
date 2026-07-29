@@ -1,10 +1,21 @@
 # AlleysVid — AI 陪看智能体
 
-> **V1.2.1** — 路由与模型层优化：意图路由 hybrid 化、主 LLM 按置信度切 flash/plus、embedding 升级、配置统一进 yaml
+> **V1.3** — 延迟优化：修复 Windows localhost IPv6 超时（每请求省 2s），统一为单一启动脚本
 
 边看剧边聊天的 AI 陪看搭子。选一集视频，Alleys 陪你一起看，随时聊剧情、问角色、吐槽笑点。
 
 ## 版本记录
+
+### V1.3（2026-07-29）
+
+**延迟优化：localhost → 127.0.0.1**
+- Windows 上 `localhost` 先试 IPv6 `::1`，超时 ~2s 后 fallback IPv4，每条消息白白多等 2s
+- 全站 `localhost:2024` → `127.0.0.1:2024`（前端 `.env`、代理默认值、SDK 默认值）
+- TTFB 从 ~3s 降到 ~1s
+
+**统一启动脚本**
+- 删除 `start-prod.bat` + `scripts/_langgraph_prod.py`（dev/prod 后端延迟无差异，不再维护两套）
+- 日常一律用 `start.bat`
 
 ### V1.2.1（2026-07-29）
 

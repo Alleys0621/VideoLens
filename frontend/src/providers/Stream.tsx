@@ -132,7 +132,7 @@ const StreamSession = ({
 };
 
 // Default values for the form
-const DEFAULT_API_URL = "http://localhost:2024";
+const DEFAULT_API_URL = "http://127.0.0.1:2024";
 const DEFAULT_ASSISTANT_ID = "agent";
 const AGENT_BUILDER_AUTH_SCHEME = "langsmith-api-key";
 
