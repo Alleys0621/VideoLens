@@ -22,11 +22,8 @@ def _get_conninfo() -> str:
     优先级: POSTGRES_URL > DATABASE_URI > 默认本地 dev 连接.
     默认值与 db/docker-compose.yml 一致 (videolens / videolens_dev / videolens).
     """
-    return (
-        os.getenv("POSTGRES_URL")
-        or os.getenv("DATABASE_URI")
-        or "postgresql://videolens:videolens_dev@127.0.0.1:25432/videolens"
-    )
+    from src.core.config import get_config
+    return get_config().postgres_url
 
 
 @asynccontextmanager
