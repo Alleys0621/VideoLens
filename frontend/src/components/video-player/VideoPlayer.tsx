@@ -92,7 +92,9 @@ export function VideoPlayer({
 
   const actualSrc = useMemo(() => {
     if (!videoDir) return "";
-    return `/api/video/${videoDir}`;
+    const videoBase =
+      process.env.NEXT_PUBLIC_VIDEO_SERVER_URL || "http://127.0.0.1:9802";
+    return `${videoBase}/${videoDir}`;
   }, [videoDir]);
 
   // === 推理数据解析 (保留原有) ===

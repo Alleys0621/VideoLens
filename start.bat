@@ -31,6 +31,7 @@ echo   Backend  : http://localhost:2024        (LangGraph)
 echo   Frontend : http://localhost:3000        (Next.js)
 echo   ASR      : ws://localhost:9800          (paraformer)
 echo   TTS      : ws://localhost:9801          (qwen-audio-tts)
+echo   Video    : http://127.0.0.1:9802         (static file server)
 echo   Tunnel   : cloudflared (random URL per launch)
 echo ============================================================
 echo.
@@ -108,6 +109,10 @@ start /min "VideoLens-ASR-Server" cmd /k ".venv\Scripts\python.exe -m src.agent.
 REM [5/6] TTS WebSocket server (streaming speech synthesis)
 echo [5/6] Starting TTS server (port 9801, minimized)...
 start /min "VideoLens-TTS-Server" cmd /k ".venv\Scripts\python.exe -m src.agent.tts_server"
+
+REM [5.5/6] Video static server (独立于 Next.js, 避免 next dev JIT 影响视频流)
+echo [5.5/6] Starting video static server (port 9802, minimized)...
+start /min "VideoLens-Video-Server" cmd /k ".venv\Scripts\python.exe scripts\_video_server.py"
 
 REM [6/6] cloudflared quick tunnel
 if not exist ".tools\cloudflared.exe" (
