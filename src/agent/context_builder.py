@@ -232,15 +232,14 @@ def build_context_sections(
 
 
 def _format_show_affinity(profile: dict) -> str:
-    """渲染 L2: 喜欢的角色 + 角色评价 (白名单已在外层控制)."""
-    conf = float(profile.get("confidence", 0) or 0)
-    if conf < 0.4:
-        # 画像没底气就不注入, 避免误导
-        return ""
+    """渲染 L2: 喜欢的角色 + 关注角色 + 评价 + 主题偏好 + 不喜欢."""
     parts = []
     fav = [c for c in (profile.get("favorite_characters") or []) if c]
     if fav:
-        parts.append("喜欢/关注: " + "、".join(fav[:5]))
+        parts.append("喜欢: " + "、".join(fav[:5]))
+    att = [c for c in (profile.get("attention_characters") or []) if c]
+    if att:
+        parts.append("关注: " + "、".join(att[:5]))
     ops = profile.get("character_opinions") or []
     if isinstance(ops, list):
         op_lines = []
@@ -253,6 +252,12 @@ def _format_show_affinity(profile: dict) -> str:
                 op_lines.append(f"  - {ch}: {opinion}")
         if op_lines:
             parts.append("角色评价:\n" + "\n".join(op_lines))
+    themes = [t for t in (profile.get("theme_preferences") or []) if t]
+    if themes:
+        parts.append("偏好主题: " + "、".join(themes[:5]))
+    disliked = [d for d in (profile.get("disliked_elements") or []) if d]
+    if disliked:
+        parts.append("不喜欢: " + "、".join(disliked[:5]))
     return "\n".join(parts)
 
 

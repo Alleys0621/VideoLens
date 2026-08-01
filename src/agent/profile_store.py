@@ -55,7 +55,7 @@ def load_user_profile(user_id: str) -> dict[str, Any] | None:
             with conn.cursor() as cur:
                 cur.execute(
                     """SELECT interaction_style, spoiler_tolerance, humor_level,
-                              confidence, messages_since_update
+                              engagement_motivation, confidence, messages_since_update
                        FROM user_profiles WHERE user_id = %s""",
                     (user_id,),
                 )
@@ -66,8 +66,9 @@ def load_user_profile(user_id: str) -> dict[str, Any] | None:
                     "interaction_style": row[0],
                     "spoiler_tolerance": row[1],
                     "humor_level": row[2],
-                    "confidence": float(row[3] or 0),
-                    "messages_since_update": int(row[4] or 0),
+                    "engagement_motivation": row[3],
+                    "confidence": float(row[4] or 0),
+                    "messages_since_update": int(row[5] or 0),
                 }
     except Exception as e:
         logger.warning(f"[profile_store] load 失败: {e}")
@@ -81,8 +82,6 @@ def render_profile_overlay(profile: dict[str, Any] | None) -> str:
     """
     if not profile:
         return ""
-    if float(profile.get("confidence", 0)) < PROFILE_INJECT_MIN_CONFIDENCE:
-        return ""
     parts = []
     if profile.get("interaction_style"):
         parts.append(f"聊法偏好: {profile['interaction_style']}")
@@ -90,9 +89,15 @@ def render_profile_overlay(profile: dict[str, Any] | None) -> str:
         parts.append(f"剧透接受度: {profile['spoiler_tolerance']}")
     if profile.get("humor_level"):
         parts.append(f"接梗浓度: {profile['humor_level']}")
+    if profile.get("engagement_motivation"):
+        parts.append(f"观看动力: {profile['engagement_motivation']}")
     if not parts:
         return ""
-    return "（这位用户的长期偏好，请自然适应，不要复述这条说明: " + "，".join(parts) + "）"
+    return (
+        "（这位用户的偏好只用来调整你的语气，"
+        "**不要因此多反问**（即使偏好写'提问型', 也是用户喜欢刨根问底, 不是你要多反问）: "
+        + "，".join(parts) + "）"
+    )
 
 
 def increment_message_counter(user_id: str) -> int:
@@ -142,6 +147,7 @@ def save_profile(
     interaction_style: str | None,
     spoiler_tolerance: str | None,
     humor_level: str | None,
+    engagement_motivation: str | None,
     confidence: float,
 ) -> None:
     """保存 L1 画像 (UPSERT)."""
@@ -151,16 +157,18 @@ def save_profile(
                 cur.execute(
                     """INSERT INTO user_profiles
                          (user_id, interaction_style, spoiler_tolerance, humor_level,
-                          confidence, messages_since_update, updated_at)
-                       VALUES (%s, %s, %s, %s, %s, 0, now())
+                          engagement_motivation, confidence, messages_since_update, updated_at)
+                       VALUES (%s, %s, %s, %s, %s, %s, 0, now())
                        ON CONFLICT (user_id) DO UPDATE
-                         SET interaction_style = EXCLUDED.interaction_style,
-                             spoiler_tolerance = EXCLUDED.spoiler_tolerance,
-                             humor_level       = EXCLUDED.humor_level,
-                             confidence        = EXCLUDED.confidence,
+                         SET interaction_style     = EXCLUDED.interaction_style,
+                             spoiler_tolerance     = EXCLUDED.spoiler_tolerance,
+                             humor_level           = EXCLUDED.humor_level,
+                             engagement_motivation = EXCLUDED.engagement_motivation,
+                             confidence            = EXCLUDED.confidence,
                              messages_since_update = 0,
-                             updated_at        = now()""",
-                    (user_id, interaction_style, spoiler_tolerance, humor_level, confidence),
+                             updated_at            = now()""",
+                    (user_id, interaction_style, spoiler_tolerance, humor_level,
+                     engagement_motivation, confidence),
                 )
                 conn.commit()
     except Exception as e:
@@ -179,7 +187,9 @@ def load_show_profile(user_id: str, show: str) -> dict[str, Any] | None:
         with _connect() as conn:
             with conn.cursor() as cur:
                 cur.execute(
-                    """SELECT favorite_characters, character_opinions, confidence
+                    """SELECT favorite_characters, attention_characters,
+                              character_opinions, theme_preferences, disliked_elements,
+                              confidence
                        FROM show_profiles WHERE user_id = %s AND show = %s""",
                     (user_id, show),
                 )
@@ -188,8 +198,11 @@ def load_show_profile(user_id: str, show: str) -> dict[str, Any] | None:
                     return None
                 return {
                     "favorite_characters": list(row[0] or []),
-                    "character_opinions": row[1] or [],
-                    "confidence": float(row[2] or 0),
+                    "attention_characters": list(row[1] or []),
+                    "character_opinions": row[2] or [],
+                    "theme_preferences": list(row[3] or []),
+                    "disliked_elements": list(row[4] or []),
+                    "confidence": float(row[5] or 0),
                 }
     except Exception as e:
         logger.warning(f"[profile_store] load_show 失败: {e}")
@@ -201,7 +214,10 @@ def save_show_profile(
     show: str,
     *,
     favorite_characters: list[str],
+    attention_characters: list[str],
     character_opinions: list[dict],
+    theme_preferences: list[str],
+    disliked_elements: list[str],
     confidence: float,
 ) -> None:
     """保存 L2 作品画像 (UPSERT)."""
@@ -210,18 +226,25 @@ def save_show_profile(
             with conn.cursor() as cur:
                 cur.execute(
                     """INSERT INTO show_profiles
-                         (user_id, show, favorite_characters, character_opinions,
+                         (user_id, show, favorite_characters, attention_characters,
+                          character_opinions, theme_preferences, disliked_elements,
                           confidence, updated_at)
-                       VALUES (%s, %s, %s, %s, %s, now())
+                       VALUES (%s, %s, %s, %s, %s, %s, %s, %s, now())
                        ON CONFLICT (user_id, show) DO UPDATE
-                         SET favorite_characters = EXCLUDED.favorite_characters,
-                             character_opinions  = EXCLUDED.character_opinions,
-                             confidence          = EXCLUDED.confidence,
-                             updated_at           = now()""",
+                         SET favorite_characters  = EXCLUDED.favorite_characters,
+                             attention_characters = EXCLUDED.attention_characters,
+                             character_opinions   = EXCLUDED.character_opinions,
+                             theme_preferences    = EXCLUDED.theme_preferences,
+                             disliked_elements    = EXCLUDED.disliked_elements,
+                             confidence           = EXCLUDED.confidence,
+                             updated_at            = now()""",
                     (
                         user_id, show,
                         list(favorite_characters or []),
+                        list(attention_characters or []),
                         Json(character_opinions or []),
+                        list(theme_preferences or []),
+                        list(disliked_elements or []),
                         confidence,
                     ),
                 )

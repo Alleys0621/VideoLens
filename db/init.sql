@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS user_profiles (
     interaction_style     TEXT,       -- 吐槽型 / 分析型 / 陪伴型 / 提问型 / 混合
     spoiler_tolerance     TEXT,       -- 接受 / 谨慎 / 拒绝
     humor_level           TEXT,       -- 高 / 中 / 低
+    engagement_motivation TEXT,       -- 推理探索型 / 情绪共鸣型 / 角色陪伴型 / 剧情消费型
     confidence            DOUBLE PRECISION NOT NULL DEFAULT 0,
     messages_since_update INTEGER     NOT NULL DEFAULT 0,
     created_at            TIMESTAMPTZ NOT NULL DEFAULT now(),
@@ -49,7 +50,10 @@ CREATE TABLE IF NOT EXISTS show_profiles (
     user_id             UUID        NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     show                TEXT        NOT NULL,
     favorite_characters TEXT[]      NOT NULL DEFAULT '{}',
+    attention_characters TEXT[]     NOT NULL DEFAULT '{}',
     character_opinions  JSONB       NOT NULL DEFAULT '[]'::jsonb,
+    theme_preferences   TEXT[]      NOT NULL DEFAULT '{}',
+    disliked_elements   TEXT[]      NOT NULL DEFAULT '{}',
     confidence          DOUBLE PRECISION NOT NULL DEFAULT 0,
     created_at          TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at          TIMESTAMPTZ NOT NULL DEFAULT now(),

@@ -6,6 +6,16 @@
 
 ## 版本记录
 
+### V1.3.1（2026-07-30）
+
+**用户画像升级（L1 + L2）**
+- L1 新增 `engagement_motivation`（推理探索型 / 情绪共鸣型 / 角色陪伴型 / 剧情消费型）
+- L2 新增 `attention_characters`（关注 ≠ 喜欢）、`theme_preferences`、`disliked_elements`
+- L1/L2 prompt 重写：详细 confidence 标尺 + 严格区分用户/Alleys 发言
+- L2 模型 qwen-plus → qwen3.7-flash（统一）
+- 去掉 L1/L2 注入门控（confidence < 阈值不注入），允许 agent 边聊边猜、像人一样逐步了解用户
+- DB migration: `db/migrations/002_add_profile_fields.sql`
+
 ### V1.3（2026-07-29）
 
 **延迟优化：localhost → 127.0.0.1**
@@ -177,6 +187,16 @@ cd ..
 ```powershell
 docker compose -f db/docker-compose.yml up -d
 ```
+
+**如果 `db/migrations/` 有新的 SQL 文件**（schema 变更），同步本地库 schema：
+```powershell
+python -m scripts.apply_migrations
+# 或先 dry-run 看看会跑哪些文件:
+python -m scripts.apply_migrations --dry-run
+```
+
+> 全新机器不需要跑 migration —— `init.sql` 会被 docker-compose 首次启动时自动执行。
+> 所有 migration 文件都用 `IF NOT EXISTS` 幂等保护，重复执行无副作用。
 
 然后重新 `.\start.bat` 启动即可。
 
