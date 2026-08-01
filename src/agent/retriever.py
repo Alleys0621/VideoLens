@@ -84,7 +84,7 @@ def build_or_load_embeddings(
     ep_dir = os.path.join(cfg.output_root, video_dir)
     from src.eval.stage3_retrieval import build_searchable_text
 
-    events = load_json(os.path.join(ep_dir, "stage3_dryrun.json")).get("events", []) or []
+    events = load_json(os.path.join(ep_dir, "stage3_kb.json")).get("events", []) or []
     segments = load_json(os.path.join(ep_dir, "audio.json")).get("segments", []) or []
     events_text = [build_searchable_text(e) for e in events]
     segs_text = [s.get("text", "") for s in segments]
@@ -145,3 +145,79 @@ def rrf_fuse(
         for rank, (idx, _) in enumerate(ranked):
             scores[idx] = scores.get(idx, 0.0) + 1.0 / (k + rank + 1)
     return sorted(scores.items(), key=lambda x: -x[1])[:top_k]
+
+
+# ============================================================
+# 时间 boost (kb 分支用): 让"这块/这段"自然命中当前时间附近的事件
+# ============================================================
+
+def _event_midpoint(event: dict, scenes: list[dict]) -> float | None:
+    """从 event.evidence.scene_ids 推时间中点.
+
+    取所有匹配 scene 中点时间的中位数 (避免 outlier 拉偏).
+    拿不到返回 None.
+    """
+    scene_ids: set[str] = set()
+    for ev in event.get("evidence", []) or []:
+        for sid in ev.get("scene_ids", []) or []:
+            if sid:
+                scene_ids.add(sid)
+    if not scene_ids:
+        return None
+    scene_map: dict[str, float] = {}
+    for s in scenes:
+        sid = s.get("scene_id")
+        if not sid:
+            continue
+        try:
+            mid = (float(s.get("start_time", 0)) + float(s.get("end_time", 0))) / 2
+        except (TypeError, ValueError):
+            continue
+        scene_map[sid] = mid
+    mids = [scene_map[s] for s in scene_ids if s in scene_map]
+    if not mids:
+        return None
+    mids.sort()
+    return mids[len(mids) // 2]
+
+
+def apply_time_boost(
+    events_fused: list[tuple[int, float]],
+    events: list[dict],
+    scenes: list[dict],
+    video_time: float | None,
+) -> list[tuple[int, float]]:
+    """RRF 融合后, 对当前时间附近的事件加距离衰减 boost, 重新排序.
+
+    距离衰减档:
+      |event_mid - video_time| ≤ 5s  → +0.5
+      ≤ 30s                          → +0.3
+      ≤ 60s                          → +0.1
+      其他                           → 不加
+
+    video_time 为 None 或 events_fused 为空时原样返回.
+    idx 越界保护: 跳过该条不加 boost.
+    """
+    if video_time is None or not events_fused:
+        return events_fused
+    vt = float(video_time)
+    boosted: list[tuple[int, float]] = []
+    for idx, score in events_fused:
+        if idx >= len(events):
+            boosted.append((idx, score))
+            continue
+        ev_mid = _event_midpoint(events[idx], scenes)
+        if ev_mid is None:
+            boosted.append((idx, score))
+            continue
+        dist = abs(ev_mid - vt)
+        if dist <= 5:
+            boosted.append((idx, score + 0.5))
+        elif dist <= 30:
+            boosted.append((idx, score + 0.3))
+        elif dist <= 60:
+            boosted.append((idx, score + 0.1))
+        else:
+            boosted.append((idx, score))
+    boosted.sort(key=lambda x: x[1], reverse=True)
+    return boosted

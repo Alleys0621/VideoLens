@@ -47,6 +47,44 @@ def _render_history(chat_history: list[dict]) -> tuple[str, int]:
 
 
 # ============================================================
+# Prompt 读取 (yaml profile_prompts, 缺配置时用代码内 fallback)
+# ============================================================
+
+def _get_profile_prompt(key: str, fallback: str) -> str:
+    """从 yaml `profile_prompts.{key}` 读 prompt; 未配置用 fallback."""
+    try:
+        from src.core.config import get_config
+        pp = get_config().prompts.get("profile_prompts", {}) or {}
+        val = (pp.get(key) or "").strip()
+        return val if val else fallback
+    except Exception:
+        return fallback
+
+
+_L1_SYSTEM_FALLBACK = (
+    "你在更新陪看智能体对某个用户的长期画像。只输出严格 JSON，不要解释、不要 markdown。\n"
+    '{"interaction_style":"吐槽型/分析型/陪伴型/提问型/混合",'
+    '"spoiler_tolerance":"接受/谨慎/拒绝","humor_level":"高/中/低",'
+    '"engagement_motivation":"推理探索型/情绪共鸣型/角色陪伴型/剧情消费型","confidence":0.0}\n'
+    "confidence: 0.9-1.0 明确多次表达 / 0.6-0.8 行为明显 / 0.3-0.5 弱推断 / 0-0.2 不确定.\n"
+    "【关键】只有「用户:」开头的是用户本人发言, 「Alleys:」是智能体回复, 不能当用户风格.\n"
+    "覆盖规则: 最近对话与旧值冲突时以最近为准, 允许覆盖旧值. "
+    "用户抱怨 AI 回答质量(别瞎编/答错了)不是剧情偏好, 只作 interaction_style 判断参考."
+)
+
+_L2_SYSTEM_FALLBACK = (
+    "你在更新陪看智能体对某个用户在某部作品中的长期记忆。只输出严格 JSON，不要解释、不要 markdown。\n"
+    '{"favorite_characters":[],"attention_characters":[],"character_opinions":[],'
+    '"theme_preferences":[],"disliked_elements":[],"confidence":0.0}\n'
+    "只根据「用户:」内容判断,「Alleys:」不能作为用户评价. "
+    "明确喜欢/讨厌 > 长期行为 > 单次关注. 不要编造角色.\n"
+    "覆盖规则: 最近对话与旧值冲突时以最近为准, 允许修改/移除旧 favorite/opinion/disliked. "
+    "角色字段只收剧中角色名, 演员真名(如张一山)不进. 用户抱怨 AI 回答质量不进本画像. "
+    "互斥: 同一角色不能同时进 favorite 和 disliked, 冲突以 opinion 的 sentiment 为准."
+)
+
+
+# ============================================================
 # L1: 用户画像
 # ============================================================
 
@@ -63,42 +101,11 @@ def maybe_update_user_profile(user_id: str, chat_history: list[dict]) -> None:
         f"spoiler_tolerance={old.get('spoiler_tolerance') or '未知'}, "
         f"humor_level={old.get('humor_level') or '未知'}, "
         f"engagement_motivation={old.get('engagement_motivation') or '未知'}, "
+        f"alleys_attitude={old.get('alleys_attitude') or '未知'}, "
         f"confidence={old.get('confidence', 0):.2f}"
     )
 
-    system = (
-        "你在更新陪看智能体对某个用户的长期画像。只输出严格 JSON，不要解释、不要 markdown。\n\n"
-        "{\n"
-        '  "interaction_style": "吐槽型/分析型/陪伴型/提问型/混合",\n'
-        '  "spoiler_tolerance": "接受/谨慎/拒绝",\n'
-        '  "humor_level": "高/中/低",\n'
-        '  "engagement_motivation": "推理探索型/情绪共鸣型/角色陪伴型/剧情消费型",\n'
-        '  "confidence": 0.0\n'
-        "}\n\n"
-        "字段说明:\n"
-        "- interaction_style:\n"
-        "  · 吐槽型: 喜欢吐槽、评价剧情\n"
-        "  · 分析型: 喜欢分析人物、剧情逻辑、主题\n"
-        "  · 陪伴型: 关注情绪交流、一起看剧的感觉\n"
-        "  · 提问型: 主要通过问题推进观看\n"
-        "  · 混合: 多种明显存在\n"
-        "- spoiler_tolerance: 用户接受剧情信息程度\n"
-        "- humor_level: 用户是否喜欢玩笑、接梗、轻松互动\n"
-        "- engagement_motivation: 用户观看和讨论的主要动力\n"
-        "  · 推理探索型: 喜欢猜测、分析未知\n"
-        "  · 情绪共鸣型: 关注情感体验\n"
-        "  · 角色陪伴型: 特别关注角色命运\n"
-        "  · 剧情消费型: 主要关注事件发展\n"
-        "- confidence:\n"
-        "  · 0.9-1.0: 明确表达且多次验证\n"
-        "  · 0.6-0.8: 有明显行为依据\n"
-        "  · 0.3-0.5: 弱推断\n"
-        "  · 0-0.2: 基本无法判断\n\n"
-        "不要 invent 字段。\n\n"
-        "【关键】对话中「用户:」开头的才是用户本人的发言;\n"
-        "「Alleys:」开头的是智能体的回复, 仅作上下文理解用途, 绝不能当成用户的风格或态度.\n"
-        "所有画像判断必须基于「用户:」行的内容, 不要被 Alleys 的语气/观点带偏."
-    )
+    system = _get_profile_prompt("l1_system", _L1_SYSTEM_FALLBACK)
     user = (
         f"当前画像: {old_brief}\n\n"
         f"最近对话:\n{history_text}\n\n"
@@ -127,6 +134,12 @@ def maybe_update_user_profile(user_id: str, chat_history: list[dict]) -> None:
         spoiler = _pick(obj.get("spoiler_tolerance"), _VALID_SPOILER) or old.get("spoiler_tolerance")
         humor = _pick(obj.get("humor_level"), _VALID_HUMOR) or old.get("humor_level")
         motivation = _pick(obj.get("engagement_motivation"), _VALID_MOTIVATION) or old.get("engagement_motivation")
+        # alleys_attitude: 自由文本, 保留最近的有效值
+        attitude_raw = str(obj.get("alleys_attitude", "") or "").strip()
+        if attitude_raw and attitude_raw != "未知":
+            attitude = attitude_raw[:50]
+        else:
+            attitude = old.get("alleys_attitude")
         try:
             conf = float(obj.get("confidence", 0.0))
         except (TypeError, ValueError):
@@ -140,11 +153,12 @@ def maybe_update_user_profile(user_id: str, chat_history: list[dict]) -> None:
             spoiler_tolerance=spoiler,
             humor_level=humor,
             engagement_motivation=motivation,
+            alleys_attitude=attitude,
             confidence=conf,
         )
         logger.info(
             f"[profile] 更新 user={user_id[:8]} style={style} spoiler={spoiler} "
-            f"humor={humor} motivation={motivation} conf={conf:.2f}"
+            f"humor={humor} motivation={motivation} attitude={attitude} conf={conf:.2f}"
         )
     except Exception as e:
         logger.warning(f"[profile] 更新失败 (非致命): {e}")
@@ -170,54 +184,7 @@ def maybe_update_show_profile(
 
     history_text, n_recent = _render_history(chat_history)
 
-    system = (
-        "你在更新陪看智能体对某个用户在某部作品中的长期记忆。\n\n"
-        "只输出严格 JSON，不要解释，不要 markdown。\n\n"
-        "目标:\n"
-        "记录用户在当前作品中的角色偏好、剧情兴趣和评价倾向，用于后续陪看互动。\n\n"
-        "输出:\n\n"
-        "{\n"
-        ' "favorite_characters":[],\n'
-        ' "attention_characters":[],\n'
-        ' "character_opinions":[],\n'
-        ' "theme_preferences":[],\n'
-        ' "disliked_elements":[],\n'
-        ' "confidence":0.0\n'
-        "}\n\n"
-        "规则:\n\n"
-        "1. 只根据「用户:」内容判断。\n"
-        "2. 「Alleys:」观点不能作为用户评价。\n"
-        "3. 用户明确表达喜欢/讨厌 > 长期行为信号 > 单次关注。\n"
-        "4. 不确定时保留旧值，不新增猜测。\n\n"
-        "字段:\n\n"
-        "favorite_characters:\n"
-        "用户明显喜欢、认可、心疼的角色。\n\n"
-        "attention_characters:\n"
-        "用户关注、频繁询问、讨论较多的角色。\n"
-        "注意:\n"
-        "关注不等于喜欢。\n\n"
-        "character_opinions:\n"
-        "格式:\n"
-        "{\n"
-        '"character":"角色名",\n'
-        '"opinion":"一句评价",\n'
-        '"sentiment":"positive/neutral/negative"\n'
-        "}\n\n"
-        "theme_preferences:\n"
-        "用户喜欢的剧情主题，例如:\n"
-        "权谋、爱情、成长、悬疑、人性等。\n\n"
-        "disliked_elements:\n"
-        "用户明确不喜欢的内容，例如:\n"
-        "强行反转、拖沓剧情、某类角色。\n\n"
-        "confidence:\n"
-        "0-1:\n"
-        "0.9-1.0 明确多次表达\n"
-        "0.6-0.8 行为明显\n"
-        "0.3-0.5 弱推断\n"
-        "0-0.2 不确定\n\n"
-        "不要编造角色。\n"
-        "不要 invent 字段。"
-    )
+    system = _get_profile_prompt("l2_system", _L2_SYSTEM_FALLBACK)
     user = (
         f"当前剧: {show}\n"
         f"已记下的喜好角色: {old_fav}\n"

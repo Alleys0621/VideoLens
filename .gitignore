@@ -41,6 +41,7 @@ data/output/_batch_reports/
 
 # === 本地记忆 / 向量库 / 运行状态 (只跟本地服务器, 不上 git) ===
 data/_mem0_qdrant/
+data/_mem0_qdrant.bak/
 
 # === LangGraph: 模板跟仓库, 运行数据不跟踪 ===
 .langgraph_api/

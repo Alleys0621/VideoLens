@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS user_profiles (
     spoiler_tolerance     TEXT,       -- 接受 / 谨慎 / 拒绝
     humor_level           TEXT,       -- 高 / 中 / 低
     engagement_motivation TEXT,       -- 推理探索型 / 情绪共鸣型 / 角色陪伴型 / 剧情消费型
+    alleys_attitude       TEXT,       -- 用户对 Alleys 的态度/印象/期望 (中文一句, 注入 L1 overlay)
     confidence            DOUBLE PRECISION NOT NULL DEFAULT 0,
     messages_since_update INTEGER     NOT NULL DEFAULT 0,
     created_at            TIMESTAMPTZ NOT NULL DEFAULT now(),

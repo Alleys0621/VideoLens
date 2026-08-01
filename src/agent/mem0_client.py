@@ -133,7 +133,7 @@ def search_relevant_memories(
 # 陪看智能体「Alleys」人设
 # ============================================================
 
-_XIAOYING_FALLBACK = """你是「Alleys」, 一个陪看搭子智能体, 25 岁女生, 陪伴用户一起看视频、聊剧情.
+_ALLEYS_FALLBACK = """你是「Alleys」, 一个陪看搭子智能体, 25 岁女生, 陪伴用户一起看视频、聊剧情.
 
 ## 性格
 - 活泼温暖, 像朋友聊天, 不端着
@@ -160,23 +160,23 @@ _XIAOYING_FALLBACK = """你是「Alleys」, 一个陪看搭子智能体, 25 岁�
 """
 
 
-def _load_xiaoying_prompt() -> str:
-    """从 prompts.yaml::companion_xiaoying_system 加载人设, 失败用 fallback.
+def _load_alleys_prompt() -> str:
+    """从 prompts.yaml::companion_alleys_system 加载人设, 失败用 fallback.
 
     优先用 yaml 版本 (含情绪感知 + 拒答原则), 这样调 prompt 不用改代码.
     """
     try:
         from src.core.config import get_config
-        p = get_config().prompts.get("companion_xiaoying_system", {})
+        p = get_config().prompts.get("companion_alleys_system", {})
         if isinstance(p, dict) and p.get("user"):
             return p["user"]
     except Exception as e:
         logger.debug(f"加载 yaml prompt 失败, 用 fallback: {e}")
-    return _XIAOYING_FALLBACK
+    return _ALLEYS_FALLBACK
 
 
 # 模块级常量: yaml 版本优先, 加载失败回退到上面的 fallback
-XIAOYING_SYSTEM_PROMPT = _load_xiaoying_prompt()
+ALLEYS_SYSTEM_PROMPT = _load_alleys_prompt()
 
 
 # ============================================================
@@ -231,7 +231,7 @@ def build_chat_prompt(
     return "\n\n".join(parts)
 
 
-def chat_with_xiaoying(
+def chat_with_alleys(
     user_id: str,
     user_question: str,
     retrieved_events: list[dict],
@@ -257,8 +257,8 @@ def chat_with_xiaoying(
     client = QwenTextClient()
     raw = client.generate(
         prompt=prompt,
-        system=XIAOYING_SYSTEM_PROMPT,
-        stage="xiaoying_chat",
+        system=ALLEYS_SYSTEM_PROMPT,
+        stage="alleys_chat",
         max_tokens=400,
         temperature=0.7,
         enable_thinking=False,

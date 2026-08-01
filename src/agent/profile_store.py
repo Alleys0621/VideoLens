@@ -55,7 +55,8 @@ def load_user_profile(user_id: str) -> dict[str, Any] | None:
             with conn.cursor() as cur:
                 cur.execute(
                     """SELECT interaction_style, spoiler_tolerance, humor_level,
-                              engagement_motivation, confidence, messages_since_update
+                              engagement_motivation, alleys_attitude, confidence,
+                              messages_since_update
                        FROM user_profiles WHERE user_id = %s""",
                     (user_id,),
                 )
@@ -67,8 +68,9 @@ def load_user_profile(user_id: str) -> dict[str, Any] | None:
                     "spoiler_tolerance": row[1],
                     "humor_level": row[2],
                     "engagement_motivation": row[3],
-                    "confidence": float(row[4] or 0),
-                    "messages_since_update": int(row[5] or 0),
+                    "alleys_attitude": row[4],
+                    "confidence": float(row[5] or 0),
+                    "messages_since_update": int(row[6] or 0),
                 }
     except Exception as e:
         logger.warning(f"[profile_store] load 失败: {e}")
@@ -91,11 +93,15 @@ def render_profile_overlay(profile: dict[str, Any] | None) -> str:
         parts.append(f"接梗浓度: {profile['humor_level']}")
     if profile.get("engagement_motivation"):
         parts.append(f"观看动力: {profile['engagement_motivation']}")
+    attitude = profile.get("alleys_attitude")
+    if attitude:
+        parts.append(f"用户对你的态度: {attitude}")
     if not parts:
         return ""
     return (
         "（这位用户的偏好只用来调整你的语气，"
-        "**不要因此多反问**（即使偏好写'提问型', 也是用户喜欢刨根问底, 不是你要多反问）: "
+        "**不要因此多反问**（即使偏好写'提问型', 也是用户喜欢刨根问底, 不是你要多反问）"
+        "，同时请认真对待'用户对你的态度'——它直接告诉你用户希望你以什么方式回应: "
         + "，".join(parts) + "）"
     )
 
@@ -148,6 +154,7 @@ def save_profile(
     spoiler_tolerance: str | None,
     humor_level: str | None,
     engagement_motivation: str | None,
+    alleys_attitude: str | None = None,
     confidence: float,
 ) -> None:
     """保存 L1 画像 (UPSERT)."""
@@ -157,18 +164,20 @@ def save_profile(
                 cur.execute(
                     """INSERT INTO user_profiles
                          (user_id, interaction_style, spoiler_tolerance, humor_level,
-                          engagement_motivation, confidence, messages_since_update, updated_at)
-                       VALUES (%s, %s, %s, %s, %s, %s, 0, now())
+                          engagement_motivation, alleys_attitude, confidence,
+                          messages_since_update, updated_at)
+                       VALUES (%s, %s, %s, %s, %s, %s, %s, 0, now())
                        ON CONFLICT (user_id) DO UPDATE
                          SET interaction_style     = EXCLUDED.interaction_style,
                              spoiler_tolerance     = EXCLUDED.spoiler_tolerance,
                              humor_level           = EXCLUDED.humor_level,
                              engagement_motivation = EXCLUDED.engagement_motivation,
+                             alleys_attitude       = EXCLUDED.alleys_attitude,
                              confidence            = EXCLUDED.confidence,
                              messages_since_update = 0,
                              updated_at            = now()""",
                     (user_id, interaction_style, spoiler_tolerance, humor_level,
-                     engagement_motivation, confidence),
+                     engagement_motivation, alleys_attitude, confidence),
                 )
                 conn.commit()
     except Exception as e:

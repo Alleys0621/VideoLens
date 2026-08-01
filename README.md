@@ -1,10 +1,28 @@
 # AlleysVid — AI 陪看智能体
 
-> **V1.3** — 延迟优化：修复 Windows localhost IPv6 超时（每请求省 2s），统一为单一启动脚本
+> **V1.4** — 对话为核心架构（v2_dialog_first）：去掉意图路由，每轮全量注入上下文，KB 按需引用
 
 边看剧边聊天的 AI 陪看搭子。选一集视频，Alleys 陪你一起看，随时聊剧情、问角色、吐槽笑点。
 
 ## 版本记录
+
+### V1.4（2026-08-01）
+
+**对话为核心架构（v2_dialog_first）**
+- 去掉意图路由：删除 `intent_router.py` / `context_builder.py`，不再按 task 裁剪上下文
+- 每轮全量注入：L1+L2 画像 + 最近 5 轮 + Mem0 长期记忆 + KB 检索，由 prompt 引导"按需引用"（用户问剧情才参考 KB，闲聊不复述）
+- 主 LLM 固定 qwen3.7-flash（`COMPANION_MAIN_MODEL=plus` 可切），不再按置信度切模型
+- 对话 prompt 全部 yaml 驱动（`companion_prompts.user_blocks`），改 yaml 即可热编辑
+- 抽取 `video_utils.py` 统一数据加载 + 异步副作用
+
+**L1 画像新增 `alleys_attitude`**
+- 记录用户对 Alleys 的态度/印象/期望，注入 L1 overlay 影响 Alleys 回应方式
+- 画像 prompt 迁到 yaml（`profile_prompts.l1_system / l2_system`），代码内保留 fallback
+- DB migration: `db/migrations/0005_user_profiles_alleys_attitude.sql`
+
+**数据源统一 + 清理**
+- 检索/加载统一改读 `stage3_kb.json`，删除冗余的 `stage3_dryrun.json`
+- 移除误跟踪的 `data/_mem0_qdrant.bak/`（本地向量库备份，进 `.gitignore`）
 
 ### V1.3.1（2026-07-30）
 
@@ -188,15 +206,16 @@ cd ..
 docker compose -f db/docker-compose.yml up -d
 ```
 
-**如果 `db/migrations/` 有新的 SQL 文件**（schema 变更），同步本地库 schema：
+**同步数据库 schema**（重要：每次 `git pull` 后都跑一次，幂等无害）：
 ```powershell
 python -m scripts.apply_migrations
 # 或先 dry-run 看看会跑哪些文件:
 python -m scripts.apply_migrations --dry-run
 ```
 
-> 全新机器不需要跑 migration —— `init.sql` 会被 docker-compose 首次启动时自动执行。
-> 所有 migration 文件都用 `IF NOT EXISTS` 幂等保护，重复执行无副作用。
+> **新机器**不需要跑 —— `init.sql` 会被 docker-compose 首次启动时自动执行（表结构已含最新字段）。
+> **已有库**每次 `git pull` 后跑 `python -m scripts.apply_migrations`，脚本按文件名顺序（0002→0003→…→0006）应用 `db/migrations/*.sql`。
+> 所有 migration 文件都用 `IF NOT EXISTS` 幂等保护，重复执行无副作用，所以**每次 pull 后无脑跑一遍即可**，不用纠结"这次有没有 schema 变更"。
 
 然后重新 `.\start.bat` 启动即可。
 

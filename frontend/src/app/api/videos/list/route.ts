@@ -31,7 +31,7 @@ export async function GET() {
       const entryPath = path.join(showDir, entry);
       if (!fs.statSync(entryPath).isDirectory()) continue;
 
-      if (fs.existsSync(path.join(entryPath, "stage3_dryrun.json"))) {
+      if (fs.existsSync(path.join(entryPath, "stage3_kb.json"))) {
         // 直接集 (show/episode, 无季)
         show.directEpisodes.push({
           dir: `${showName}/${entry}`,
@@ -45,7 +45,7 @@ export async function GET() {
           const epPath = path.join(entryPath, ep);
           if (
             fs.statSync(epPath).isDirectory() &&
-            fs.existsSync(path.join(epPath, "stage3_dryrun.json"))
+            fs.existsSync(path.join(epPath, "stage3_kb.json"))
           ) {
             season.episodes.push({
               dir: `${showName}/${entry}/${ep}`,
