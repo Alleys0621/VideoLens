@@ -46,6 +46,31 @@ def _render_history(chat_history: list[dict]) -> tuple[str, int]:
     return "\n".join(lines), len(recent)
 
 
+def _parse_confidence(obj: dict, n_recent: int) -> float:
+    """LLM confidence 取整 + 按样本量阻尼."""
+    try:
+        conf = float(obj.get("confidence", 0.0))
+    except (TypeError, ValueError):
+        conf = 0.0
+    return min(max(0.0, min(1.0, conf)), n_recent / 20.0)
+
+
+def _call_profile_llm(system: str, user: str, max_tokens: int) -> dict | None:
+    """qwen3.7-flash 读旧画像+对话, 返回解析后的 JSON dict."""
+    from src.core.llm.base_client import BaseLLMClient
+    from src.core.helpers.text_utils import extract_json_obj
+    raw = BaseLLMClient(model="qwen3.7-flash").chat(
+        messages=[
+            {"role": "system", "content": system},
+            {"role": "user", "content": user},
+        ],
+        temperature=0,
+        max_tokens=max_tokens,
+        enable_thinking=False,
+    )
+    return extract_json_obj(raw or "")
+
+
 # ============================================================
 # Prompt 读取 (yaml profile_prompts, 缺配置时用代码内 fallback)
 # ============================================================
@@ -90,7 +115,7 @@ _L2_SYSTEM_FALLBACK = (
 
 def maybe_update_user_profile(user_id: str, chat_history: list[dict]) -> None:
     """读旧画像 + 最近对话 → qwen3.7-flash → UPSERT. 失败静默 (后台任务)."""
-    if not chat_history or len(chat_history) < 4:
+    if not chat_history or len(chat_history) < 2:
         return
 
     old = load_user_profile(user_id) or {}
@@ -113,19 +138,7 @@ def maybe_update_user_profile(user_id: str, chat_history: list[dict]) -> None:
     )
 
     try:
-        from src.core.llm.base_client import BaseLLMClient
-        client = BaseLLMClient(model="qwen3.7-flash")
-        raw = client.chat(
-            messages=[
-                {"role": "system", "content": system},
-                {"role": "user", "content": user},
-            ],
-            temperature=0,
-            max_tokens=150,
-            enable_thinking=False,
-        )
-        from src.core.helpers.text_utils import extract_json_obj
-        obj = extract_json_obj(raw or "")
+        obj = _call_profile_llm(system, user, max_tokens=150)
         if not obj:
             return
 
@@ -140,12 +153,7 @@ def maybe_update_user_profile(user_id: str, chat_history: list[dict]) -> None:
             attitude = attitude_raw[:50]
         else:
             attitude = old.get("alleys_attitude")
-        try:
-            conf = float(obj.get("confidence", 0.0))
-        except (TypeError, ValueError):
-            conf = 0.0
-        conf = max(0.0, min(1.0, conf))
-        conf = min(conf, n_recent / 20.0)
+        conf = _parse_confidence(obj, n_recent)
 
         save_profile(
             user_id,
@@ -172,7 +180,7 @@ def maybe_update_show_profile(
     user_id: str, show: str, chat_history: list[dict],
 ) -> None:
     """L2 作品画像增量更新: 角色偏好 + 剧情兴趣 + 评价倾向."""
-    if not show or not chat_history or len(chat_history) < 4:
+    if not show or not chat_history or len(chat_history) < 2:
         return
 
     old = load_show_profile(user_id, show) or {}
@@ -197,19 +205,7 @@ def maybe_update_show_profile(
     )
 
     try:
-        from src.core.llm.base_client import BaseLLMClient
-        client = BaseLLMClient(model="qwen3.7-flash")
-        raw = client.chat(
-            messages=[
-                {"role": "system", "content": system},
-                {"role": "user", "content": user},
-            ],
-            temperature=0,
-            max_tokens=300,
-            enable_thinking=False,
-        )
-        from src.core.helpers.text_utils import extract_json_obj
-        obj = extract_json_obj(raw or "")
+        obj = _call_profile_llm(system, user, max_tokens=300)
         if not obj:
             return
 
@@ -242,12 +238,7 @@ def maybe_update_show_profile(
         new_disliked = [d for d in (obj.get("disliked_elements") or []) if isinstance(d, str) and d.strip()]
         disliked = list(dict.fromkeys([d.strip() for d in (old_disliked + new_disliked) if d.strip()]))[:8]
 
-        try:
-            conf = float(obj.get("confidence", 0.0))
-        except (TypeError, ValueError):
-            conf = 0.0
-        conf = max(0.0, min(1.0, conf))
-        conf = min(conf, n_recent / 20.0)
+        conf = _parse_confidence(obj, n_recent)
 
         save_show_profile(
             user_id, show,

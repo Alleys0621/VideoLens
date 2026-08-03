@@ -30,12 +30,12 @@ AlleysVid 是一个 AI 陪看智能体。用户选一集视频，Alleys（AI 搭
 ### 分层画像
 
 - L1 用户画像：`src/agent/profile_store.py` + `profile_updater.py::maybe_update_user_profile()`
-  - 表 `user_profiles`：interaction_style / spoiler_tolerance / humor_level / confidence。
-  - 每累计 5 条非 refuse 对话触发一次 `qwen-plus` 增量更新。
-  - `render_profile_overlay()` 只在 confidence ≥ 0.5 时注入 system prompt。
+  - 表 `user_profiles`：interaction_style / spoiler_tolerance / humor_level / engagement_motivation / alleys_attitude / confidence。
+  - 每累计 2 条非 refuse 对话触发一次 `qwen3.7-flash` 增量更新。
+  - `render_profile_overlay()` 无条件注入（V1.3.1 去掉 confidence 门控）。
 - L2 作品画像：`profile_updater.py::maybe_update_show_profile()`
-  - 表 `show_profiles`：favorite_characters / character_opinions / confidence。
-  - 仅注入 companion / knowledge 分支。
+  - 表 `show_profiles`：favorite_characters / attention_characters / character_opinions / theme_preferences / disliked_elements / confidence。
+  - 每轮全量注入 user prompt（V1.4 去意图路由）。
 
 ### 会话标题
 
@@ -115,6 +115,8 @@ cd frontend && node scripts/test-thread-isolation.mjs
 - **类型注解**：新式 `X | None`，禁止 `Optional[X]`
 - **调试打点**：临时计时不得进生产 payload（如 `reasoning` 返回字段），必须用 env 开关（如 `VIDEOLENS_PERF`）门控
 - **JSON 提取**：从 LLM 输出提取 JSON 用 `extract_json_obj`（`src/core/helpers/text_utils.py`），禁止手写 `re.search(r"\{...\}")`
+- **注释精简（强制）**：禁止冗长注释。注释只写"为什么"（非常规理由），不写"是什么"（代码本身说明一切）。docstring 单行；禁止整段背景叙述、重复代码逻辑的解释、堆叠无信息量的分隔注释。长说明放 yaml 或设计文档，不放代码里。
+- **代码生成（强制）**：生成/修改代码一律走工具规范化流程（先 Read 原文件 → Edit/Write 精确 diff），禁止凭空整段输出、禁止复制粘贴式乱改；每处改动需可被 git diff 校验。
 
 ## 数据布局（已 gitignore）
 

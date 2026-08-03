@@ -37,7 +37,8 @@ def setup_logger(name: str = "videolens", level: str = "INFO") -> logging.Logger
     )
 
     # --- 文件 Handler（纯文本，无颜色）---
-    log_dir = os.path.join("data", "output")
+    # 日志放项目根 logs/ 目录 (运行时数据, 不进 git)
+    log_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "logs")
     os.makedirs(log_dir, exist_ok=True)
     log_file = os.path.join(log_dir, "videolens.log")
 

@@ -9,12 +9,11 @@
   两者不重叠.
 
 不每轮写: 由 companion 在非 refuse 任务后累加 messages_since_update,
-达到 PROFILE_UPDATE_THRESHOLD 才用一次便宜 LLM 增量更新 (见 profile_updater).
+达到 PROFILE_UPDATE_THRESHOLD 才增量更新 (见 profile_updater).
 """
 
 from __future__ import annotations
 
-import os
 from typing import Any
 
 import psycopg
@@ -25,8 +24,7 @@ from src.core.logging import get_logger
 logger = get_logger()
 
 
-PROFILE_UPDATE_THRESHOLD = 5  # 每累计 5 条非 refuse 对话触发一次增量更新
-PROFILE_INJECT_MIN_CONFIDENCE = 0.5  # confidence 低于此值不注入 system overlay
+PROFILE_UPDATE_THRESHOLD = 2  # 每累计 2 条非 refuse 对话触发一次增量更新
 
 
 def _conninfo() -> str:
