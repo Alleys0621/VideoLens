@@ -18,10 +18,7 @@ from src.core.config import get_config
 from src.core.helpers.json_utils import load_json
 from src.core.logging import get_logger
 from src.agent.mem0_client import add_conversation_memory
-from src.agent.profile_store import (
-    increment_message_counter,
-    PROFILE_UPDATE_THRESHOLD,
-)
+from src.agent.profile_store import increment_message_counter
 from src.agent.profile_updater import maybe_update_user_profile, maybe_update_show_profile
 
 logger = get_logger()
@@ -106,19 +103,47 @@ def async_add_memory(user_id: str, query: str, answer: str, video_id: str) -> No
 def async_maybe_update_profile(
     user_id: str, chat_history: list[dict], query: str, answer: str, show: str = "",
 ) -> None:
-    """异步累加对话计数, 达阈值触发 L1 + L2 画像增量更新 (不阻塞回复)."""
+    """达阈值同步更新 L1+L2 画像 (不阻塞回复)."""
     def _run():
         try:
-            n = increment_message_counter(user_id)
-            if n >= PROFILE_UPDATE_THRESHOLD:
+            if not show:
+                return
+            if increment_message_counter(user_id):
                 hist = list(chat_history or []) + [
                     {"role": "user", "content": query},
                     {"role": "assistant", "content": answer},
                 ]
                 maybe_update_user_profile(user_id, hist)
-                if show:
-                    maybe_update_show_profile(user_id, show, hist)
+                maybe_update_show_profile(user_id, show, hist)
         except Exception as e:
             logger.warning(f"[profile] async trigger 失败: {e}")
 
     threading.Thread(target=_run, daemon=True).start()
+
+
+def load_watching_state(user_id: str) -> dict | None:
+    """读 watching_state 表的实时坐标. user_id='default'/无记录返回 None.
+
+    给 agent 的检索做 video_time 锚点: 优先于 configurable.video_time (提交瞬间快照).
+    """
+    if not user_id or user_id == "default":
+        return None
+    try:
+        import psycopg
+        with psycopg.connect(get_config().postgres_url) as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    "SELECT video_dir, video_time, is_playing FROM watching_state WHERE user_id = %s",
+                    (user_id,),
+                )
+                row = cur.fetchone()
+                if not row:
+                    return None
+                return {
+                    "video_dir": row[0],
+                    "video_time": float(row[1] or 0),
+                    "is_playing": bool(row[2]),
+                }
+    except Exception as e:
+        logger.warning(f"[video_utils] load_watching_state 失败: {e}")
+        return None

@@ -31,7 +31,7 @@ AlleysVid 是一个 AI 陪看智能体。用户选一集视频，Alleys（AI 搭
 
 - L1 用户画像：`src/agent/profile_store.py` + `profile_updater.py::maybe_update_user_profile()`
   - 表 `user_profiles`：interaction_style / spoiler_tolerance / humor_level / engagement_motivation / alleys_attitude / confidence。
-  - 每累计 2 条非 refuse 对话触发一次 `qwen3.7-flash` 增量更新。
+  - 每累计 2 条对话触发一次 `qwen3.7-flash` 增量更新。
   - `render_profile_overlay()` 无条件注入（V1.3.1 去掉 confidence 门控）。
 - L2 作品画像：`profile_updater.py::maybe_update_show_profile()`
   - 表 `show_profiles`：favorite_characters / attention_characters / character_opinions / theme_preferences / disliked_elements / confidence。

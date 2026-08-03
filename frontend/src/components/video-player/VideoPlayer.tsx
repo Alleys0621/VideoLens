@@ -62,6 +62,29 @@ function fmtTime(sec: number): string {
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
+// === 观看状态上报 (实时坐标, agent retrieve_kb 用) ===
+// 与 savePlayback 区别: 这里存"此刻", 高频 (5s 节流); 那里存"上次到哪了", 10s 节流.
+const WATCH_THROTTLE_MS = 5_000;
+let lastWatchAt = 0;
+
+function reportWatching(
+  videoDir: string,
+  videoTime: number,
+  isPlaying: boolean,
+  opts: { force?: boolean } = {},
+) {
+  if (!videoDir || !Number.isFinite(videoTime) || videoTime < 0) return;
+  const now = Date.now();
+  if (!opts.force && now - lastWatchAt < WATCH_THROTTLE_MS) return;
+  lastWatchAt = now;
+  const body = JSON.stringify({ video_dir: videoDir, video_time: videoTime, is_playing: isPlaying });
+  if (typeof navigator !== "undefined" && navigator.sendBeacon) {
+    const blob = new Blob([body], { type: "application/json" });
+    if (navigator.sendBeacon("/api/watching", blob)) return;
+  }
+  fetch("/api/watching", { method: "POST", body, headers: { "Content-Type": "application/json" } }).catch(() => {});
+}
+
 export function VideoPlayer({
   videoDir,
   onVideoDirChange,
@@ -152,18 +175,25 @@ export function VideoPlayer({
     art.on("video:timeupdate", () => {
       const t = art.currentTime || 0;
       if (videoTimeRef) videoTimeRef.current = t;
-      // 节流保存播放进度 (内部按 SAVE_THROTTLE_MS 间隔)
       savePlayback(videoDir, t, art.duration);
+      reportWatching(videoDir, t, true);
     });
 
     // 暂停时立即保存 (force=true 跳过节流)
     art.on("video:pause", () => {
       savePlayback(videoDir, art.currentTime || 0, art.duration, { force: true });
+      reportWatching(videoDir, art.currentTime || 0, false, { force: true });
+    });
+
+    // seek 完成: 立即上报新位置 (让 agent 知道用户跳到了哪)
+    art.on("video:seeked", () => {
+      reportWatching(videoDir, art.currentTime || 0, !art.video.paused, { force: true });
     });
 
     // 播放结束: 标记完成, 下次从头
     art.on("video:ended", () => {
       savePlayback(videoDir, 0, art.duration, { force: true, completed: true });
+      reportWatching(videoDir, 0, false, { force: true });
     });
 
     // 加载已有进度并 seek (用户上次离开的位置)

@@ -109,7 +109,7 @@ export function Thread({
     parseAsBoolean.withDefault(false),
   );
   const [input, setInput] = useState("");
-  // 联网模式 toggle: 开启后 refuse 意图 (KB 没相关内容) 时 LLM 自动联网搜索 (DashScope enable_search)
+  // 联网模式 toggle: 开启后 LLM 自动联网搜索 (DashScope enable_search)
   const [webSearch, setWebSearch] = useState(false);
   // 自动朗读 toggle: AI 回复完成后自动 TTS 播放. 默认开, 持久化到 localStorage.
   const [autoSpeak, setAutoSpeak] = useState(() => {

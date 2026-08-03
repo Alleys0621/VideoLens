@@ -1,10 +1,23 @@
 # AlleysVid — AI 陪看智能体
 
-> **V1.4** — 对话为核心架构（v2_dialog_first）：去掉意图路由，每轮全量注入上下文，KB 按需引用
+> **V1.4.2** — 观看状态上报：前端持续上报视频坐标，agent 检索拿到最新播放位置
 
 边看剧边聊天的 AI 陪看搭子。选一集视频，Alleys 陪你一起看，随时聊剧情、问角色、吐槽笑点。
 
 ## 版本记录
+
+### V1.4.2（2026-08-03）
+
+**观看状态（watching state）上报机制**
+- 前端播放器定时上报视频坐标（video_dir / video_time / is_playing），后端存 `watching_state` 表
+- agent 检索优先用 watching_state 的 video_time（持续坐标），fallback configurable（提交瞬间快照）
+- 上报频率：播放中 5s 节流 + pause/seeked/ended/切集 即时上报
+- 为 agent 化（`retrieve_kb` 时间锚点）和后续主动式服务铺路
+- 新增 `/api/watching` POST 端点（JWT 鉴权，复用 `/api/playback` 模式）
+- DB migration: `db/migrations/0007_watching_state.sql`
+
+**看完一集的记忆沉淀 hook**
+- `/api/playback` 在 `completed=true` 时留 hook 点（空实现 + TODO），后续填 episodic memory 总结
 
 ### V1.4（2026-08-01）
 

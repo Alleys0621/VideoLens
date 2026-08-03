@@ -1,7 +1,6 @@
 """对话为核心的陪看架构 (AlleysVid 唯一主入口).
 
 核心设计 (经过 E1-E5 实验验证):
-  - 不剥离意图理解 (不调 intent_router), 不判 task
   - 每轮都检索 KB, 但 prompt 引导"按需引用" (避免 context pollution 又保证事实正确率 ~95%)
   - L1 + L2 画像始终注入 user prompt
   - 5 轮短期记忆始终注入
@@ -304,6 +303,7 @@ def companion_chat(
         load_user_profile, render_profile_overlay,
         load_show_profile,
     )
+    from src.agent.video_utils import load_watching_state
     user_profile = None
     profile_overlay = ""
     show_profile = None
@@ -312,6 +312,10 @@ def companion_chat(
         profile_overlay = render_profile_overlay(user_profile)
         if show:
             show_profile = load_show_profile(user_id, show)
+        # watching_state: 前端持续上报的最新坐标, 优先于 configurable 快照
+        watching = load_watching_state(user_id)
+        if watching and watching.get("video_time") is not None:
+            video_time = watching["video_time"]
 
     # 3. 检索 (KB) - 每轮都跑, 给 LLM 当参考
     events_fused, selected, top_score = _retrieve(

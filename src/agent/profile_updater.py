@@ -1,6 +1,6 @@
 """L1 用户画像 + L2 作品画像增量更新 (会话级, 慢节奏).
 
-触发时机: companion 在非 refuse 任务后累加计数, 达到阈值 (PROFILE_UPDATE_THRESHOLD)
+触发时机: companion 累加计数, 达到阈值 (PROFILE_UPDATE_THRESHOLD)
          才触发一次. 不每轮写, 避免 LLM 调用爆炸 + 画像抖动.
 
 实现: qwen3.7-flash 读最近 N 轮对话 + 旧画像, 输出 JSON, UPSERT.

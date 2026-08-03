@@ -77,6 +77,19 @@ CREATE TABLE IF NOT EXISTS playback_progress (
 CREATE INDEX IF NOT EXISTS idx_playback_user ON playback_progress (user_id);
 
 -- ============================================================
+-- 观看状态表 (实时坐标, 每用户一条)
+-- 给 agent 的 retrieve_kb tool 做 video_time 锚点; 为主动式服务铺路.
+-- 与 playback_progress 区别: 这里存"此刻", 那里存"上次到哪了".
+-- ============================================================
+CREATE TABLE IF NOT EXISTS watching_state (
+    user_id     UUID        PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+    video_dir   TEXT        NOT NULL,
+    video_time  DOUBLE PRECISION NOT NULL DEFAULT 0,
+    is_playing  BOOLEAN     NOT NULL DEFAULT FALSE,
+    updated_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- ============================================================
 -- 会话(thread)元数据表
 -- - thread_id 是 LangGraph 生成的 UUID, 这里复用作为 PK
 -- - 删 thread 时, 应用层先调 LangGraph /threads/{id} DELETE, 再删本表

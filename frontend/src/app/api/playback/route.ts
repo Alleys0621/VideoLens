@@ -117,6 +117,12 @@ export async function POST(req: NextRequest) {
          updated_at = now()`,
       [user.id, videoDir, finalPosition, duration, completed],
     );
+
+    // 看完一集的记忆沉淀 hook (空实现, 后续填 episodic memory 总结逻辑)
+    if (completed) {
+      // TODO: 异步 LLM 总结本集对话 → 存 episodic memory 表
+      console.log(`[playback] completed: user=${user.id} video=${videoDir}`);
+    }
     return NextResponse.json({ ok: true, completed });
   } catch (e) {
     console.error("[playback/POST] failed:", e);

@@ -8,7 +8,7 @@
   - Mem0: 零散事实回忆 (喜欢刘星 / 上次聊到 XX) → 作为 context 检索.
   两者不重叠.
 
-不每轮写: 由 companion 在非 refuse 任务后累加 messages_since_update,
+不每轮写: 由 companion 累加 messages_since_update,
 达到 PROFILE_UPDATE_THRESHOLD 才增量更新 (见 profile_updater).
 """
 
@@ -24,7 +24,7 @@ from src.core.logging import get_logger
 logger = get_logger()
 
 
-PROFILE_UPDATE_THRESHOLD = 2  # 每累计 2 条非 refuse 对话触发一次增量更新
+PROFILE_UPDATE_THRESHOLD = 2  # 每累计 2 条对话触发一次增量更新
 
 
 def _conninfo() -> str:
@@ -104,12 +104,10 @@ def render_profile_overlay(profile: dict[str, Any] | None) -> str:
     )
 
 
-def increment_message_counter(user_id: str) -> int:
-    """累计一条非 refuse 对话, 返回累计后的计数 (用于判断是否触发更新).
-
-    没有行则建一条默认行 (confidence=0)."""
+def increment_message_counter(user_id: str) -> bool:
+    """累加对话计数; 达阈值原子归零返回 True. 归零在同一 SQL, 防 async 并发重复触发."""
     if not _is_uuid(user_id):
-        return 0
+        return False
     try:
         with _connect() as conn:
             with conn.cursor() as cur:
@@ -117,32 +115,19 @@ def increment_message_counter(user_id: str) -> int:
                     """INSERT INTO user_profiles (user_id, messages_since_update)
                        VALUES (%s, 1)
                        ON CONFLICT (user_id) DO UPDATE
-                         SET messages_since_update = user_profiles.messages_since_update + 1,
-                             updated_at = now()
-                       RETURNING messages_since_update""",
-                    (user_id,),
+                         SET messages_since_update =
+                               CASE WHEN user_profiles.messages_since_update + 1 >= %s
+                                    THEN 0
+                                    ELSE user_profiles.messages_since_update + 1 END
+                       RETURNING messages_since_update = 0 AS triggered""",
+                    (user_id, PROFILE_UPDATE_THRESHOLD),
                 )
                 row = cur.fetchone()
                 conn.commit()
-                return int(row[0]) if row else 0
+                return bool(row[0]) if row else False
     except Exception as e:
         logger.warning(f"[profile_store] increment 失败: {e}")
-        return 0
-
-
-def reset_message_counter(user_id: str) -> None:
-    try:
-        with _connect() as conn:
-            with conn.cursor() as cur:
-                cur.execute(
-                    """UPDATE user_profiles
-                       SET messages_since_update = 0, updated_at = now()
-                       WHERE user_id = %s""",
-                    (user_id,),
-                )
-                conn.commit()
-    except Exception as e:
-        logger.warning(f"[profile_store] reset 失败: {e}")
+        return False
 
 
 def save_profile(
@@ -172,7 +157,6 @@ def save_profile(
                              engagement_motivation = EXCLUDED.engagement_motivation,
                              alleys_attitude       = EXCLUDED.alleys_attitude,
                              confidence            = EXCLUDED.confidence,
-                             messages_since_update = 0,
                              updated_at            = now()""",
                     (user_id, interaction_style, spoiler_tolerance, humor_level,
                      engagement_motivation, alleys_attitude, confidence),
