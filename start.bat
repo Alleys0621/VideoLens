@@ -115,9 +115,16 @@ echo [5.5/6] Starting video static server (port 9802, minimized)...
 start /min "VideoLens-Video-Server" cmd /k ".venv\Scripts\python.exe scripts\_video_server.py"
 
 REM [6/6] cloudflared quick tunnel
-if not exist ".tools\cloudflared.exe" (
+set "CF_BIN="
+if exist ".tools\cloudflared.exe" (
+    set "CF_BIN=.tools\cloudflared.exe"
+) else if exist ".tools\cloudflared-windows-amd64.exe" (
+    set "CF_BIN=.tools\cloudflared-windows-amd64.exe"
+)
+if not defined CF_BIN (
     echo.
-    echo [WARN] .tools\cloudflared.exe not found. Skipping tunnel.
+    echo [WARN] cloudflared not found in .tools/. Skipping tunnel.
+    echo [WARN] Run scripts\install-cloudflared.bat, or put cloudflared.exe there.
     echo [WARN] On same WiFi use http://YOUR_IP:3000
     echo.
     goto :WAIT_END
@@ -126,7 +133,7 @@ if not exist ".tools\cloudflared.exe" (
 echo [6/6] Starting cloudflared quick tunnel (minimized)...
 REM cloudflared quick tunnel: random URL per launch, printed in the minimized window.
 REM To stop: close the "VideoLens-Tunnel" window from taskbar.
-start /min "VideoLens-Tunnel" cmd /k ".tools\cloudflared.exe tunnel --url http://127.0.0.1:3000"
+start /min "VideoLens-Tunnel" cmd /k "%CF_BIN% tunnel --url http://127.0.0.1:3000"
 
 :WAIT_END
 echo.
