@@ -74,6 +74,14 @@ def companion_node(state: State, config) -> dict:
     if not video_dir:
         return {"messages": [AIMessage(content="先在左边选一集视频,我才能陪你聊剧情呀 🎬")]}
 
+    # 首轮异步生成中文标题 (不阻塞回复)
+    if len(messages) == 1:
+        thread_id = configurable.get("thread_id")
+        if thread_id:
+            import threading
+            from src.agent.thread_title import maybe_set_thread_title
+            threading.Thread(target=maybe_set_thread_title, args=(thread_id, query), daemon=True).start()
+
     chat_history = _messages_to_chat_history(messages[:-1])
 
     try:

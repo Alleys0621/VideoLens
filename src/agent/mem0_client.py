@@ -79,9 +79,23 @@ def get_memory():
             },
         },
         "custom_instructions": (
-            "所有记忆必须用中文存储, 不要翻译成英文. "
-            "记录用户的观影偏好、对角色的看法、聊过的剧情点. "
-            "每条记忆简洁, 不超过 30 字."
+            "你在为陪看智能体 Alleys 维护关于用户的长期记忆。"
+            "【要记的 — 跨会话稳定的事实】"
+            "用户身份/生活: 职业、家庭、生活事件 (如'家有猫''在备考'); "
+            "观影偏好: 喜欢的剧种、接受不了的元素 (如'爱看家庭剧''讨厌悬疑'); "
+            "对角色的稳定立场: 喜欢/讨厌哪个角色 (注意时效); "
+            "用户与 Alleys 的关系: 态度/期望 (如'嫌我啰嗦''把我当朋友'). "
+            "【绝对不记的】"
+            "剧情内容/梗概 (那是知识库的事, 不是记忆); "
+            "助手的话 (只记用户的事, 不记 AI 的发言); "
+            "一次性情绪/闲聊 (如'今天好累'); "
+            "会话内的临时状态 (如'用户正在看第X段'). "
+            "【规则】"
+            "中文, 一条 ≤ 40 字; "
+            "新信息和旧记忆冲突时 UPDATE 旧的, 不要新增重复条目; "
+            "旧事实失效时 DELETE. "
+            "【update 判断】拿到候选先检索相似旧记忆: "
+            "完全新事实→ADD; 旧记忆需修正→UPDATE; 旧记忆失效→DELETE; 重复→NOOP."
         ),
         "version": "v1.1",
     }
@@ -161,15 +175,13 @@ _ALLEYS_FALLBACK = """你是「Alleys」, 一个陪看搭子智能体, 25 岁女
 
 
 def _load_alleys_prompt() -> str:
-    """从 prompts.yaml::companion_alleys_system 加载人设, 失败用 fallback.
-
-    优先用 yaml 版本 (含情绪感知 + 拒答原则), 这样调 prompt 不用改代码.
-    """
+    """从 prompts.yaml::companion_prompts.system 加载人设, 失败用 fallback."""
     try:
         from src.core.config import get_config
-        p = get_config().prompts.get("companion_alleys_system", {})
-        if isinstance(p, dict) and p.get("user"):
-            return p["user"]
+        prompts = get_config().prompts.get("companion_prompts", {}) or {}
+        p = prompts.get("system", "")
+        if isinstance(p, str) and p.strip():
+            return p
     except Exception as e:
         logger.debug(f"加载 yaml prompt 失败, 用 fallback: {e}")
     return _ALLEYS_FALLBACK

@@ -132,13 +132,10 @@ def _retrieve(
 # ============================================================
 
 def _build_system_prompt(profile_overlay: str) -> str:
-    """读 yaml 的 Alleys 人设 (companion_prompts.system, 空则 fallback companion_alleys_system)."""
+    """读 yaml 的 Alleys 人设 (companion_prompts.system)."""
     cfg = get_config()
     prompts = cfg.prompts.get("companion_prompts", {}) or {}
     system = (prompts.get("system") or "").strip()
-    if not system:
-        p = cfg.prompts.get("companion_alleys_system", {})
-        system = (p.get("user", "") if isinstance(p, dict) else "").strip()
     if profile_overlay:
         system = f"{system}\n\n{profile_overlay}"
     return system
@@ -160,6 +157,41 @@ def _format_retrieval_hint(selected: list[dict]) -> str:
             line += f"\n  摘要: {summary}"
         parts.append(line)
     return "\n".join(parts)
+
+
+def _format_working_memory(video_time: float | None, events: list, actions: list) -> str:
+    """按 video_time 找当前 event 的工作记忆. 真·间隙/无 video_time 返回空串 (跳过该块)."""
+    if video_time is None or not events or not actions:
+        return ""
+    aid2t: dict[str, tuple[float, float]] = {}
+    for a in actions:
+        ts = (a.get("evidence") or {}).get("timestamp")
+        if ts and len(ts) == 2:
+            try:
+                aid2t[a.get("action_id")] = (float(ts[0]), float(ts[1]))
+            except (TypeError, ValueError):
+                continue
+    if not aid2t:
+        return ""
+    evt_ranges: list[tuple[float, float, dict]] = []
+    for e in events:
+        ets = [aid2t[x["action_id"]] for x in (e.get("actions") or []) if x.get("action_id") in aid2t]
+        if ets:
+            evt_ranges.append((min(t[0] for t in ets), max(t[1] for t in ets), e))
+    if not evt_ranges:
+        return ""
+    hit = next((r for r in evt_ranges if r[0] <= video_time <= r[1]), None)
+    if hit is None:
+        hit = min(evt_ranges, key=lambda r: min(abs(video_time - r[0]), abs(video_time - r[1])))
+        gap = min(abs(video_time - hit[0]), abs(video_time - hit[1]))
+        if gap > 5:
+            return ""
+    start, end, e = hit
+    title = (e.get("title") or "").strip()
+    summary = (e.get("summary") or "").strip()
+    if not summary:
+        return ""
+    return f"{title}\n{summary}\n（大概在 {start:.0f}~{end:.0f} 秒）"
 
 
 def _format_history(chat_history: list[dict], n: int = 5) -> str:
@@ -233,6 +265,7 @@ def _build_user_prompt(
     long_term: list[str],
     selected: list[dict],
     web_results_text: str = "",
+    working_memory: str = "",
 ) -> str:
     """构建 user prompt: 画像 + 记忆 + KB(参考) + query.
 
@@ -247,6 +280,7 @@ def _build_user_prompt(
 
     # 各段内容 (key 对应 yaml user_blocks 的块名)
     contents: dict[str, str] = {
+        "working_memory": working_memory,
         "profile": _format_l1_l2(user_profile, show_profile),
         "history": _format_history(chat_history, n=5),
         "long_term": _format_long_term(long_term),
@@ -294,7 +328,7 @@ def companion_chat(
     video_label = video_dir
 
     # 1. 加载数据
-    events, _actions, scenes, segments = _load_video_data(video_dir)
+    events, actions, scenes, segments = _load_video_data(video_dir)
     video_summary = _load_video_summary(video_dir)
     show = video_dir.split("/")[0] if video_dir else ""
 
@@ -349,6 +383,7 @@ def companion_chat(
     t_retrieval = time.time()
 
     # 6. 构建 prompt
+    working_memory = _format_working_memory(video_time, events, actions)
     system = _build_system_prompt(profile_overlay)
     user_prompt = _build_user_prompt(
         query=query,
@@ -359,6 +394,7 @@ def companion_chat(
         long_term=long_term,
         selected=selected,
         web_results_text=web_results_text,
+        working_memory=working_memory,
     )
 
     # 7. 调主 LLM (固定模型, streaming)

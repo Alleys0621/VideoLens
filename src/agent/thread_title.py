@@ -48,12 +48,13 @@ def generate_thread_title(query: str) -> str:
         return "新对话"
     try:
         from src.core.llm.base_client import BaseLLMClient
+        from src.core.config import get_config
         system = (
             "你给一段陪看对话起一个简短中文标题。要求: 4-10 字, 概括话题或情绪, "
             "像聊天记录标题; 不要书名号/引号/标点; 不要以'关于'开头; 只输出标题本身, 不要解释。"
         )
         user = f"用户这句话: {q}\n标题:"
-        client = BaseLLMClient(model="qwen3-flash")
+        client = BaseLLMClient(model=get_config().model_text_flash)
         raw = client.chat(
             messages=[
                 {"role": "system", "content": system},

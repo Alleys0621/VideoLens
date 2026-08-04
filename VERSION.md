@@ -2,6 +2,54 @@
 
 完整版本历史。最新版本说明同时见 [README](./README.md)。
 
+## V1.4.3（2026-08-04）
+
+**Alleys 视角重建：工作记忆 + 人设重构 + Mem0 质量优化**
+
+基于真实用户对话（jinyao_chat）的问题分析，从"塞 context 的聊天 LLM"回归"有感知的陪看者"。针对陪看场景三个根本错位（没有视角 / 记忆是标签不是认知 / 人设是性格形容词不是行为契约）做架构性修复。
+
+**工作记忆机制（感知层）**
+- watching_state 的 video_time → 按 KB event 时间范围（action.evidence.timestamp 派生）找当前事件
+- 注入"你现在看到的"段（事件级 summary），框成"Alleys 的视角，不是客观事实"
+- 间隙（>5s 无剧情）自动跳过，Alleys 自然闲聊不硬扯画面
+- system prompt 加元指令：这是你的工作记忆，细节没给就是没看清不要补
+- 修复：剧情幻觉（当前画面）、假装看到、主语错乱（把用户当剧情角色）
+
+**人设 prompt 重构（对话层）**
+- companion_alleys_system 并入 companion_prompts（单 key 统一，去掉 system/user 嵌套）
+- 三条铁律：情绪优先 / 说错就认 / 不知道就说不知道
+- few-shot 示例（含纠错、"没细讲过"、长度控制）
+- user_blocks 第一视角：你记得的关于用户的事 / 你对这位用户的理解 / 你现在看到的
+- 删除"代词指代优先推断"（jinyao 会话 4 过度解读用户情绪的元凶）
+
+**Mem0 长期记忆质量优化（记忆层）**
+- custom_instructions 重写：记身份/生活/观影偏好/角色立场/与 Alleys 的关系
+- 明确"不记"：剧情梗概（KB 有）、助手发言、一次性情绪、会话内临时状态
+- update 语义明确：ADD/UPDATE/DELETE/NOOP，冲突时 UPDATE 不新增重复
+- 修复：之前 60%+ 记忆是剧情梗概（和 KB 重复），Mem0 变成了第二个 KB
+
+**画像更新修复**
+- counter 原子归零（CASE...RETURNING 同一 SQL）：修复 async 并发导致的"每轮都更新"
+- 修复调用方：increment 改返回 bool 后，video_utils 还用 `n >= 阈值`（bool>=2 永远 False，画像静默失效）→ 直接用 bool
+- L1/L2 严格同步：show 门控前置，show 为空两者都不更新
+- 阈值 5→2，预筛 4→2（更新更及时）
+- 删废弃常量 PROFILE_INJECT_MIN_CONFIDENCE + 死代码 reset_message_counter
+
+**会话标题恢复**
+- V1.4 重构误删 companion_node 的 maybe_set_thread_title 异步调用 → 标题生成成死代码（V1.4 后新会话标题全是前端首条消息截断）
+- 恢复首轮异步生成；thread_title.py model 写死 qwen3-flash → 走 config（model_text_flash）
+
+**Pipeline 清理**
+- TransNetV2 移除：Stage 2 唯一路径 speaker_anchor，无声纹 segments 直接 RuntimeError（不再回退 SBD）
+- 删 src/scene/ 目录 + stage2_visual 死代码（extract_keyframes / filter_subtitle_frames）
+
+**基础设施**
+- cf tunnel 文件名兼容（cloudflared.exe / cloudflared-windows-amd64.exe 都识别）
+- start.bat 后端显式 set PYTHONUTF8=1（修 langgraph_api 在 Windows GBK 下崩溃）
+- log 全部归集到 logs/（之前散落在 data/output/）
+- 目录文档体系：所有 __init__.py 加 docstring + frontend/config/db/scripts 加 README.md
+- VERSION.md 从 README 拆出（README 聚焦部署/更新）
+
 ## V1.4.2（2026-08-03）
 
 **观看状态（watching state）上报机制**
