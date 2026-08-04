@@ -56,9 +56,7 @@ voiceprint_groups:
 
 stage2:
   min_scene_len: 1.0                   # 最短场景时长 (秒)
-  samples_per_scene: 8                 # 每个场景提取的关键帧数 
-  transnet_threshold: 0.5              # TransNetV2 边界阈值 
-  transnet_model_path: "models/transnetv2.onnx"
+  samples_per_scene: 8                 # 每个场景提取的关键帧数
 
 paths:
   data_root: "data"

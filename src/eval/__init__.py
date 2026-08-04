@@ -1,6 +1,6 @@
-"""评估工具包 — 用于 OCR 字幕识别的批量测试.
+"""质量评估
 
-模块:
-  - reference_asr: 用 omni-plus 跑全集高准确率 ASR, 作为软 GT
-  - ocr_accuracy:  对比 OCR 结果与 reference, 计算 precision/recall/hit_rate
+OCR/ASR: reference_asr / ocr_accuracy
+Stage 3: stage3_build_quality / stage3_kb_quality / stage3_profile_quality
+检索:    stage3_retrieval
 """

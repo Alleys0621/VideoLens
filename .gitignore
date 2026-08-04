@@ -17,6 +17,7 @@ ENV/
 # IDE
 .idea/
 .vscode/
+.trae/
 *.iml
 .DS_Store
 Thumbs.db

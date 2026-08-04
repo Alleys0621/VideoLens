@@ -1,4 +1,4 @@
-"""数据模型"""
+"""数据模型 (Scene 等)"""
 
 from src.core.models.scene import Scene
 

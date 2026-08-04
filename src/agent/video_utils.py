@@ -18,7 +18,10 @@ from src.core.config import get_config
 from src.core.helpers.json_utils import load_json
 from src.core.logging import get_logger
 from src.agent.mem0_client import add_conversation_memory
-from src.agent.profile_store import increment_message_counter
+from src.agent.profile_store import (
+    increment_message_counter,
+    PROFILE_UPDATE_THRESHOLD,
+)
 from src.agent.profile_updater import maybe_update_user_profile, maybe_update_show_profile
 
 logger = get_logger()
@@ -108,7 +111,8 @@ def async_maybe_update_profile(
         try:
             if not show:
                 return
-            if increment_message_counter(user_id):
+            n = increment_message_counter(user_id)
+            if n >= PROFILE_UPDATE_THRESHOLD:
                 hist = list(chat_history or []) + [
                     {"role": "user", "content": query},
                     {"role": "assistant", "content": answer},

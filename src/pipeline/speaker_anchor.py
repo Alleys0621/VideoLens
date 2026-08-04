@@ -3,7 +3,6 @@
 
 设计动机见 docs/research notes:
   - 已有 Stage 1 的声纹 segment (speaker_pred + 时间戳), 可零成本产出语义对齐的关键帧锚点
-  - TransNetV2 在情景剧 (固定机位 + 长对话镜头) 上过分割, 且完全不利用音频信息
   - 文献路线: Audio-Guided Keyframe Selection (Iyer 2024), Dialogue-Aligned Sampling (Fu ACL 2023)
 
 锚点类型:

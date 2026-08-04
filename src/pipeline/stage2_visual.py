@@ -25,7 +25,6 @@ from src.core.config import get_config
 from src.core.logging import get_logger
 from src.core.path_utils import resolve_video_path
 from src.pipeline.speaker_anchor import Anchor, build_anchors
-from src.scene import create_detector
 
 logger = get_logger()
 
@@ -138,62 +137,6 @@ def extract_anchor_keyframes(video_path, anchors, output_dir, video_id):
         scenes.append(scene)
 
     cap.release()
-    return scenes
-
-
-# ---- 旧路径 (无 audio_result 时回退) -----------------------------------------
-
-def extract_keyframes(video_path, scenes, output_dir, samples_per_scene=8):
-    """[legacy] 为每个场景均匀采样关键帧. 仅在缺少声纹 segments 时使用."""
-    cap = cv2.VideoCapture(video_path)
-    fps = cap.get(cv2.CAP_PROP_FPS)
-
-    keyframes_dir = os.path.join(output_dir, "keyframes")
-    os.makedirs(keyframes_dir, exist_ok=True)
-
-    for scene in scenes:
-        start_frame = scene["start_frame"]
-        end_frame = scene["end_frame"]
-        scene_idx = scene["index"]
-        n_frames = end_frame - start_frame
-
-        if n_frames <= 0:
-            continue
-
-        # 均匀采样
-        if n_frames <= samples_per_scene:
-            indices = list(range(start_frame, end_frame))
-        else:
-            indices = np.linspace(start_frame, end_frame - 1, samples_per_scene, dtype=int)
-
-        for j, frame_idx in enumerate(indices):
-            cap.set(cv2.CAP_PROP_POS_FRAMES, frame_idx)
-            ret, frame = cap.read()
-            if ret:
-                path = os.path.join(keyframes_dir, f"scene_{scene_idx:04d}_frame_{j:02d}.jpg")
-                _imwrite_unicode(path, frame)
-                scene.setdefault("keyframe_paths", []).append(path)
-
-    cap.release()
-    return scenes
-
-
-def filter_subtitle_frames(scenes, audio_segments=None):
-    """[legacy] 保留首+中+末帧. 仅旧路径使用."""
-    for scene in scenes:
-        kf = scene.get("keyframe_paths", [])
-        if len(kf) <= 2:
-            continue
-
-        mid = len(kf) // 2
-        kept = [kf[0], kf[mid], kf[-1]] if len(kf) > 2 else kf
-
-        for p in kf:
-            if p not in kept and os.path.isfile(p):
-                os.remove(p)
-
-        scene["keyframe_paths"] = kept
-
     return scenes
 
 
@@ -478,52 +421,31 @@ def run_stage2(video_dir: str, output_dir: str, audio_result: dict = None, skip_
     logger.info(f"视频: {video_dir}")
     logger.info("=" * 60)
 
-    # ---- 路径选择: 有声纹 segments 走锚点驱动, 否则回退 SBD ----
+    # ---- 声纹锚点驱动 (唯一路径; 无声纹 segments 直接报错, 不再回退 SBD) ----
     audio_segs = (audio_result or {}).get("segments") or []
     has_speaker = any((s.get("speaker_pred") or "").strip() for s in audio_segs)
-    use_anchor = bool(audio_segs) and has_speaker
-
-    if use_anchor:
-        # ===== 新路径: 声纹锚点驱动 =====
-        logger.info(f"[Stage 2a] 声纹锚点生成 (segments={len(audio_segs)}) ...")
-        content_range = (audio_result or {}).get("content_range") or {}
-        anchors = build_anchors(
-            audio_segs,
-            content_range=content_range if content_range else None,
+    if not (audio_segs and has_speaker):
+        raise RuntimeError(
+            "Stage 1 未产出声纹 segments, 锚点路径无法工作; 请检查 Stage 1 声纹识别"
         )
-        from collections import Counter
-        type_ct = Counter(a.anchor_type for a in anchors)
-        logger.info(f"  生成 {len(anchors)} 个锚点: "
-                    f"midpoint={type_ct.get('midpoint', 0)}, "
-                    f"switch={type_ct.get('switch', 0)}, "
-                    f"silence={type_ct.get('silence', 0)}")
 
-        logger.info("[Stage 2b] 按锚点采样关键帧 ...")
-        scenes = extract_anchor_keyframes(video_path, anchors, output_dir, video_id=video_dir)
-        total_kf = sum(len(s.get("keyframe_paths", [])) for s in scenes)
-        logger.info(f"  写入 {total_kf} 张关键帧 (每锚点 1 帧)")
-    else:
-        # ===== 旧路径回退: TransNetV2 + 均匀采样 =====
-        logger.info(f"[Stage 2a] 场景检测 (TransNetV2, 回退模式) ...")
-        detector = create_detector(config)
-        scene_objs = detector.detect_scenes(video_path)
-        scenes = [s.to_dict() for s in scene_objs]
-        logger.info(f"  检测到 {len(scenes)} 个场景")
+    logger.info(f"[Stage 2a] 声纹锚点生成 (segments={len(audio_segs)}) ...")
+    content_range = (audio_result or {}).get("content_range") or {}
+    anchors = build_anchors(
+        audio_segs,
+        content_range=content_range if content_range else None,
+    )
+    from collections import Counter
+    type_ct = Counter(a.anchor_type for a in anchors)
+    logger.info(f"  生成 {len(anchors)} 个锚点: "
+                f"midpoint={type_ct.get('midpoint', 0)}, "
+                f"switch={type_ct.get('switch', 0)}, "
+                f"silence={type_ct.get('silence', 0)}")
 
-        logger.info("[Stage 2b] 关键帧提取 (回退: 均匀采样) ...")
-        scenes = extract_keyframes(
-            video_path, scenes, output_dir,
-            samples_per_scene=config.samples_per_scene,
-        )
-        total_kf = sum(len(s.get("keyframe_paths", [])) for s in scenes)
-        logger.info(f"  提取 {total_kf} 个关键帧")
-
-        if hasattr(detector, "release"):
-            detector.release()
-            logger.info("  检测器模型已释放")
-
-        logger.info("[Stage 2c] 帧过滤 (回退: 首中末) ...")
-        scenes = filter_subtitle_frames(scenes, audio_result)
+    logger.info("[Stage 2b] 按锚点采样关键帧 ...")
+    scenes = extract_anchor_keyframes(video_path, anchors, output_dir, video_id=video_dir)
+    total_kf = sum(len(s.get("keyframe_paths", [])) for s in scenes)
+    logger.info(f"  写入 {total_kf} 张关键帧 (每锚点 1 帧)")
 
     # 保存场景数据
     save_json(scenes, os.path.join(output_dir, "scenes.json"))

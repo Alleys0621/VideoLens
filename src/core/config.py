@@ -60,8 +60,6 @@ class AppConfig:
     # Stage 2: 视觉处理 (Stage 1 参数全部通过 CLI --chunk / 硬编码传入, 不进 config)
     min_scene_len: float = 1.0
     samples_per_scene: int = 8
-    transnet_threshold: float = 0.5
-    transnet_model_path: str = "models/transnetv2.onnx"
 
     # Paths
     project_root: str = ""
@@ -131,8 +129,6 @@ def load_config() -> AppConfig:
         ),
         min_scene_len=s2.get("min_scene_len", 1.0),
         samples_per_scene=s2.get("samples_per_scene", 8),
-        transnet_threshold=s2.get("transnet_threshold", 0.5),
-        transnet_model_path=s2.get("transnet_model_path", "models/transnetv2.onnx"),
         project_root=project_root,
         data_root=data_root,
         output_root=output_root,
