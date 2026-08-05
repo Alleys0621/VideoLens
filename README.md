@@ -125,11 +125,10 @@ docker compose -f db/docker-compose.yml up -d
 
 ### 5. 配置 HTTPS（mkcert 本地证书，必做）
 
-> 浏览器要求 HTTPS 才允许麦克风，语音对话必需。mkcert 一次性签证书，2 年有效，主机名不变就不用重签。
->
-> **所有命令在项目根 `VideoLens` 下执行**。
+> 浏览器要求 HTTPS 才允许麦克风，语音对话必需。
+> 协作者装一次根 CA 后，本机/局域网/公网都能用。**证书每次启动 `start.bat` 自动重签**，包含当前 WLAN IP，换 WiFi 重启即自适应。
 
-**装 mkcert + 装本地根 CA**：
+**装 mkcert + 装本地根 CA**（一次性，项目根目录下）：
 
 ```powershell
 # 项目根目录下
@@ -140,23 +139,11 @@ Invoke-WebRequest "https://github.com/FiloSottile/mkcert/releases/download/v1.4.
 .tools\mkcert.exe -install
 ```
 
-**签证书**（覆盖本机主机名 + mDNS 域名）：
-
-```powershell
-# 项目根目录下
-mkdir certs -Force
-cd certs
-..\.tools\mkcert.exe localhost 127.0.0.1 ::1 $env:COMPUTERNAME "$env:COMPUTERNAME.local"
-cd ..
-```
-
-生成在 `certs/localhost+4.pem` 和 `certs/localhost+4-key.pem`（已 gitignore，不上 git）。
-
-> 主机名（`电脑名.local`）跨网络不变，证书不用重签。
+> 证书签发由 `start.bat` 调用 `scripts\renew-cert.ps1` 自动完成，不需要手动跑 mkcert。SAN 自动包含：`localhost` / `127.0.0.1` / `::1` / 电脑名 / `电脑名.local` / **当前 WLAN IP**。
 
 ### 6. （可选）安装 cloudflared 公网隧道
 
-> 同 WiFi 用 `https://电脑名.local:3000` 即可；只在需要公网访问时才装 cloudflared。
+> 同 WiFi 用 `https://电脑名.local:3000` 或 `https://WLAN_IP:3000` 即可；只在需要公网访问时才装 cloudflared。
 >
 > 命令在**项目根**下执行。
 
@@ -176,15 +163,20 @@ cd ..
 .\start.bat
 ```
 
-`start.bat` 会弹出多个窗口分别启动：
-- Backend LangGraph `:2024`
-- Frontend Next.js `:3000`（HTTPS）
-- ASR `:9800`（wss）
-- TTS `:9801`（wss）
-- 视频静态服务 `:9802`（https）
-- cloudflared 隧道（第 6 步已装则自动启动；不要公网可忽略）
+`start.bat` 会：
+- `[0/7]` 调 `scripts\renew-cert.ps1` 重签证书（含当前 WLAN IP）
+- `[1-7/7]` 启动 Postgres / LangGraph / Next.js(HTTPS) / ASR(wss) / TTS(wss) / 视频服务(https) / cloudflared
 
-浏览器打开 **`https://电脑名.local:3000`**（如 `https://Alleys.local:3000`）→ 注册登录 → 选一集 → 开聊。
+启动后浏览器访问：
+
+| 入口 | URL |
+|---|---|
+| 笔记本本机 | `https://localhost:3000` |
+| 同 WiFi iOS/Mac | `https://电脑名.local:3000`（mDNS 自动解析） |
+| **同 WiFi Android** | `https://<笔记本 WLAN IP>:3000`（Android 不解析 `.local`，必须用 IP） |
+
+> 笔记本 WLAN IP 查法：cmd 跑 `ipconfig`，找 "WLAN" 适配器的 IPv4，例如 `10.104.17.211`。
+> 如果 `Alleys.local` 在 Android/iOS 解析到错 IP（虚拟网卡如 ZeroTier/WSL），改用 WLAN IP 直连即可。
 
 > 停止：关掉弹出的各个 cmd 窗口；Postgres 用 `docker compose -f db/docker-compose.yml down`。
 
@@ -248,6 +240,12 @@ alleysvid-ca-<姓名>.crt
 
 ### 2. 装根 CA
 
+> **重要**：装完 CA 后，**Android 用 WLAN IP 访问，iOS 用主机名 `.local` 访问**。原因：
+> - iOS/macOS：原生 mDNS 解析 `.local`，证书含 `电脑名.local` ✓
+> - **Android 不解析 `.local`**：必须用 `https://<部署者 WLAN IP>:3000`，证书每次 `start.bat` 启动都自动重签含当前 WLAN IP
+>
+> 部署者 WLAN IP 查法：cmd 跑 `ipconfig`，找 "WLAN" 适配器的 IPv4。
+
 #### Windows
 
 1. 双击收到的 `alleysvid-ca-xxx.crt` → "安装证书" → 选"本地计算机"（需管理员）→ 下一步
@@ -268,7 +266,7 @@ alleysvid-ca-<姓名>.crt
 
 1. 把 `alleysvid-ca-xxx.crt` 通过邮件/AirDrop 发到手机，点击下载
 2. **设置 → 通用 → VPN与设备管理** → 已下载的描述文件 → 点 install 安装
-3. **设置 → 通用 → 关于本机 → 证书信任设置** → 把 mkcert 那一项的开关打开
+3. **设置 → 通用 → 关于本机 → 证书信任设置** → 把 mkcert 那一项的开关打开（**这步漏掉会导致 Safari 报"不是私密连接"且无法继续**）
 4. Safari 访问 `https://电脑名.local:3000`
 5. 注意：iOS Safari 的 MediaSource API 对音频支持差，TTS 流式播报可能不出声（视频/文字不受影响）
 
@@ -276,7 +274,9 @@ alleysvid-ca-<姓名>.crt
 
 1. 把 `alleysvid-ca-xxx.crt` 传到手机
 2. **设置 → 安全 → 加密与凭据 → 安装证书 → CA 证书** → 选 `alleysvid-ca-xxx.crt`（会让输锁屏密码确认）
-3. Chrome 访问 `https://电脑名.local:3000`
+3. **Chrome 访问 `https://<部署者 WLAN IP>:3000`**（不要用 `.local`，Android 不解析）
+   - 例如：`https://10.104.17.211:3000`
+   - 部署者每次重启 `start.bat` 时如果 WLAN IP 变了，会自动重签证书含新 IP，协作者改用新 IP 即可
 
 ### 3. 验证
 
@@ -289,8 +289,12 @@ alleysvid-ca-<姓名>.crt
 
 | 现象 | 原因 | 解决 |
 |---|---|---|
-| 地址栏红色"不安全" | CA 没装好 / 没装到"受信任的根证书颁发机构" | 重做步骤 2，确认选对存储 |
-| `ERR_NAME_NOT_RESOLVED` | 主机名 mDNS 没解析 | 双方都开 Windows 网络发现；或问部署者要 IP，用 `https://IP:3000`（需重签证书覆盖 IP） |
+| 地址栏红色"不安全" | CA 没装好 / 没装到"受信任的根证书颁发机构" | 重做步骤 2，确认选对存储；iOS 还要在"证书信任设置"里开开关 |
+| `ERR_NAME_NOT_RESOLVED` (Android 用 .local) | Android 不解析 `.local` | 改用 `https://<WLAN IP>:3000` |
+| `ERR_CONNECTION_REFUSED` (Android 用 .local) | mDNS 返回多个 IP（含 ZeroTier/WSL 虚拟网卡），Android 试到错的 | 同上，改用 WLAN IP |
+| `ERR_CONNECTION_TIMED_OUT` | Windows 防火墙挡了 / 路由器 AP 隔离 | 防火墙放行 node.exe 给"专用 + 公用"；路由器后台关"AP 隔离" |
+| `ERR_CONNECTION_REFUSED` (用 IP) | 服务没启动 / 笔记本 WLAN IP 变了 | 重启 `start.bat`；用最新 WLAN IP |
+| `NET::ERR_CERT_*` (证书警告) | CA 没装 / 证书 SAN 不含访问的 IP | 装根 CA；部署者重启 start.bat 重签含新 IP |
 | 麦克风按钮无反应 | 浏览器没授麦克风权限 | 地址栏🔒右侧 → 站点设置 → 麦克风 → 允许 |
 | iOS 没声音 | MediaSource API 限制 | iOS 17.4+ 部分支持；老版本无解 |
 | 换网络后访问不到 | 双方不在同一 WiFi | 切同一 WiFi；或部署者开 cloudflared 公网隧道 |
