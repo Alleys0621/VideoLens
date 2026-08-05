@@ -194,8 +194,8 @@ def _format_working_memory(video_time: float | None, events: list, actions: list
     return f"{title}\n{summary}\n（大概在 {start:.0f}~{end:.0f} 秒）"
 
 
-def _format_history(chat_history: list[dict], n: int = 5) -> str:
-    """最近 n 轮对话."""
+def _format_history(chat_history: list[dict], n: int = 10) -> str:
+    """最近 n 条消息 (一轮 = 一问一答 = 2 条, 默认 10 条 = 5 轮)."""
     if not chat_history:
         return "(刚开始聊)"
     lines = []
@@ -282,7 +282,7 @@ def _build_user_prompt(
     contents: dict[str, str] = {
         "working_memory": working_memory,
         "profile": _format_l1_l2(user_profile, show_profile),
-        "history": _format_history(chat_history, n=5),
+        "history": _format_history(chat_history, n=10),
         "long_term": _format_long_term(long_term),
         "kb": _format_retrieval_hint(selected),
         "web": web_results_text,
@@ -397,15 +397,27 @@ def companion_chat(
         working_memory=working_memory,
     )
 
-    # 7. 调主 LLM (固定模型, streaming)
+    # 打全量 prompt 方便排查 (system / user_prompt 各一条, 用分隔符包起来便于 grep)
+    logger.info(f"[prompt] === SYSTEM ===\n{system}")
+    logger.info(f"[prompt] === USER ===\n{user_prompt}")
+
+    # 7. 调主 LLM (固定模型, 真·streaming — token 级推到 LangGraph → SDK → 前端)
     from langchain_core.messages import SystemMessage, HumanMessage
     llm, _main_model_key = _get_main_llm()
     extra_body = {"enable_thinking": False}
     if web_search:
         extra_body["enable_search"] = True
     bound = llm.bind(max_tokens=400, temperature=0.7, extra_body=extra_body)
-    resp = bound.invoke([SystemMessage(content=system), HumanMessage(content=user_prompt)])
-    answer = (resp.content or "").strip()
+    msgs = [SystemMessage(content=system), HumanMessage(content=user_prompt)]
+    pieces: list[str] = []
+    t_first_token: float | None = None
+    for chunk in bound.stream(msgs):
+        if t_first_token is None:
+            t_first_token = time.time()
+        c = getattr(chunk, "content", "") or ""
+        if isinstance(c, str):
+            pieces.append(c)
+    answer = "".join(pieces).strip()
 
     t_end = time.time()
 
@@ -450,6 +462,7 @@ def companion_chat(
         "timings": {
             "retrieval_ms": round((t_retrieval - t_start) * 1000),
             "llm_ms": round((t_end - t_retrieval) * 1000),
+            "first_token_ms": round((t_first_token - t_retrieval) * 1000) if t_first_token else None,
             "total_ms": round((t_end - t_start) * 1000),
         },
     }
@@ -459,8 +472,10 @@ def companion_chat(
         f"selected={len(selected)} long_term={len(long_term)} "
         f"profile={user_profile is not None}/{show_profile is not None} | "
         f"retrieval={reasoning['timings']['retrieval_ms']}ms | "
+        f"first_token={reasoning['timings']['first_token_ms']}ms | "
         f"llm={reasoning['timings']['llm_ms']}ms | "
-        f"total={reasoning['timings']['total_ms']}ms"
+        f"total={reasoning['timings']['total_ms']}ms | "
+        f"answer={answer!r}"
     )
 
     return {"answer": answer, "reasoning": reasoning, "keyframes": keyframes}

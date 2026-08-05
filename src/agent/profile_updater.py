@@ -55,6 +55,28 @@ def _parse_confidence(obj: dict, n_recent: int) -> float:
     return min(max(0.0, min(1.0, conf)), n_recent / 20.0)
 
 
+def _load_main_cast(show: str) -> list[str]:
+    """从 _global/character_profiles.json 读主角名单, 用于 prompt 提示 LLM 归一角色名.
+
+    防"夏雪/小雪"这种昵称/全名分裂. 没文件 / 无主角 → 返回 [], 调用方跳过 cast 提示.
+    """
+    import os
+    try:
+        from src.core.config import get_config
+        from src.core.helpers.json_utils import load_json
+        cfg = get_config()
+        p = os.path.join(cfg.output_root, "_global", "character_profiles.json")
+        if not os.path.isfile(p):
+            return []
+        data = load_json(p)
+        profiles = data.get("profiles") or []
+        names = [prof.get("name") for prof in profiles if prof.get("role") == "主角" and prof.get("name")]
+        return names[:8]
+    except Exception as e:
+        logger.debug(f"_load_main_cast 失败 (非致命): {e}")
+        return []
+
+
 def _call_profile_llm(system: str, user: str, max_tokens: int) -> dict | None:
     """qwen3.7-flash 读旧画像+对话, 返回解析后的 JSON dict."""
     from src.core.llm.base_client import BaseLLMClient
@@ -193,8 +215,11 @@ def maybe_update_show_profile(
     history_text, n_recent = _render_history(chat_history)
 
     system = _get_profile_prompt("l2_system", _L2_SYSTEM_FALLBACK)
+    cast = _load_main_cast(show)
+    cast_hint = f"本剧主角团 (角色名必须归一到这些全名): {', '.join(cast)}\n" if cast else ""
     user = (
         f"当前剧: {show}\n"
+        + cast_hint +
         f"已记下的喜好角色: {old_fav}\n"
         f"已记下的关注角色: {old_att}\n"
         f"已记下的评价: {json.dumps(old_ops, ensure_ascii=False)}\n"
