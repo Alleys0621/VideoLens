@@ -11,7 +11,7 @@ import { toast } from "sonner";
  *     ↓ port.postMessage (每 200ms 一个 chunk)
  *   主线程转 Int16 PCM bytes
  *     ↓ WebSocket binary frame
- *   Python asr_server (localhost:8000/stream, 常驻)
+ *   Python asr_server (0.0.0.0:9800/stream, 常驻)
  *     ↓ DashScope paraformer-realtime-v2 streaming
  *   识别结果 partial/final 通过 WebSocket 回推
  *
@@ -51,24 +51,18 @@ interface UseStreamingASRReturn {
  * ASR WebSocket 地址.
  *
  * 智能选择:
- *   - 显式 env NEXT_PUBLIC_ASR_WS_URL 优先 (生产 wss://agent.alleysvid.xyz/asr)
- *   - 页面 https:// → 必须用 wss:// (浏览器禁止 mixed content)
- *     默认 wss://当前host/asr (需要 nginx + frp 配 wss 反代到本地 :8000)
- *   - 页面 http:// → 用 ws://localhost:8000/stream (本地开发)
+ *   - 显式 env NEXT_PUBLIC_ASR_WS_URL 优先
+ *   - https 页面 → wss (mixed content 限制); 用当前 hostname + :9800 直连 ASR server (已启用 wss)
+ *   - http 页面 → ws (本机/局域网); 同样用 hostname + :9800
  */
 function getAsrWsUrl(): string {
   if (process.env.NEXT_PUBLIC_ASR_WS_URL) {
     return process.env.NEXT_PUBLIC_ASR_WS_URL;
   }
-  if (typeof window === "undefined") return "ws://localhost:8000/stream";
-  const pageProto = window.location.protocol;
-  const pageHost = window.location.hostname;
-  if (pageProto === "https:") {
-    // HTTPS 页面必须用 wss://, ws:// 会被 mixed content 阻止
-    return `wss://${pageHost}/asr`;
-  }
-  // 本地开发: http://localhost:3000 → 直连本地 ASR server
-  return "ws://127.0.0.1:9800/stream";
+  if (typeof window === "undefined") return "ws://localhost:9800/stream";
+  const proto = window.location.protocol === "https:" ? "wss" : "ws";
+  const hostname = window.location.hostname;
+  return `${proto}://${hostname}:9800/stream`;
 }
 
 export function useStreamingASR(
@@ -82,7 +76,8 @@ export function useStreamingASR(
   const wsRef = useRef<WebSocket | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const mediaStreamRef = useRef<MediaStream | null>(null);
-  const workletNodeRef = useRef<AudioWorkletNode | null>(null);
+  // worklet (SecureContext) 或 script processor (HTTP+IP fallback), 统一用 AudioNode 持有
+  const audioNodeRef = useRef<AudioNode | null>(null);
   const partialRef = useRef("");
   const finalRef = useRef("");
 
@@ -106,10 +101,12 @@ export function useStreamingASR(
   }, []);
 
   const cleanup = useCallback(() => {
-    if (workletNodeRef.current) {
-      workletNodeRef.current.port.close();
-      workletNodeRef.current.disconnect();
-      workletNodeRef.current = null;
+    if (audioNodeRef.current) {
+      // worklet 才有 port, script processor 没有
+      const node = audioNodeRef.current as AudioNode & { port?: { close?: () => void } };
+      try { node.port?.close?.(); } catch { /* noop */ }
+      try { node.disconnect(); } catch { /* noop */ }
+      audioNodeRef.current = null;
     }
     if (mediaStreamRef.current) {
       mediaStreamRef.current.getTracks().forEach((t) => t.stop());
@@ -162,8 +159,8 @@ export function useStreamingASR(
             new Error(
               `ASR 服务连接失败 (${wsUrl}). ${
                 wsUrl.startsWith("wss://")
-                  ? "HTTPS 部署需配 nginx/frp 反代 wss → 本地 :8000"
-                  : "请确认 asr_server 已启动"
+                  ? "公网部署需另配 wss 反代 (cloudflared named tunnel / nginx) 转发到本地 :9800"
+                  : "请确认 asr_server 已启动且监听 0.0.0.0"
               }`,
             ),
           );
@@ -197,12 +194,10 @@ export function useStreamingASR(
         }
       };
 
-      // 2. AudioContext + AudioWorklet
+      // 2. AudioContext (audioWorklet 在 SecureContext 下才有, HTTP+IP 时为 undefined)
       const AC = window.AudioContext || (window as any).webkitAudioContext;
       const audioContext = new AC({ sampleRate: 48000 });
       audioContextRef.current = audioContext;
-
-      await audioContext.audioWorklet.addModule("/audio-processor.js");
 
       // 3. 麦克风 (echoCancellation 提升识别率, 但不依赖它消除媒体回声)
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -217,13 +212,10 @@ export function useStreamingASR(
       mediaStreamRef.current = stream;
 
       const source = audioContext.createMediaStreamSource(stream);
-      const worklet = new AudioWorkletNode(audioContext, "audio-processor");
-      workletNodeRef.current = worklet;
 
-      // 4. AudioWorklet 输出 → 主线程转 Int16 → WebSocket 发送
+      // PCM 发送 (worklet / script 共用)
       let pcmChunkCount = 0;
-      worklet.port.onmessage = (e) => {
-        const float32 = e.data as Float32Array;
+      const sendPcm = (float32: Float32Array) => {
         const pcm16 = float32ToInt16(float32);
         if (ws.readyState === WebSocket.OPEN) {
           ws.send(pcm16);
@@ -238,8 +230,51 @@ export function useStreamingASR(
         }
       };
 
-      source.connect(worklet);
-      // 注意: worklet 不连 destination, 否则会有反馈啸叫
+      if (audioContext.audioWorklet) {
+        // SecureContext: AudioWorklet (独立线程, 不阻塞主线程)
+        await audioContext.audioWorklet.addModule("/audio-processor.js");
+        const worklet = new AudioWorkletNode(audioContext, "audio-processor");
+        worklet.port.onmessage = (e) => sendPcm(e.data as Float32Array);
+        source.connect(worklet);
+        // 不连 destination, 否则反馈啸叫
+        audioNodeRef.current = worklet;
+        console.log("[ASR] using AudioWorklet (SecureContext)");
+      } else {
+        // HTTP+IP fallback: ScriptProcessorNode (主线程, deprecated 但全浏览器支持)
+        // 性能足够: 200ms 一次 ~3200 samples, 主线程开销 < 1ms
+        const node = audioContext.createScriptProcessor(2048, 1, 1);
+        let buf = new Float32Array(0);
+        const ratio = 48000 / 16000;
+        const flushThreshold = 3200; // 200ms @ 16kHz
+        node.onaudioprocess = (e: AudioProcessingEvent) => {
+          const input = e.inputBuffer.getChannelData(0);
+          // 与 audio-processor.js 完全一致的 downsample 逻辑 (nearest 采样)
+          const outLen = Math.floor(input.length / ratio);
+          const down = new Float32Array(outLen);
+          for (let i = 0; i < outLen; i++) {
+            down[i] = input[Math.floor(i * ratio)];
+          }
+          const merged = new Float32Array(buf.length + down.length);
+          merged.set(buf, 0);
+          merged.set(down, buf.length);
+          while (merged.length >= flushThreshold) {
+            sendPcm(merged.slice(0, flushThreshold));
+            buf = merged.slice(flushThreshold);
+            return; // 等下一个 process 事件
+          }
+          buf = merged;
+        };
+        source.connect(node);
+        // ScriptProcessor 必须连 destination 才触发 onaudioprocess;
+        // 我们没写 outputBuffer, 实际无声
+        node.connect(audioContext.destination);
+        audioNodeRef.current = node;
+        console.warn(
+          "[ASR] using deprecated ScriptProcessorNode (non-SecureContext, http+IP). " +
+          "For better perf, use chrome://flags #unsafely-treat-insecure-origin-as-secure " +
+          "or access via https.",
+        );
+      }
 
       console.log("[ASR] recording started, sampleRate=48000");
       setStatus("recording");

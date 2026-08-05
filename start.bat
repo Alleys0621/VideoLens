@@ -22,16 +22,21 @@ set "LANGCHAIN_TRACING=false"
 REM Postgres connection (与 db/docker-compose.yml 一致; LangGraph checkpointer + 前端 DAO 共用)
 set "POSTGRES_URL=postgresql://videolens:videolens_dev@127.0.0.1:25432/videolens"
 
+REM TLS 证书 (mkcert 签的本地证书; 覆盖 localhost / 127.0.0.1 / Alleys / Alleys.local).
+REM 各服务 (ASR/TTS/视频) 通过 VIDEOLENS_TLS_CERT/KEY env 启用 wss/https.
+set "VIDEOLENS_TLS_CERT=%~dp0certs\localhost+4.pem"
+set "VIDEOLENS_TLS_KEY=%~dp0certs\localhost+4-key.pem"
+
 cd /d %~dp0
 
 echo ============================================================
 echo   VideoLens Starting
 echo   Postgres : localhost:25432              (docker compose)
 echo   Backend  : http://localhost:2024        (LangGraph)
-echo   Frontend : http://localhost:3000        (Next.js)
-echo   ASR      : ws://localhost:9800          (paraformer)
-echo   TTS      : ws://localhost:9801          (qwen-audio-tts)
-echo   Video    : http://127.0.0.1:9802         (static file server)
+echo   Frontend : http://0.0.0.0:3000          (Next.js, 局域网可访问)
+echo   ASR      : ws://0.0.0.0:9800            (paraformer)
+echo   TTS      : ws://0.0.0.0:9801            (qwen-audio-tts)
+echo   Video    : 通过 Next.js /api/video 路由 (不再依赖 9802)
 echo   Tunnel   : cloudflared (random URL per launch)
 echo ============================================================
 echo.
@@ -98,9 +103,11 @@ REM /min: 最小化窗口启动, 避免一次性弹出多个终端
 echo [2/6] Starting Backend LangGraph (port 2024, minimized)...
 start /min "VideoLens-Backend-2024" cmd /k "set POSTGRES_URL=%POSTGRES_URL% && .venv\Scripts\langgraph.exe dev --port 2024 --no-browser"
 
-REM [3/6] Frontend - Next.js
-echo [3/6] Starting Frontend Next.js (port 3000, minimized)...
-start /min "VideoLens-Frontend-3000" cmd /k "cd frontend && node_modules\.bin\next.CMD dev"
+REM [3/6] Frontend - Next.js (HTTPS via mkcert)
+REM -H 0.0.0.0: 同局域网设备通过 https://Alleys.local:3000 访问 (协作者需先装 mkcert CA)
+REM --experimental-https + cert/key: 启用 HTTPS, 满足浏览器 SecureContext 要求 (getUserMedia/AudioWorklet)
+echo [3/6] Starting Frontend Next.js (HTTPS port 3000, host 0.0.0.0, minimized)...
+start /min "VideoLens-Frontend-3000" cmd /k "cd frontend && node_modules\.bin\next.CMD dev -H 0.0.0.0 --experimental-https --experimental-https-key ..\certs\localhost+4-key.pem --experimental-https-cert ..\certs\localhost+4.pem"
 
 REM [4/6] ASR WebSocket server (streaming speech recognition)
 echo [4/6] Starting ASR server (port 9800, minimized)...
@@ -148,8 +155,11 @@ echo     - Tunnel   : minimized "VideoLens-Tunnel" (URL printed there)
 echo.
 echo   Access:
 echo     [Local]    http://localhost:3000
+echo     [LAN]      http://本机IP:3000  (同 WiFi 设备直接访问; ASR/TTS 走 IP:9800/9801)
 echo     [Public]   See the URL in "VideoLens-Tunnel" window
 echo                (changes each launch, e.g. https://xxx.trycloudflare.com)
+echo                NOTE: 公网下 ASR/TTS 语音不可用 (cloudflared 单隧道未反代 ws);
+echo                      页面/文字对话/视频可正常使用
 echo.
 echo   Stop: close minimized windows from taskbar AND this main window
 echo ============================================================

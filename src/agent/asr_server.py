@@ -12,6 +12,8 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import os
+import ssl
 from typing import Any
 
 import dashscope  # 真实 import 在 _init_session 里
@@ -207,15 +209,28 @@ async def handle_connection(ws: websockets.WebSocketServerProtocol) -> None:
     logger.info(f"Connection closed: {ws.remote_address}")
 
 
+def _load_tls() -> ssl.SSLContext | None:
+    """读 VIDEOLENS_TLS_CERT / VIDEOLENS_TLS_KEY env 启用 wss, 没设则返回 None (ws)."""
+    cert = os.getenv("VIDEOLENS_TLS_CERT")
+    key = os.getenv("VIDEOLENS_TLS_KEY")
+    if not cert or not key:
+        return None
+    ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+    ctx.load_cert_chain(cert, key)
+    return ctx
+
+
 async def main() -> None:
-    # 监听 0.0.0.0:8000 (本地 Next.js 通过 frp tunnel 反代过来)
-    logger.info("ASR WebSocket server starting on ws://0.0.0.0:9800/stream")
+    tls = _load_tls()
+    scheme = "wss" if tls else "ws"
+    logger.info(f"ASR WebSocket server starting on {scheme}://0.0.0.0:9800/stream")
     async with websockets.serve(
         handle_connection,
         "0.0.0.0",
         9800,
         max_size=None,  # 允许大消息 (但实际 PCM chunk 一般 1-4KB)
         compression=None,  # 实时音频不需要压缩, 减少 CPU
+        ssl=tls,
     ):
         await asyncio.Future()  # run forever
 

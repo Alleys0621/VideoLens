@@ -78,25 +78,28 @@ npm install -g pnpm
 ### 1. 拉代码 + 装依赖
 
 ```powershell
+# 任意目录
 git clone https://github.com/Alleys0621/VideoLens.git
-cd VideoLens
+cd VideoLens          # 之后所有命令都在项目根 .\VideoLens 下
 uv venv .venv
 .venv\Scripts\activate
 uv pip install -r requirements.txt
 cd frontend
 pnpm install
-cd ..
+cd ..                 # 回到项目根
 ```
 
 ### 2. 配置环境变量
 
 **必填**：阿里云百炼 API Key（系统环境变量，新开终端才生效）：
 ```powershell
+# 任意目录都可以 (setx 写注册表)
 setx DASHSCOPE_API_KEY "你的阿里云百炼APIKey"
 ```
 
 **前端配置**（直接复制示例即可，`POSTGRES_URL` 默认值已对好本地 Docker）：
 ```powershell
+# 项目根目录下
 copy frontend\.env.local.example frontend\.env.local
 ```
 
@@ -114,37 +117,74 @@ data/videos/家有儿女/第一季/第01集.mkv
 
 确保 Docker Desktop 已运行，然后：
 ```powershell
+# 项目根目录下
 docker compose -f db/docker-compose.yml up -d
 ```
 - 容器名 `videolens-postgres`，映射 `127.0.0.1:25432`（避开本机 5432/15432 冲突）。
 - 数据持久化在 Docker 卷 `videolens-pgdata`，`docker compose down` 不丢，只有 `down -v` 才删。
 
-### 5. （可选）安装 cloudflared 公网隧道
+### 5. 配置 HTTPS（mkcert 本地证书，必做）
 
-> 只在需要**公网访问**时才需要；同一 WiFi/内网直接用 `http://localhost:3000` 或局域网 IP 即可。
+> 浏览器要求 HTTPS 才允许麦克风，语音对话必需。mkcert 一次性签证书，2 年有效，主机名不变就不用重签。
+>
+> **所有命令在项目根 `VideoLens` 下执行**。
+
+**装 mkcert + 装本地根 CA**：
+
+```powershell
+# 项目根目录下
+mkdir .tools -Force
+Invoke-WebRequest "https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-windows-amd64.exe" -OutFile ".tools\mkcert.exe"
+
+# 装本地根 CA (会弹 UAC, 点"是")
+.tools\mkcert.exe -install
+```
+
+**签证书**（覆盖本机主机名 + mDNS 域名）：
+
+```powershell
+# 项目根目录下
+mkdir certs -Force
+cd certs
+..\.tools\mkcert.exe localhost 127.0.0.1 ::1 $env:COMPUTERNAME "$env:COMPUTERNAME.local"
+cd ..
+```
+
+生成在 `certs/localhost+4.pem` 和 `certs/localhost+4-key.pem`（已 gitignore，不上 git）。
+
+> 主机名（`电脑名.local`）跨网络不变，证书不用重签。
+
+### 6. （可选）安装 cloudflared 公网隧道
+
+> 同 WiFi 用 `https://电脑名.local:3000` 即可；只在需要公网访问时才装 cloudflared。
+>
+> 命令在**项目根**下执行。
 
 从 GitHub Releases 自动下载最新 Windows 版到 `.tools/cloudflared.exe`：
 
 ```powershell
+# 项目根目录下
 .\scripts\install-cloudflared.bat
 ```
 
 或手动下载（建议手动下载哈，因为要挂梯子的，不挂梯子下载巨慢）：访问 [cloudflare/cloudflared releases](https://github.com/cloudflare/cloudflared/releases)，下载 `cloudflared-windows-amd64.exe`，重命名为 `cloudflared.exe` 放到 `.tools/` 目录下。
 
-### 6. 一键启动所有服务
+### 7. 一键启动所有服务
 
 ```powershell
+# 项目根目录下
 .\start.bat
 ```
 
 `start.bat` 会弹出多个窗口分别启动：
 - Backend LangGraph `:2024`
-- Frontend Next.js `:3000`
-- ASR `:9800`
-- TTS `:9801`
-- cloudflared 隧道（第 5 步已装则自动启动；不要公网可忽略）
+- Frontend Next.js `:3000`（HTTPS）
+- ASR `:9800`（wss）
+- TTS `:9801`（wss）
+- 视频静态服务 `:9802`（https）
+- cloudflared 隧道（第 6 步已装则自动启动；不要公网可忽略）
 
-浏览器打开 http://localhost:3000 → 注册登录 → 选一集 → 开聊。
+浏览器打开 **`https://电脑名.local:3000`**（如 `https://Alleys.local:3000`）→ 注册登录 → 选一集 → 开聊。
 
 > 停止：关掉弹出的各个 cmd 窗口；Postgres 用 `docker compose -f db/docker-compose.yml down`。
 
@@ -153,6 +193,7 @@ docker compose -f db/docker-compose.yml up -d
 拉新代码后，依赖可能变了，**必须同步**，否则会莫名报错：
 
 ```powershell
+# 项目根目录下
 git pull
 .venv\Scripts\activate
 uv pip install -r requirements.txt
@@ -163,6 +204,7 @@ cd ..
 
 如果 `db/docker-compose.yml` 也有改动，重建 Postgres 容器（数据不丢）：
 ```powershell
+# 项目根目录下
 docker compose -f db/docker-compose.yml up -d
 ```
 
@@ -178,6 +220,80 @@ python -m scripts.apply_migrations --dry-run
 > 所有 migration 文件都用 `IF NOT EXISTS` 幂等保护，重复执行无副作用，所以**每次 pull 后无脑跑一遍即可**，不用纠结"这次有没有 schema 变更"。
 
 然后重新 `.\start.bat` 启动即可。
+
+## 协作者访问（同局域网）
+
+> 协作者 = 在自己设备上访问部署者跑的 AlleysVid。**每台设备装一次根 CA，永久有效**（直到换电脑或部署者重装 mkcert）。
+>
+> 前置：双方连同一个 WiFi。部署者告诉你他的电脑名（cmd 跑 `hostname`，例如 `Alleys`）。
+
+### 1. 部署者分发根 CA
+
+部署者从自己电脑拷贝根 CA 文件：
+```
+C:\Users\<部署者用户名>\AppData\Local\mkcert\rootCA.pem
+```
+
+**分发前必须重命名为带识别度的名字**（团队多人各自部署时避免混淆）：
+```
+alleysvid-ca-<姓名>.crt
+```
+例如 `alleysvid-ca-电脑名.crt`。
+
+> ⚠️ 必须改扩展名为 `.crt`（不是 `.pem`）。Windows 双击 `.crt` 会直接打开证书安装向导；双击 `.pem` 会弹"用什么软件打开"。
+
+通过 U 盘 / 微信 / 邮件发给协作者。
+
+> 多个协作者各自部署 AlleysVid 时，每个人分发的根 CA 都不同。协作者电脑上可以并存多张 CA（按"主题 CN"区分，文件名不冲突即可）。
+
+### 2. 装根 CA
+
+#### Windows
+
+1. 双击收到的 `alleysvid-ca-xxx.crt` → "安装证书" → 选"本地计算机"（需管理员）→ 下一步
+2. 选"将所有的证书都放入下列存储" → "浏览" → **受信任的根证书颁发机构** → 确定 → 下一步 → 完成
+3. 重启 Chrome/Edge
+4. 访问 `https://电脑名.local:3000`（例如 `https://Alleys.local:3000`），地址栏应显示🔒锁，无警告
+
+> 如果双击 `.crt` 仍然弹"用什么软件打开"：右键 → 打开方式 → 选择"Cryptographic Open Extension"或 `certmgr.exe`；或直接 `Win+R` 跑 `certmgr.msc` → 操作 → 导入。
+
+#### macOS
+
+1. 双击 `alleysvid-ca-xxx.crt` → 自动打开"钥匙串访问"，添加到"登录"或"系统"钥匙串
+2. 在钥匙串里搜 `mkcert` → 双击找到的证书 → 展开"信任" → "使用此证书时"改为**始终信任** → 关闭窗口（输密码确认）
+3. 重启 Safari/Chrome
+4. 访问 `https://电脑名.local:3000`
+
+#### iOS
+
+1. 把 `alleysvid-ca-xxx.crt` 通过邮件/AirDrop 发到手机，点击下载
+2. **设置 → 通用 → VPN与设备管理** → 已下载的描述文件 → 点 install 安装
+3. **设置 → 通用 → 关于本机 → 证书信任设置** → 把 mkcert 那一项的开关打开
+4. Safari 访问 `https://电脑名.local:3000`
+5. 注意：iOS Safari 的 MediaSource API 对音频支持差，TTS 流式播报可能不出声（视频/文字不受影响）
+
+#### Android
+
+1. 把 `alleysvid-ca-xxx.crt` 传到手机
+2. **设置 → 安全 → 加密与凭据 → 安装证书 → CA 证书** → 选 `alleysvid-ca-xxx.crt`（会让输锁屏密码确认）
+3. Chrome 访问 `https://电脑名.local:3000`
+
+### 3. 验证
+
+- 浏览器地址栏🔒锁，无"不安全"警告
+- 按住麦克风按钮能录音（F12 console 应打 `[ASR] using AudioWorklet`）
+- Alleys 回复能听到语音播报
+- 视频流畅可 seek
+
+### 4. 常见问题
+
+| 现象 | 原因 | 解决 |
+|---|---|---|
+| 地址栏红色"不安全" | CA 没装好 / 没装到"受信任的根证书颁发机构" | 重做步骤 2，确认选对存储 |
+| `ERR_NAME_NOT_RESOLVED` | 主机名 mDNS 没解析 | 双方都开 Windows 网络发现；或问部署者要 IP，用 `https://IP:3000`（需重签证书覆盖 IP） |
+| 麦克风按钮无反应 | 浏览器没授麦克风权限 | 地址栏🔒右侧 → 站点设置 → 麦克风 → 允许 |
+| iOS 没声音 | MediaSource API 限制 | iOS 17.4+ 部分支持；老版本无解 |
+| 换网络后访问不到 | 双方不在同一 WiFi | 切同一 WiFi；或部署者开 cloudflared 公网隧道 |
 
 ## 老数据迁移
 

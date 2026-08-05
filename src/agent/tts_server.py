@@ -13,6 +13,8 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import os
+import ssl
 import uuid
 from typing import Any
 
@@ -297,8 +299,21 @@ async def _serve_session(frontend_ws) -> None:
         logger.info(f"Frontend disconnected: {peer}")
 
 
+def _load_tls() -> ssl.SSLContext | None:
+    """读 VIDEOLENS_TLS_CERT / VIDEOLENS_TLS_KEY env 启用 wss, 没设则返回 None (ws)."""
+    cert = os.getenv("VIDEOLENS_TLS_CERT")
+    key = os.getenv("VIDEOLENS_TLS_KEY")
+    if not cert or not key:
+        return None
+    ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+    ctx.load_cert_chain(cert, key)
+    return ctx
+
+
 async def main() -> None:
-    logger.info("TTS WebSocket server starting on ws://0.0.0.0:9801/")
+    tls = _load_tls()
+    scheme = "wss" if tls else "ws"
+    logger.info(f"TTS WebSocket server starting on {scheme}://0.0.0.0:9801/")
     logger.info(f"  model={_MODEL}  voice={_VOICE}  format={_FORMAT}  sr={_SAMPLE_RATE}")
     async with websockets.serve(
         _serve_session,
@@ -308,6 +323,7 @@ async def main() -> None:
         compression=None,
         ping_interval=20,
         ping_timeout=10,
+        ssl=tls,
     ):
         await asyncio.Future()
 

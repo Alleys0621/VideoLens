@@ -10,6 +10,7 @@ __pycache__/
 venv/
 ENV/
 .claude/settings.local.json
+paper/
 
 # Environments
 .env
@@ -52,6 +53,9 @@ experiments/
 
 # === 本地工具二进制 (自行下载, 例如 cloudflared.exe) ===
 .tools/
+
+# === 本地 HTTPS 证书 + 私钥 (mkcert 签, 不上传, 协作者自带 CA + 自签) ===
+certs/
 
 # === 本地设计讨论文档 (不上 git) ===
 ALLEYSVID_DESIGN_DIALOG.md

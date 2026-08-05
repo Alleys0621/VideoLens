@@ -15,7 +15,7 @@ import { toast } from "sonner";
  *      │  ws.send {type: "text", text}          (LLM 增量, 多次)
  *      │  ws.send {type: "finish"}              (LLM 结束)
  *      ▼
- *   [本地 tts_server] ws://localhost:8001/      (src/agent/tts_server.py)
+ *   [本地 tts_server] ws://0.0.0.0:9801/      (src/agent/tts_server.py)
  *      │  双向桥接前端 ws ↔ DashScope ws
  *      ▼
  *   [DashScope] qwen-audio-3.0-tts-flash
@@ -61,20 +61,15 @@ import { toast } from "sonner";
  *    new Audio(blobUrl).play() 秒播, 不再合成.
  */
 
-/** 获取 tts_server ws URL (开发直连, 生产 wss 反代) */
+/** tts_server ws URL. http → ws://hostname:9801, https → wss://hostname:9801 (server 已启用 wss). */
 function getTtsWsUrl(): string {
   if (process.env.NEXT_PUBLIC_TTS_WS_URL) {
     return process.env.NEXT_PUBLIC_TTS_WS_URL;
   }
-  if (typeof window === "undefined") return "ws://127.0.0.1:9801/";
-  const pageProto = window.location.protocol;
-  const pageHost = window.location.hostname;
-  if (pageProto === "https:") {
-    // 公网 (cloudflared): TTS ws 不走 cloudflared (只代理 :3000 HTTP).
-    // 尝试用当前 host 的同端口 ws (如果后端配了 wss 反代则能用, 否则本地才有 ws).
-    return `wss://${pageHost}/tts-ws`;
-  }
-  return "ws://127.0.0.1:9801/";
+  if (typeof window === "undefined") return "ws://localhost:9801/";
+  const proto = window.location.protocol === "https:" ? "wss" : "ws";
+  const hostname = window.location.hostname;
+  return `${proto}://${hostname}:9801/`;
 }
 
 /** message-level 缓存: 文本 → 已合成好的 Blob URL. 跨 hook 实例共享. */

@@ -11,6 +11,7 @@ from __future__ import annotations
 import logging
 import os
 import re
+import ssl
 import sys
 import urllib.parse
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -23,7 +24,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("video_server")
 
-HOST = "127.0.0.1"
+HOST = "0.0.0.0"
 PORT = 9802
 
 # root = 项目根目录/data/videos
@@ -145,12 +146,27 @@ class VideoHandler(BaseHTTPRequestHandler):
             logger.info(f"{self.command} {self.path} → {args[1]}")
 
 
+def _load_tls() -> ssl.SSLContext | None:
+    """读 VIDEOLENS_TLS_CERT / VIDEOLENS_TLS_KEY env 启用 https, 没设则 http."""
+    cert = os.getenv("VIDEOLENS_TLS_CERT")
+    key = os.getenv("VIDEOLENS_TLS_KEY")
+    if not cert or not key:
+        return None
+    ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+    ctx.load_cert_chain(cert, key)
+    return ctx
+
+
 def main():
     if not os.path.isdir(ROOT):
         logger.error(f"视频目录不存在: {ROOT}")
         sys.exit(1)
     server = ThreadingHTTPServer((HOST, PORT), VideoHandler)
-    logger.info(f"视频服务启动: http://{HOST}:{PORT}  root={ROOT}")
+    tls = _load_tls()
+    if tls:
+        server.socket = tls.wrap_socket(server.socket, server_side=True)
+    scheme = "https" if tls else "http"
+    logger.info(f"视频服务启动: {scheme}://{HOST}:{PORT}  root={ROOT}")
     try:
         server.serve_forever()
     except KeyboardInterrupt:

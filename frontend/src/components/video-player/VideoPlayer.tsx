@@ -115,9 +115,12 @@ export function VideoPlayer({
 
   const actualSrc = useMemo(() => {
     if (!videoDir) return "";
-    const videoBase =
-      process.env.NEXT_PUBLIC_VIDEO_SERVER_URL || "http://127.0.0.1:9802";
-    return `${videoBase}/${videoDir}`;
+    // http/https 都直连 9802 静态服务 (避开 next dev JIT 拖累视频流);
+    // 9802 已监听 0.0.0.0, 服务端根据 VIDEOLENS_TLS_* env 自动启用 ws/https.
+    const videoDirEnc = encodeURIComponent(videoDir);
+    if (typeof window === "undefined") return `/api/video/${videoDirEnc}`;
+    const proto = window.location.protocol; // "http:" 或 "https:"
+    return `${proto}//${window.location.hostname}:9802/${videoDirEnc}`;
   }, [videoDir]);
 
   // === 推理数据解析 (保留原有) ===
