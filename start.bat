@@ -35,7 +35,7 @@ REM === [0/7] 重签证书 (检测当前 WLAN IP, 包含到 SAN 里) ===
 echo [0/7] Renewing TLS cert (detect WLAN IP)...
 powershell -ExecutionPolicy Bypass -File "%~dp0scripts\renew-cert.ps1"
 if errorlevel 1 (
-    echo [WARN] renew-cert.ps1 失败, 沿用旧证书 (如有). 服务仍可启动.
+    echo [WARN] renew-cert.ps1 失败, 沿用旧证书 [如有]. 服务仍可启动.
 )
 
 echo ============================================================

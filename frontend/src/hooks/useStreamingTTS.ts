@@ -416,9 +416,15 @@ export function useStreamingTTS(): UseStreamingTTSReturn {
   /* 公开 API                                                            */
   /* ------------------------------------------------------------------ */
 
-  /** 建立 ws + 发 start, 等 ready. messageId 用于绑定到具体消息. */
+  /**
+   * 建立 ws + 发 start, 等 ready. messageId 用于绑定到具体消息.
+   * 幂等: 已 started 时只更新 messageId, 不重启 ws.
+   */
   const start = useCallback(async (messageId?: string) => {
-    if (startedRef.current) return;
+    if (startedRef.current) {
+      if (messageId) setSpeakingMessageId(messageId);
+      return;
+    }
     startedRef.current = true;
     setLoading(true);
     if (messageId) setSpeakingMessageId(messageId);

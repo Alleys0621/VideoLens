@@ -162,6 +162,11 @@ export function Thread({
   const lastSpokenIdRef = useRef<string | null>(null);
   // 已喂给 TTS 的字符位置 (按 message id 重置; 防同一消息被重复喂)
   const lastSpokenLenRef = useRef(0);
+  // 跟踪上一次 isLoading, 用于边沿检测 LLM 完成 (true→false) → 触发 tts.finish()
+  const prevLoadingRef = useRef(false);
+  // finish 延迟触发的 setTimeout handle. 在 isLoading 边沿下降后延迟 200ms 调用,
+  // 期间依赖变化会 clearTimeout 重置.
+  const finishTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // form ref: ASR 录音停止后自动 submit 用 (避开 setTimeout 后事件 stale 问题)
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -227,55 +232,81 @@ export function Thread({
   //   → 把新增的 delta 喂给 tts.feedText → ws 推给 tts_server → DashScope
   //   流式合成 → mp3 chunk 流回 → MediaSource 边收边播
   //
-  // 预热: handleSubmit 时调 tts.start() (建立 ws + run-task), LLM 出第一个
-  //      token 时 ready 已回来, feedText 直接推 DashScope, 首字延迟 ~400ms.
-  //
-  // 注意: 本 effect 不再 stop + start (会跟 handleSubmit 的 start 冲突 →
-  //      "WebSocket closed before connection established"). handleSubmit
-  //      已经预热, 这里只负责 feedText + finish.
+  // TTS session 生命周期:
+  //   1. handleSubmit: tts.stop() 停旧 + tts.start() 预热 (建 ws + 发 start + 等 ready)
+  //   2. LLM 出第一个 token (lastAi 出现): useEffect 调 tts.start(lastAi.id) 幂等更新 messageId
+  //   3. streaming 期间 useEffect 只 feedText 增量
+  //   4. isLoading true→false (延迟 200ms): 调 tts.finish()
   //
   // 防误触: 只在 justSentRef=true 时触发 (切 thread / 加载历史不会播)
   // ============================================================================
   useEffect(() => {
-    if (!justSentRef.current) return;
+    // 任何依赖变化都先清掉延迟 finish timer
+    if (finishTimerRef.current) {
+      clearTimeout(finishTimerRef.current);
+      finishTimerRef.current = null;
+    }
+
+    if (!justSentRef.current) {
+      prevLoadingRef.current = isLoading;
+      return;
+    }
     if (!autoSpeak) {
       if (!isLoading) {
         justSentRef.current = false;
         tts.stop();
       }
+      prevLoadingRef.current = isLoading;
       return;
     }
 
-    // 找最后一条 AI 消息
-    const lastAi = [...messages].reverse().find((m) => m.type === "ai");
-    if (!lastAi) return;
+    // 找"当前轮"的 AI 消息: 最后一条 human message 之后的第一条 ai
+    const lastUserIdx = messages.map((m) => m.type).lastIndexOf("human");
+    const lastAi = lastUserIdx >= 0
+      ? messages.slice(lastUserIdx + 1).find((m) => m.type === "ai")
+      : null;
 
-    // 新 AI 消息 → 启动 TTS 会话 (唯一入口, 杜绝双重启动)
-    if (lastSpokenIdRef.current !== lastAi.id) {
-      lastSpokenIdRef.current = lastAi.id ?? null;
-      lastSpokenLenRef.current = 0;
-      // stop 旧会话 + 启动新会话 (async, 不阻塞)
-      tts.stop();
-      tts.start(lastAi.id ?? undefined).catch((e) =>
-        console.warn("[autoTTS] start failed", e),
-      );
+    if (lastAi) {
+      // handleSubmit 已预热 tts.start (startedRef=true), 这里 start 是幂等的,
+      // 只更新 messageId (用于绑定喇叭动画); placeholder 替换时也会进入此分支.
+      if (lastAi.id && lastAi.id !== lastSpokenIdRef.current) {
+        lastSpokenIdRef.current = lastAi.id;
+        tts.start(lastAi.id).catch((e) =>
+          console.warn("[autoTTS] bind messageId failed", e),
+        );
+      }
+
+      // 喂增量文本 (未 ready 时缓存到 pendingTextRef, ready 后 flush)
+      const fullText = getContentString(lastAi.content);
+      const delta = fullText.slice(lastSpokenLenRef.current);
+      lastSpokenLenRef.current = fullText.length;
+      if (delta) {
+        tts.feedText(delta);
+      }
     }
 
-    // 喂增量文本 (未 ready 时自动缓存到 pendingTextRef, ready 后 flush)
-    const fullText = getContentString(lastAi.content);
-    const delta = fullText.slice(lastSpokenLenRef.current);
-    lastSpokenLenRef.current = fullText.length;
-    if (delta) {
-      tts.feedText(delta);
+    // 边沿检测: LLM 完成 (isLoading true→false) → 延迟 200ms 调 finish
+    if (prevLoadingRef.current && !isLoading) {
+      finishTimerRef.current = setTimeout(() => {
+        finishTimerRef.current = null;
+        if (!justSentRef.current) return;
+        justSentRef.current = false;
+        tts.finish().catch((e) => console.warn("[autoTTS] finish failed", e));
+      }, 200);
     }
-
-    // LLM stream 结束 → 发 finish, 等合成完成 + 保存缓存
-    if (!isLoading) {
-      justSentRef.current = false;
-      tts.finish().catch((e) => console.warn("[autoTTS] finish failed", e));
-    }
+    prevLoadingRef.current = isLoading;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages, isLoading, autoSpeak]);
+
+  // unmount 时清理 finish timer
+  useEffect(() => {
+    return () => {
+      if (finishTimerRef.current) {
+        clearTimeout(finishTimerRef.current);
+        finishTimerRef.current = null;
+      }
+    };
+  }, []);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -284,8 +315,13 @@ export function Thread({
     setFirstTokenReceived(false);
     // 标记"刚发过消息" — useEffect 据此启动自动 TTS
     justSentRef.current = true;
-    // 停掉之前可能残留的 TTS 会话
+    // 重置增量游标 + 消息 id 游标 (新一轮 AI 回复从 0 开始)
+    lastSpokenLenRef.current = 0;
+    lastSpokenIdRef.current = null;
+    // 预热 TTS: 立即停掉旧 audio + 启动新 session (建 ws + 发 start + 等 ready),
+    // LLM 出首个 token 时 ready 已回来, 首字延迟 ~400ms
     tts.stop();
+    tts.start().catch((e) => console.warn("[autoTTS] start failed", e));
 
     const newHumanMessage: Message = {
       id: uuidv4(),
