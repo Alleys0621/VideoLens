@@ -194,12 +194,15 @@ def _format_working_memory(video_time: float | None, events: list, actions: list
 
 
 def _format_history(chat_history: list[dict], n: int = 5) -> str:
-    """最近 n 轮对话."""
+    """最近 n 轮对话; AI 回复标注发言搭子, 防止切换人设后互相照抄."""
     if not chat_history:
         return "(刚开始聊)"
     lines = []
     for h in chat_history[-n:]:
         role = "用户" if h.get("role") == "user" else "Alleys"
+        speaker = h.get("speaker")
+        if role == "Alleys" and speaker:
+            role = f"Alleys（{speaker}）"
         lines.append(f"{role}: {h.get('content', '')}")
     return "\n".join(lines)
 

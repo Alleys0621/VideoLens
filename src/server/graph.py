@@ -51,7 +51,17 @@ def _messages_to_chat_history(messages: list) -> list[dict]:
     out = []
     for m in messages:
         role, content = _extract_msg(m)
-        out.append({"role": role, "content": content})
+        item = {"role": role, "content": content}
+        if role == "assistant":
+            kwargs = (
+                m.get("additional_kwargs")
+                if isinstance(m, dict)
+                else getattr(m, "additional_kwargs", None)
+            )
+            persona_name = (kwargs or {}).get("persona_name") if isinstance(kwargs, dict) else None
+            if persona_name:
+                item["speaker"] = persona_name
+        out.append(item)
     return out
 
 
