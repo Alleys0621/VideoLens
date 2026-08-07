@@ -70,6 +70,11 @@ def companion_node(state: State, config) -> dict:
         or state.get("video_dir")
         or ""
     )
+    user_id = configurable.get("user_id", "default")
+    thread_id = configurable.get("thread_id")
+
+    from src.agent.persona_store import load_thread_persona_id
+    persona_id = load_thread_persona_id(thread_id, user_id)
 
     if not video_dir:
         return {"messages": [AIMessage(content="先在左边选一集视频,我才能陪你聊剧情呀 🎬")]}
@@ -88,7 +93,8 @@ def companion_node(state: State, config) -> dict:
         result = companion_chat(
             query=query,
             video_dir=video_dir,
-            user_id=configurable.get("user_id", "default"),
+            user_id=user_id,
+            persona_id=persona_id,
             chat_history=chat_history,
             web_search=bool(configurable.get("web_search", False)),
             video_time=configurable.get("video_time"),
@@ -111,6 +117,8 @@ def companion_node(state: State, config) -> dict:
             "keyframes": keyframes_meta,
             "reasoning": result["reasoning"],
             "video_dir": video_dir,
+            "persona_id": result.get("persona_id", "alleys"),
+            "persona_name": result.get("persona_name", "小艾"),
         },
     )
     return {"messages": [ai_msg]}

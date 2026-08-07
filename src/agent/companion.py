@@ -131,11 +131,10 @@ def _retrieve(
 # Prompt 构建 (核心: 对话为核心)
 # ============================================================
 
-def _build_system_prompt(profile_overlay: str) -> str:
-    """读 yaml 的 Alleys 人设 (companion_prompts.system)."""
-    cfg = get_config()
-    prompts = cfg.prompts.get("companion_prompts", {}) or {}
-    system = (prompts.get("system") or "").strip()
+def _build_system_prompt(persona_id: str | None, profile_overlay: str) -> str:
+    """按人设拼 system prompt + 用户 L1 overlay."""
+    from src.agent.persona_store import build_persona_system_prompt
+    system = build_persona_system_prompt(persona_id)
     if profile_overlay:
         system = f"{system}\n\n{profile_overlay}"
     return system
@@ -314,6 +313,7 @@ def companion_chat(
     query: str,
     video_dir: str,
     user_id: str = "default",
+    persona_id: str | None = None,
     chat_history: list[dict] | None = None,
     web_search: bool = False,
     video_time: float | None = None,
@@ -333,11 +333,13 @@ def companion_chat(
     show = video_dir.split("/")[0] if video_dir else ""
 
     # 2. L1 / L2 画像
+    from src.agent.persona_store import get_persona_meta
     from src.agent.profile_store import (
         load_user_profile, render_profile_overlay,
         load_show_profile,
     )
     from src.agent.video_utils import load_watching_state
+    persona = get_persona_meta(persona_id)
     user_profile = None
     profile_overlay = ""
     show_profile = None
@@ -384,7 +386,7 @@ def companion_chat(
 
     # 6. 构建 prompt
     working_memory = _format_working_memory(video_time, events, actions)
-    system = _build_system_prompt(profile_overlay)
+    system = _build_system_prompt(persona["id"], profile_overlay)
     user_prompt = _build_user_prompt(
         query=query,
         video_label=video_label,
@@ -463,4 +465,10 @@ def companion_chat(
         f"total={reasoning['timings']['total_ms']}ms"
     )
 
-    return {"answer": answer, "reasoning": reasoning, "keyframes": keyframes}
+    return {
+        "answer": answer,
+        "reasoning": reasoning,
+        "keyframes": keyframes,
+        "persona_id": persona["id"],
+        "persona_name": persona["name"],
+    }

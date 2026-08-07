@@ -62,6 +62,16 @@ CREATE TABLE IF NOT EXISTS show_profiles (
 );
 
 -- ============================================================
+-- 用户偏好表（默认搭子）
+-- ============================================================
+CREATE TABLE IF NOT EXISTS user_preferences (
+    user_id            UUID        PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+    default_persona_id TEXT        NOT NULL DEFAULT 'alleys',
+    created_at         TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at         TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- ============================================================
 -- 播放进度表 (用户 × 视频 = 一条记录)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS playback_progress (
@@ -100,6 +110,7 @@ CREATE TABLE IF NOT EXISTS threads (
     user_id       UUID        NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     custom_title  TEXT,
     pinned        BOOLEAN     NOT NULL DEFAULT FALSE,
+    persona_id    TEXT        NOT NULL DEFAULT 'alleys',
     -- created_at/updated_at 在 LangGraph 那边维护, 这里冗余存一份便于排序/分组
     created_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at    TIMESTAMPTZ NOT NULL DEFAULT now()

@@ -175,15 +175,14 @@ _ALLEYS_FALLBACK = """你是「Alleys」, 一个陪看搭子智能体, 25 岁女
 
 
 def _load_alleys_prompt() -> str:
-    """从 prompts.yaml::companion_prompts.system 加载人设, 失败用 fallback."""
+    """从 persona_store 加载默认人设, 失败用 fallback."""
     try:
-        from src.core.config import get_config
-        prompts = get_config().prompts.get("companion_prompts", {}) or {}
-        p = prompts.get("system", "")
-        if isinstance(p, str) and p.strip():
+        from src.agent.persona_store import DEFAULT_PERSONA_ID, build_persona_system_prompt
+        p = build_persona_system_prompt(DEFAULT_PERSONA_ID)
+        if p.strip():
             return p
     except Exception as e:
-        logger.debug(f"加载 yaml prompt 失败, 用 fallback: {e}")
+        logger.debug(f"加载默认人设失败, 用 fallback: {e}")
     return _ALLEYS_FALLBACK
 
 
