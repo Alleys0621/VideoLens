@@ -12,6 +12,7 @@ import { ReasoningCard } from "../ReasoningCard";
 import { TooltipIconButton } from "../tooltip-icon-button";
 import { Volume2, LoaderCircle, Square } from "lucide-react";
 import { useTTSContext } from "@/providers/TTS";
+import { getPersona } from "@/lib/personas";
 
 function parseAnthropicStreamedToolCalls(
   content: MessageContentComplex[],
@@ -56,6 +57,11 @@ export function AssistantMessage({
   const thread = useStreamContext();
   const meta = message ? thread.getMessagesMetadata(message) : undefined;
   const tts = useTTSContext();
+  const persona = getPersona(
+    (message as Record<string, any>)?.additional_kwargs?.persona_id as
+      | string
+      | undefined,
+  );
 
   const parentCheckpoint = meta?.firstSeenState?.parent_checkpoint;
   const anthropicStreamedToolCalls = Array.isArray(content)
@@ -81,10 +87,10 @@ export function AssistantMessage({
 
   return (
     <div className="group mr-auto flex w-full items-start gap-3">
-      {/* Alleys 头像 (alleysvid-avatar.png) */}
+      {/* 按 persona_id 显示对应头像 */}
       <img
-        src="/alleysvid-avatar.png"
-        alt="Alleys"
+        src={persona.avatar}
+        alt={persona.name}
         className="h-8 w-8 flex-shrink-0 rounded-lg object-cover shadow-sm"
       />
       <div className="flex flex-1 flex-col gap-2">
@@ -92,6 +98,11 @@ export function AssistantMessage({
           <ToolResult message={message} />
         ) : (
           <>
+            {contentString.length > 0 && (
+              <div className="mb-1 text-xs font-medium text-zinc-400">
+                {persona.name}
+              </div>
+            )}
             {contentString.length > 0 && (
               /* ChatGPT 风格: 无气泡背景, Markdown 直接渲染 */
               <div className="text-[15px] leading-relaxed text-zinc-800">

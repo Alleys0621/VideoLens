@@ -14,9 +14,11 @@ import { UserMenu } from "./UserMenu";
 export function TopNav({
   videoDir,
   onToggleSidebar,
+  onOpenPersonas,
 }: {
   videoDir: string;
   onToggleSidebar?: () => void;
+  onOpenPersonas: () => void;
 }) {
   const crumbs = videoDir ? videoDir.split("/").filter(Boolean) : [];
 
@@ -76,6 +78,7 @@ export function TopNav({
       {/* 右侧操作 */}
       <button
         className="flex h-10 flex-shrink-0 items-center gap-1.5 rounded-lg px-3 text-[13px] text-zinc-500 transition-colors hover:bg-white/70 hover:text-zinc-700"
+        onClick={onOpenPersonas}
         title="设置"
       >
         <Settings className="h-4 w-4" />

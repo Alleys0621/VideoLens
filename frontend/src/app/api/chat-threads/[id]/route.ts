@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
 import { query } from "@/lib/db";
+import { PERSONAS } from "@/lib/personas";
 
 export const runtime = "nodejs";
 
@@ -15,6 +16,7 @@ interface ThreadRow {
   thread_id: string;
   custom_title: string | null;
   pinned: boolean;
+  persona_id: string;
   created_at: string;
   updated_at: string;
 }
@@ -26,7 +28,11 @@ function rowToThread(row: ThreadRow) {
     updated_at: typeof row.updated_at === "string"
       ? row.updated_at
       : new Date(row.updated_at as unknown as Date).toISOString(),
-    metadata: { custom_title: row.custom_title, pinned: row.pinned },
+    metadata: {
+      custom_title: row.custom_title,
+      pinned: row.pinned,
+      persona_id: row.persona_id,
+    },
     values: null,
   };
 }
@@ -53,7 +59,7 @@ export async function PATCH(
     return NextResponse.json({ error: "无权操作此会话" }, { status: 403 });
   }
 
-  let body: { custom_title?: string; pinned?: boolean };
+  let body: { custom_title?: string; pinned?: boolean; persona_id?: string };
   try {
     body = await req.json();
   } catch {
@@ -71,6 +77,13 @@ export async function PATCH(
     vals.push(body.pinned);
     sets.push(`pinned = $${vals.length + 1}`);
   }
+  if (typeof body.persona_id === "string") {
+    if (!PERSONAS.some((p) => p.id === body.persona_id)) {
+      return NextResponse.json({ error: "无效的人设" }, { status: 400 });
+    }
+    vals.push(body.persona_id);
+    sets.push(`persona_id = $${vals.length + 1}`);
+  }
   if (sets.length === 0) {
     return NextResponse.json({ error: "没有可更新字段" }, { status: 400 });
   }
@@ -80,7 +93,7 @@ export async function PATCH(
     const { rows } = await query<ThreadRow>(
       `UPDATE threads SET ${sets.join(", ")}
        WHERE thread_id = $${queryParams.length} AND user_id = $1
-       RETURNING thread_id, custom_title, pinned, created_at, updated_at`,
+       RETURNING thread_id, custom_title, pinned, persona_id, created_at, updated_at`,
       queryParams,
     );
     if (rows.length === 0) {

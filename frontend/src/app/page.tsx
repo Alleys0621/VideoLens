@@ -5,6 +5,7 @@ import { StreamProvider } from "@/providers/Stream";
 import { ThreadProvider } from "@/providers/Thread";
 import { VideoPlayer } from "@/components/video-player/VideoPlayer";
 import { TopNav, LeftSidebar } from "@/components/layout";
+import { PersonaSheet } from "@/components/persona/PersonaSheet";
 import {
   Sheet,
   SheetContent,
@@ -23,6 +24,7 @@ export default function DemoPage(): React.ReactNode {
   // 响应式断点: ≥1024px 走桌面三栏, 否则走「中+右两栏 + 左栏抽屉」(iPad 竖屏)
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   const [leftOpen, setLeftOpen] = React.useState(false);
+  const [personaSheetOpen, setPersonaSheetOpen] = React.useState(false);
   // 视频播放时间戳 (VideoPlayer 写, Thread 读并发给后端做邻域对白检索)
   const videoTimeRef = React.useRef(0);
   // 视频外部控制句柄 (ASR 录音时通过它暂停/恢复视频, 防回声)
@@ -46,6 +48,7 @@ export default function DemoPage(): React.ReactNode {
               onToggleSidebar={
                 isDesktop ? undefined : () => setLeftOpen((p) => !p)
               }
+              onOpenPersonas={() => setPersonaSheetOpen(true)}
             />
 
             {/* px-4 提供每边 16px 留白; lg: 起进入 iPad 横屏; min-[1700px]: 外接显示器 */}
@@ -101,11 +104,16 @@ export default function DemoPage(): React.ReactNode {
                   <Thread
                     videoTimeRef={videoTimeRef}
                     videoControlRef={videoControlRef}
+                    onOpenPersonas={() => setPersonaSheetOpen(true)}
                   />
                 </div>
               </div>
             </div>
           </div>
+          <PersonaSheet
+            open={personaSheetOpen}
+            onOpenChange={setPersonaSheetOpen}
+          />
         </StreamProvider>
       </ThreadProvider>
     </React.Suspense>

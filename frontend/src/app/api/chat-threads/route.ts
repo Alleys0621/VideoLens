@@ -21,6 +21,7 @@ interface ThreadRow {
   thread_id: string;
   custom_title: string | null;
   pinned: boolean;
+  persona_id: string;
   created_at: string;
   updated_at: string;
 }
@@ -36,6 +37,7 @@ function rowToThread(row: ThreadRow) {
       user_id: undefined,
       custom_title: row.custom_title,
       pinned: row.pinned,
+      persona_id: row.persona_id,
     },
     values: null,
   };
@@ -49,7 +51,7 @@ export async function GET() {
 
   try {
     const { rows } = await query<ThreadRow>(
-      `SELECT thread_id, custom_title, pinned, created_at, updated_at
+      `SELECT thread_id, custom_title, pinned, persona_id, created_at, updated_at
        FROM threads
        WHERE user_id = $1
        ORDER BY pinned DESC, updated_at DESC`,

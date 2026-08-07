@@ -17,6 +17,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { PanelRightOpen, PanelRightClose, Pin, Pencil, Trash2 } from "lucide-react";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { cn } from "@/lib/utils";
+import { getPersona } from "@/lib/personas";
 
 /* ---------- 工具函数 ---------- */
 
@@ -182,6 +183,11 @@ function ThreadItem({
 
   // --- 正常态: hover 显示三个图标按钮 ---
   const pinned = isPinned(thread);
+  const persona = getPersona(
+    (thread.metadata as Record<string, unknown> | null)?.persona_id as
+      | string
+      | undefined,
+  );
   return (
     <div
       className={cn(
@@ -195,6 +201,11 @@ function ThreadItem({
         onClick={onClick}
         className="flex min-w-0 flex-1 items-center gap-1.5 text-left"
       >
+        <img
+          src={persona.avatar}
+          alt={persona.name}
+          className="h-4 w-4 flex-shrink-0 rounded object-cover"
+        />
         {pinned && (
           <Pin className="h-3 w-3 flex-shrink-0 rotate-45 text-amber-500" />
         )}

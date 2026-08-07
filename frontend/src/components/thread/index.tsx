@@ -40,9 +40,11 @@ import {
 import { useFileUpload } from "@/hooks/use-file-upload";
 import { useStreamingASR } from "@/hooks/useStreamingASR";
 import { useAuth } from "@/providers/Auth";
+import { useThreads } from "@/providers/Thread";
 import { useTTSContext } from "@/providers/TTS";
 import { getContentString } from "./utils";
-import { Volume2 } from "lucide-react";
+import { getPersona } from "@/lib/personas";
+import { Volume2, ChevronDown } from "lucide-react";
 
 function StickyToBottomContent(props: {
   content: ReactNode;
@@ -89,6 +91,7 @@ function ScrollToBottom(props: { className?: string }) {
 export function Thread({
   videoTimeRef,
   videoControlRef,
+  onOpenPersonas,
 }: {
   videoTimeRef?: { current: number };
   videoControlRef?: {
@@ -100,6 +103,7 @@ export function Thread({
       restoreVolume: () => void;
     } | null;
   };
+  onOpenPersonas: () => void;
 }) {
   const [threadId, _setThreadId] = useQueryState("threadId");
   // 当前陪看视频目录 (从 URL query 读, page.tsx 的 VideoPlayer 设置)
@@ -138,6 +142,23 @@ export function Thread({
   const isLoading = stream.isLoading;
   // 登录用户的 user_id, 透传给后端 agent (用于 Mem0 记忆按用户隔离)
   const { user } = useAuth();
+  const { threads } = useThreads();
+  const [defaultPersonaId, setDefaultPersonaId] = useState("alleys");
+  useEffect(() => {
+    if (!user) return;
+    fetch("/api/preferences/persona", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((data: { persona_id?: string }) => {
+        if (data.persona_id) setDefaultPersonaId(data.persona_id);
+      })
+      .catch(() => undefined);
+  }, [user]);
+  const currentThread = threads.find((t) => t.thread_id === threadId);
+  const currentPersona = getPersona(
+    (currentThread?.metadata as Record<string, unknown> | null)?.persona_id as
+      | string
+      | undefined || defaultPersonaId,
+  );
   // TTS 自动播放: 发送时打"刚发过"标记, 回复完成 (isLoading true→false) 时触发
   // 用 TTSProvider 单例, 跟 ai.tsx 喇叭按钮共享同一个实例
   // (必须在 recorder 之前定义, recorder 的 onPauseOthers 用到它)
@@ -454,6 +475,21 @@ export function Thread({
               </div>
 
               <div className="flex items-center gap-4">
+                <button
+                  type="button"
+                  onClick={onOpenPersonas}
+                  className="flex items-center gap-1.5 rounded-full px-2 py-1 text-xs ring-1 ring-zinc-200 hover:bg-zinc-50"
+                >
+                  <img
+                    src={currentPersona.avatar}
+                    alt={currentPersona.name}
+                    className="h-5 w-5 rounded-full object-cover"
+                  />
+                  <span className="font-medium text-zinc-700">
+                    {currentPersona.name}
+                  </span>
+                  <ChevronDown className="h-3 w-3 text-zinc-400" />
+                </button>
                 <TooltipIconButton
                   size="lg"
                   className="p-4"

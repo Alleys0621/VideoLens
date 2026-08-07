@@ -30,11 +30,19 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { rows } = await query<{ thread_id: string; created_at: string; updated_at: string }>(
-      `INSERT INTO threads (thread_id, user_id)
-       VALUES ($1, $2)
+    const { rows } = await query<{
+      thread_id: string;
+      persona_id: string;
+      created_at: string;
+      updated_at: string;
+    }>(
+      `INSERT INTO threads (thread_id, user_id, persona_id)
+       VALUES ($1, $2, COALESCE(
+         (SELECT default_persona_id FROM user_preferences WHERE user_id = $2),
+         'alleys'
+       ))
        ON CONFLICT (thread_id) DO NOTHING
-       RETURNING thread_id, created_at, updated_at`,
+       RETURNING thread_id, persona_id, created_at, updated_at`,
       [threadId, user.id],
     );
 
@@ -45,7 +53,7 @@ export async function POST(req: NextRequest) {
           thread_id: rows[0].thread_id,
           created_at: rows[0].created_at,
           updated_at: rows[0].updated_at,
-          metadata: { custom_title: null, pinned: false },
+          metadata: { custom_title: null, pinned: false, persona_id: rows[0].persona_id },
           values: null,
         },
       });
@@ -55,10 +63,11 @@ export async function POST(req: NextRequest) {
       thread_id: string;
       custom_title: string | null;
       pinned: boolean;
+      persona_id: string;
       created_at: string;
       updated_at: string;
     }>(
-      `SELECT thread_id, custom_title, pinned, created_at, updated_at
+      `SELECT thread_id, custom_title, pinned, persona_id, created_at, updated_at
        FROM threads WHERE thread_id = $1 AND user_id = $2`,
       [threadId, user.id],
     );
@@ -72,7 +81,11 @@ export async function POST(req: NextRequest) {
         thread_id: row.thread_id,
         created_at: row.created_at,
         updated_at: row.updated_at,
-        metadata: { custom_title: row.custom_title, pinned: row.pinned },
+        metadata: {
+          custom_title: row.custom_title,
+          pinned: row.pinned,
+          persona_id: row.persona_id,
+        },
         values: null,
       },
     });
