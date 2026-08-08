@@ -29,13 +29,15 @@ AlleysVid 是一个 AI 陪看智能体。用户选一集视频，Alleys（AI 搭
 
 ### 分层画像
 
-- L1 用户画像：`src/agent/profile_store.py` + `profile_updater.py::maybe_update_user_profile()`
-  - 表 `user_profiles`：interaction_style / spoiler_tolerance / humor_level / engagement_motivation / alleys_attitude / confidence。
-  - 每累计 2 条对话触发一次 `qwen3.7-flash` 增量更新。
-  - `render_profile_overlay()` 无条件注入（V1.3.1 去掉 confidence 门控）。
+- L1 用户画像：`src/agent/profile_store.py` + `profile_updater.py`
+  - 表 `user_profiles` 字段分**两层**：
+    - 内核层（稳定，不易变）：interaction_style / interaction_initiative / engagement_motivation / humor_level / teasing_tolerance / spoiler_tolerance / pet_peeves。`conf_stable` 用 EWMA 维护，渲染时 `conf_stable >= 0.6` 才注入。
+    - 表现层（易变，用户当下指令）：alleys_attitude / alleys_response_preference。无置信度，直接覆盖，渲染时**始终注入并排第一位**（标【即时】）。
+  - **双轨采集**（`video_utils.py::async_maybe_update_profile`）：轻量轨道每轮 `qwen-turbo` 更新表现层（即时生效）；完整轨道每 5 轮 `qwen3.7-flash` 更新内核层（EWMA 融合 + `_FIELD_GATE=0.5` 字段门控，防噪声污染稳定画像）。
+  - 渲染：`companion.py::_format_l1_l2` 分层注入（表现层不门控 → 内核层 conf_stable 门控 → L2 门控）。
 - L2 作品画像：`profile_updater.py::maybe_update_show_profile()`
   - 表 `show_profiles`：favorite_characters / attention_characters / character_opinions / theme_preferences / disliked_elements / confidence。
-  - 每轮全量注入 user prompt（V1.4 去意图路由）。
+  - 完整轨道达阈值时更新，每轮按 L2 confidence 门控注入 user prompt（V1.4 去意图路由）。
 
 ### 会话标题
 

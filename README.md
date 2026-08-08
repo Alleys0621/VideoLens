@@ -213,6 +213,27 @@ python -m scripts.apply_migrations --dry-run
 
 然后重新 `.\start.bat` 启动即可。
 
+### 本次更新（V1.4.4：用户画像双轨分层）
+
+> 协作者 pull 后，按上方「日常更新」流程执行即可，migration 会自动应用。以下为本次改动说明。
+
+**本次改动**：L1 用户画像重构为**双轨分层**——
+
+- **内核层**（稳定，不易变）：聊法 / 剧透 / 接梗 / 动力 / 雷区，`conf_stable` 用 EWMA 维护，`conf_stable >= 0.6` 才注入 prompt。
+- **表现层**（易变，用户当下指令）：`alleys_attitude` / `alleys_response_preference`，每轮轻量轨道即时覆盖，渲染时**始终注入并排第一位**。
+
+**数据库**：新增 2 个 migration（`0008_l1_profile_extension.sql` / `0009_l1_profile_dual_track.sql`），`user_profiles` 表 `confidence` 列改名 `conf_stable`。执行：
+```powershell
+# 项目根目录下
+python -m scripts.apply_migrations
+```
+
+**代码**：改了 5 个后端文件 + `config/prompts.yaml`，**无新增依赖**，重启 `.\start.bat` 生效。
+
+**注意事项**：
+- 每轮对话会额外调用一次 `qwen-turbo` 更新表现层字段（便宜，即时生效）。完整内核层仍每 5 轮 `qwen3.7-flash`。
+- 改过函数签名：`save_profile(..., conf_stable=...)`（不再收 `confidence`）、删除 `render_profile_overlay()`。如你有自定义调用，需同步。
+
 ## 协作者访问（同局域网）
 
 > 协作者 = 在自己设备上访问部署者跑的 AlleysVid。**每台设备装一次根 CA，永久有效**（直到换电脑或部署者重装 mkcert）。
@@ -346,7 +367,7 @@ data/
 
 Postgres 中的业务表：
 - `users`：用户账号
-- `user_profiles`：L1 跨会话用户画像（聊法偏好、剧透接受度、接梗浓度、engagement_motivation、alleys_attitude）
+- `user_profiles`：L1 跨会话用户画像，字段分**两层**——内核层（聊法偏好、剧透接受度、接梗浓度、观看动力，`conf_stable` 门控注入）+ 表现层（`alleys_attitude` 用户当下指令、`alleys_response_preference` 回应策略，每轮即时覆盖、始终注入）
 - `show_profiles`：L2 作品级画像（喜欢的角色、角色评价、主题偏好）
 - `playback_progress`：用户 × 视频的播放进度
 - `watching_state`：用户实时的视频坐标（video_time / is_playing）

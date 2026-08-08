@@ -44,3 +44,19 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 Write-Host "[renew-cert] OK" -ForegroundColor Green
+
+# Ensure hosts entry for <hostname>.local, else browser can't resolve https://<hostname>.local
+# (cert SAN includes it, but DNS won't). Needs admin; non-admin just warns, doesn't block start.
+# Only IPv4 127.0.0.1: IPv6 ::1 lookup on Windows localhost is slow (~2s timeout).
+$hostsPath = "$env:WINDIR\System32\drivers\etc\hosts"
+$hostEntry = "$($env:COMPUTERNAME.ToLower()).local"
+if (-not (Select-String -Path $hostsPath -Pattern $hostEntry -SimpleMatch -Quiet -ErrorAction SilentlyContinue)) {
+    try {
+        Add-Content -Path $hostsPath -Value "127.0.0.1 $hostEntry" -ErrorAction Stop
+        Write-Host "[renew-cert] added hosts: 127.0.0.1 $hostEntry" -ForegroundColor Green
+    } catch {
+        Write-Host "[renew-cert] cannot write hosts (run as admin to enable https://$hostEntry)" -ForegroundColor Yellow
+    }
+} else {
+    Write-Host "[renew-cert] hosts already has $hostEntry"
+}

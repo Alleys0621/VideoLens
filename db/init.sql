@@ -29,16 +29,22 @@ CREATE INDEX IF NOT EXISTS idx_users_phone ON users (phone);
 -- confidence 低时不注入 system prompt. 不每轮写, 由阈值触发更新.
 -- ============================================================
 CREATE TABLE IF NOT EXISTS user_profiles (
-    user_id               UUID        PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
-    interaction_style     TEXT,       -- 吐槽型 / 分析型 / 陪伴型 / 提问型 / 混合
-    spoiler_tolerance     TEXT,       -- 接受 / 谨慎 / 拒绝
-    humor_level           TEXT,       -- 高 / 中 / 低
-    engagement_motivation TEXT,       -- 推理探索型 / 情绪共鸣型 / 角色陪伴型 / 剧情消费型
-    alleys_attitude       TEXT,       -- 用户对 Alleys 的态度/印象/期望 (中文一句, 注入 L1 overlay)
-    confidence            DOUBLE PRECISION NOT NULL DEFAULT 0,
-    messages_since_update INTEGER     NOT NULL DEFAULT 0,
-    created_at            TIMESTAMPTZ NOT NULL DEFAULT now(),
-    updated_at            TIMESTAMPTZ NOT NULL DEFAULT now()
+    -- 内核层 (稳定, 不易变): 由完整轨道每 N 轮更新, conf_stable 门控注入
+    user_id                   UUID        PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+    interaction_style         TEXT,       -- 吐槽型 / 分析型 / 陪伴型 / 提问型 / 混合
+    spoiler_tolerance         TEXT,       -- 接受 / 谨慎 / 拒绝
+    humor_level               TEXT,       -- 高 / 中 / 低
+    engagement_motivation     TEXT,       -- 推理探索型 / 情绪共鸣型 / 角色陪伴型 / 剧情消费型
+    interaction_initiative    TEXT,       -- 主动型 / 被动型 / 混合 (决定平淡段是否主动起话题)
+    teasing_tolerance         TEXT,       -- 能被吐槽 / 只能吐槽剧情 / 完全不能
+    pet_peeves                TEXT[]      NOT NULL DEFAULT '{}',  -- 雷区 list, 遇到主动吐槽
+    conf_stable               DOUBLE PRECISION NOT NULL DEFAULT 0,  -- 内核层稳定置信度 (EWMA)
+    -- 表现层 (易变, 用户当下指令): 由轻量轨道每轮更新, 直接覆盖, 无置信度
+    alleys_attitude           TEXT,       -- 用户对 Alleys 的当下态度/指令 (自由文本, 渲染排第一位)
+    alleys_response_preference TEXT,      -- 当下回应策略: 反问引导 / 直接表态 / 拱火加码 / 冷静降温
+    messages_since_update     INTEGER     NOT NULL DEFAULT 0,
+    created_at                TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at                TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 CREATE INDEX IF NOT EXISTS idx_user_profiles_confidence ON user_profiles (confidence);

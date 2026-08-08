@@ -2,6 +2,33 @@
 
 完整版本历史。最新版本说明同时见 [README](./README.md)。
 
+## V1.4.4（2026-08-08）
+
+**用户画像双轨分层：内核层稳定 + 表现层即时**
+
+按"字段描述的是用户是谁（内核）还是用户现在怎样（表现）"重构 L1 画像。
+
+**分层字段**
+- 内核层（稳定，不易变）：interaction_style / interaction_initiative / engagement_motivation / humor_level / teasing_tolerance / spoiler_tolerance / pet_peeves，`conf_stable >= 0.6` 才注入 prompt
+- 表现层（易变，用户当下指令）：`alleys_attitude` / `alleys_response_preference`，每轮即时覆盖，渲染时始终注入并排第一位（标【即时】）
+
+**双轨采集**
+- 轻量轨道（每轮，qwen-turbo）：`maybe_update_user_profile_instant` 更新表现层，保证用户"别损了/太啰嗦"这类指令即时生效
+- 完整轨道（每 5 轮，qwen3.7-flash）：更新内核层，`conf_stable` 用 EWMA（α=0.3）维护 + `_FIELD_GATE=0.5` 字段门控，防低置信度噪声污染稳定画像
+
+**DB / 字段**
+- `0008_l1_profile_extension.sql`：加 interaction_initiative / alleys_response_preference / teasing_tolerance / pet_peeves
+- `0009_l1_profile_dual_track.sql`：`confidence` 列改名 `conf_stable`
+- 删除 `render_profile_overlay()`，画像统一走 `companion.py::_format_l1_l2` 分层注入
+
+**prompt 结构**
+- 新增 `l1_instant_system`（轻量轨道 prompt），`l1_system` 改为输出 `conf_stable`
+- user_blocks 块名统一：`profile→user_profile`、`history→short_term_memory`、`long_term→episode_memory`、`kb→video_kb`、`web→web_search`
+- `l1_instant_system` 判断标准：只看用户这句话的**对象**是剧情还是 Alleys，区分吐槽剧情 vs 对 Alleys 的指令
+
+**迁移**
+- 协作者 pull 后跑 `python -m scripts.apply_migrations`，重启 `.\start.bat`
+
 ## V1.4.3（2026-08-04）
 
 **Alleys 视角重建：工作记忆 + 人设重构 + Mem0 质量优化**

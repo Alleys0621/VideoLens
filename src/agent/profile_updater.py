@@ -1,9 +1,14 @@
-"""L1 用户画像 + L2 作品画像增量更新 (会话级, 慢节奏).
+"""L1 用户画像 + L2 作品画像增量更新.
 
-触发时机: companion 累加计数, 达到阈值 (PROFILE_UPDATE_THRESHOLD)
-         才触发一次. 不每轮写, 避免 LLM 调用爆炸 + 画像抖动.
+双轨采集:
+  轻量轨道 (maybe_update_user_profile_instant): 每轮调用 qwen-turbo,
+    只提取表现层两字段 (alleys_attitude / alleys_response_preference),
+    直接覆盖, 无置信度, 保证用户当下指令即时生效.
+  完整轨道 (maybe_update_user_profile): 每 PROFILE_UPDATE_THRESHOLD 轮调用
+    qwen3.7-flash, 提取全部内核层字段, conf_stable 用 EWMA 维护 +
+    字段门控 (新信号置信度足够才接受新字段值), 防止噪声污染稳定画像.
 
-实现: qwen3.7-flash 读最近 N 轮对话 + 旧画像, 输出 JSON, UPSERT.
+实现: 读最近 N 轮对话 + 旧画像, 输出 JSON, UPSERT.
 """
 
 from __future__ import annotations
@@ -13,6 +18,7 @@ import json
 from src.agent.profile_store import (
     load_user_profile,
     save_profile,
+    update_instant_fields,
     load_show_profile,
     save_show_profile,
 )
@@ -20,11 +26,19 @@ from src.core.logging import get_logger
 
 logger = get_logger()
 
+# 完整轨道 EWMA 融合系数 (旧画像权重高, 内核层慢更新)
+_EWMA_ALPHA = 0.3
+# 字段门控: 新信号置信度达到该值才接受新字段值
+_FIELD_GATE = 0.5
+
 
 _VALID_STYLE = {"吐槽型", "分析型", "陪伴型", "提问型", "混合"}
 _VALID_SPOILER = {"接受", "谨慎", "拒绝"}
 _VALID_HUMOR = {"高", "中", "低"}
 _VALID_MOTIVATION = {"推理探索型", "情绪共鸣型", "角色陪伴型", "剧情消费型"}
+_VALID_INITIATIVE = {"主动型", "被动型", "混合"}
+_VALID_RESPONSE_PREF = {"反问引导", "直接表态", "拱火加码", "冷静降温"}
+_VALID_TEASING = {"能被吐槽", "只能吐槽剧情", "完全不能"}
 _VALID_SENTIMENT = {"positive", "neutral", "negative"}
 
 
@@ -46,13 +60,27 @@ def _render_history(chat_history: list[dict]) -> tuple[str, int]:
     return "\n".join(lines), len(recent)
 
 
+def _parse_conf_stable(obj: dict, n_recent: int) -> float:
+    """LLM conf_stable 取整 + 按样本量阻尼 (样本越少越保守)."""
+    try:
+        conf = float(obj.get("conf_stable", 0.0))
+    except (TypeError, ValueError):
+        conf = 0.0
+    return min(max(0.0, min(1.0, conf)), n_recent / 20.0)
+
+
 def _parse_confidence(obj: dict, n_recent: int) -> float:
-    """LLM confidence 取整 + 按样本量阻尼."""
+    """L2 专用: LLM confidence 取整 + 按样本量阻尼 (L2 保留整表 confidence)."""
     try:
         conf = float(obj.get("confidence", 0.0))
     except (TypeError, ValueError):
         conf = 0.0
     return min(max(0.0, min(1.0, conf)), n_recent / 20.0)
+
+
+def _ewma(new_signal: float, old: float, alpha: float = _EWMA_ALPHA) -> float:
+    """指数加权移动平均: 旧值惯性大, 新信号持续推才改方向."""
+    return round(alpha * new_signal + (1.0 - alpha) * old, 3)
 
 
 def _load_main_cast(show: str) -> list[str]:
@@ -77,11 +105,14 @@ def _load_main_cast(show: str) -> list[str]:
         return []
 
 
-def _call_profile_llm(system: str, user: str, max_tokens: int) -> dict | None:
-    """qwen3.7-flash 读旧画像+对话, 返回解析后的 JSON dict."""
+def _call_profile_llm(system: str, user: str, max_tokens: int, model: str = "qwen3.7-flash") -> dict | None:
+    """读旧画像+对话, 返回解析后的 JSON dict.
+
+    model: 轻量轨道用 qwen-turbo (便宜, 每轮跑), 完整轨道用 qwen3.7-flash.
+    """
     from src.core.llm.base_client import BaseLLMClient
     from src.core.helpers.text_utils import extract_json_obj
-    raw = BaseLLMClient(model="qwen3.7-flash").chat(
+    raw = BaseLLMClient(model=model).chat(
         messages=[
             {"role": "system", "content": system},
             {"role": "user", "content": user},
@@ -108,12 +139,28 @@ def _get_profile_prompt(key: str, fallback: str) -> str:
         return fallback
 
 
+_L1_INSTANT_SYSTEM_FALLBACK = (
+    "你在更新陪看智能体对某个用户的当下印象。只输出严格 JSON，不要解释、不要 markdown。\n"
+    '{"alleys_attitude":"","alleys_response_preference":""}\n'
+    "alleys_attitude: 用户**当下**对 Alleys 的直接态度/指令 (抱怨/表扬/要求), "
+    "格式=态度+行为指令 (如 '嫌啰嗦,每条≤30字'). 无明显信号填空字符串.\n"
+    "alleys_response_preference: 用户当下希望的回应策略 (反问引导/直接表态/拱火加码/冷静降温). 无信号填空.\n"
+    "只根据「用户:」直接对 Alleys 说的话判断, 剧情相关内容不写进这两字段.\n"
+    "这两字段每轮直接覆盖旧值 (表现层易变, 用户当下说了什么就是什么)."
+)
+
 _L1_SYSTEM_FALLBACK = (
     "你在更新陪看智能体对某个用户的长期画像。只输出严格 JSON，不要解释、不要 markdown。\n"
     '{"interaction_style":"吐槽型/分析型/陪伴型/提问型/混合",'
-    '"spoiler_tolerance":"接受/谨慎/拒绝","humor_level":"高/中/低",'
-    '"engagement_motivation":"推理探索型/情绪共鸣型/角色陪伴型/剧情消费型","confidence":0.0}\n'
-    "confidence: 0.9-1.0 明确多次表达 / 0.6-0.8 行为明显 / 0.3-0.5 弱推断 / 0-0.2 不确定.\n"
+    '"interaction_initiative":"主动型/被动型/混合",'
+    '"engagement_motivation":"推理探索型/情绪共鸣型/角色陪伴型/剧情消费型",'
+    '"humor_level":"高/中/低","teasing_tolerance":"能被吐槽/只能吐槽剧情/完全不能",'
+    '"spoiler_tolerance":"接受/谨慎/拒绝",'
+    '"pet_peeves":[],"alleys_attitude":"","alleys_response_preference":"","conf_stable":0.0}\n'
+    "L1 内核层决定 Alleys 怎么回, 字段值要可执行. 弱信号字段填空字符串或空数组.\n"
+    "alleys_attitude / alleys_response_preference 是表现层, 由轻量轨道单独更新, 这里填旧值或空即可.\n"
+    "conf_stable: 你对上述内核层字段的整体置信度. "
+    "0.9-1.0 明确多次表达 / 0.6-0.8 行为明显 / 0.3-0.5 弱推断 / 0-0.2 不确定.\n"
     "【关键】只有「用户:」开头的是用户本人发言, 「Alleys:」是智能体回复, 不能当用户风格.\n"
     "覆盖规则: 最近对话与旧值冲突时以最近为准, 允许覆盖旧值. "
     "用户抱怨 AI 回答质量(别瞎编/答错了)不是剧情偏好, 只作 interaction_style 判断参考."
@@ -135,21 +182,62 @@ _L2_SYSTEM_FALLBACK = (
 # L1: 用户画像
 # ============================================================
 
+def maybe_update_user_profile_instant(user_id: str, chat_history: list[dict]) -> None:
+    """轻量轨道 (每轮): 只更新表现层两字段, qwen-turbo, 直接覆盖.
+
+    表现层易变 (用户当下指令), 不用 EWMA 不用门控, 说了什么就是什么.
+    失败静默 (后台任务).
+    """
+    if not chat_history or not user_id:
+        return
+    history_text, _ = _render_history(chat_history)
+
+    system = _get_profile_prompt("l1_instant_system", _L1_INSTANT_SYSTEM_FALLBACK)
+    user = f"最近对话:\n{history_text}\n\n输出 JSON。"
+
+    try:
+        obj = _call_profile_llm(system, user, max_tokens=100, model="qwen-turbo")
+        if not obj:
+            return
+        attitude_raw = str(obj.get("alleys_attitude", "") or "").strip()
+        attitude = attitude_raw[:50] if attitude_raw and attitude_raw != "未知" else None
+        response_pref = _pick(obj.get("alleys_response_preference"), _VALID_RESPONSE_PREF)
+        if attitude is None and response_pref is None:
+            return
+        update_instant_fields(user_id, attitude, response_pref)
+        logger.info(
+            f"[profile][instant] user={user_id[:8]} attitude={attitude} "
+            f"pref={response_pref}"
+        )
+    except Exception as e:
+        logger.warning(f"[profile][instant] 更新失败 (非致命): {e}")
+
+
 def maybe_update_user_profile(user_id: str, chat_history: list[dict]) -> None:
-    """读旧画像 + 最近对话 → qwen3.7-flash → UPSERT. 失败静默 (后台任务)."""
+    """完整轨道 (每 PROFILE_UPDATE_THRESHOLD 轮): 更新内核层全部字段.
+
+    策略:
+      - conf_stable 用 EWMA 维护 (旧画像惯性大, 新信号持续推才改方向)
+      - 字段门控: 新信号置信度 >= _FIELD_GATE 才接受新字段值, 否则保留旧值
+      - 表现层字段由轻量轨道负责, 此处随完整轨道带回旧值即可
+    失败静默 (后台任务).
+    """
     if not chat_history or len(chat_history) < 2:
         return
 
     old = load_user_profile(user_id) or {}
     history_text, n_recent = _render_history(chat_history)
+    old_conf = float(old.get("conf_stable", 0) or 0)
 
     old_brief = (
         f"interaction_style={old.get('interaction_style') or '未知'}, "
-        f"spoiler_tolerance={old.get('spoiler_tolerance') or '未知'}, "
-        f"humor_level={old.get('humor_level') or '未知'}, "
+        f"interaction_initiative={old.get('interaction_initiative') or '未知'}, "
         f"engagement_motivation={old.get('engagement_motivation') or '未知'}, "
-        f"alleys_attitude={old.get('alleys_attitude') or '未知'}, "
-        f"confidence={old.get('confidence', 0):.2f}"
+        f"humor_level={old.get('humor_level') or '未知'}, "
+        f"teasing_tolerance={old.get('teasing_tolerance') or '未知'}, "
+        f"spoiler_tolerance={old.get('spoiler_tolerance') or '未知'}, "
+        f"pet_peeves={old.get('pet_peeves') or []}, "
+        f"conf_stable={old_conf:.2f}"
     )
 
     system = _get_profile_prompt("l1_system", _L1_SYSTEM_FALLBACK)
@@ -160,22 +248,49 @@ def maybe_update_user_profile(user_id: str, chat_history: list[dict]) -> None:
     )
 
     try:
-        obj = _call_profile_llm(system, user, max_tokens=150)
+        obj = _call_profile_llm(system, user, max_tokens=220)
         if not obj:
             return
 
-        # 合并: 新值优先, 新值非法时保留旧值
-        style = _pick(obj.get("interaction_style"), _VALID_STYLE) or old.get("interaction_style")
-        spoiler = _pick(obj.get("spoiler_tolerance"), _VALID_SPOILER) or old.get("spoiler_tolerance")
-        humor = _pick(obj.get("humor_level"), _VALID_HUMOR) or old.get("humor_level")
-        motivation = _pick(obj.get("engagement_motivation"), _VALID_MOTIVATION) or old.get("engagement_motivation")
-        # alleys_attitude: 自由文本, 保留最近的有效值
-        attitude_raw = str(obj.get("alleys_attitude", "") or "").strip()
-        if attitude_raw and attitude_raw != "未知":
-            attitude = attitude_raw[:50]
-        else:
-            attitude = old.get("alleys_attitude")
-        conf = _parse_confidence(obj, n_recent)
+        new_signal = _parse_conf_stable(obj, n_recent)
+        gated = new_signal >= _FIELD_GATE  # 信号够强才接受新字段值
+
+        # 字段门控: 通过才取新值, 否则保留旧值 (防低置信度污染稳定画像)
+        style = _pick(obj.get("interaction_style"), _VALID_STYLE) if gated else None
+        spoiler = _pick(obj.get("spoiler_tolerance"), _VALID_SPOILER) if gated else None
+        humor = _pick(obj.get("humor_level"), _VALID_HUMOR) if gated else None
+        motivation = _pick(obj.get("engagement_motivation"), _VALID_MOTIVATION) if gated else None
+        initiative = _pick(obj.get("interaction_initiative"), _VALID_INITIATIVE) if gated else None
+        teasing = _pick(obj.get("teasing_tolerance"), _VALID_TEASING) if gated else None
+        # pet_peeves: list 去重限长, 新值非空且过门控才采用
+        peeves: list[str] = []
+        if gated:
+            raw_peeves = obj.get("pet_peeves") or []
+            if isinstance(raw_peeves, list):
+                seen: set[str] = set()
+                for p in raw_peeves:
+                    if isinstance(p, str):
+                        p = p.strip()
+                        if p and p not in seen:
+                            seen.add(p)
+                            peeves.append(p)
+                peeves = peeves[:6]
+
+        # 保留兜底: 新值非法或未过门控 → 保留旧值
+        style = style or old.get("interaction_style")
+        spoiler = spoiler or old.get("spoiler_tolerance")
+        humor = humor or old.get("humor_level")
+        motivation = motivation or old.get("engagement_motivation")
+        initiative = initiative or old.get("interaction_initiative")
+        teasing = teasing or old.get("teasing_tolerance")
+        peeves = peeves or old.get("pet_peeves") or []
+
+        # 表现层: 完整轨道带上当前值 (避免覆盖轻量轨道刚写的最新态度)
+        attitude = old.get("alleys_attitude")
+        response_pref = old.get("alleys_response_preference")
+
+        # conf_stable EWMA: 旧值惯性大, 持续同向信号才拉得动
+        conf_stable = _ewma(new_signal, old_conf)
 
         save_profile(
             user_id,
@@ -183,12 +298,18 @@ def maybe_update_user_profile(user_id: str, chat_history: list[dict]) -> None:
             spoiler_tolerance=spoiler,
             humor_level=humor,
             engagement_motivation=motivation,
+            interaction_initiative=initiative,
+            teasing_tolerance=teasing,
+            pet_peeves=peeves,
             alleys_attitude=attitude,
-            confidence=conf,
+            alleys_response_preference=response_pref,
+            conf_stable=conf_stable,
         )
         logger.info(
             f"[profile] 更新 user={user_id[:8]} style={style} spoiler={spoiler} "
-            f"humor={humor} motivation={motivation} attitude={attitude} conf={conf:.2f}"
+            f"humor={humor} motivation={motivation} init={initiative} "
+            f"teasing={teasing} peeves={peeves} "
+            f"signal={new_signal:.2f} gated={gated} conf_stable={conf_stable:.2f}"
         )
     except Exception as e:
         logger.warning(f"[profile] 更新失败 (非致命): {e}")

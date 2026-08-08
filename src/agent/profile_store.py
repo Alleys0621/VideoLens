@@ -1,15 +1,19 @@
 """L1 用户长期画像读写 (Postgres).
 
-存储结构化、可注入、可审计的人设级偏好 (聊法 / 剧透接受度 / 接梗浓度).
-字段值用中文, DBeaver 直接可读.
+字段按稳定性分两层:
+  内核层 (稳定, 不易变): interaction_style / interaction_initiative /
+                        engagement_motivation / humor_level / teasing_tolerance /
+                        spoiler_tolerance / pet_peeves
+    - 完整轨道每 PROFILE_UPDATE_THRESHOLD 轮更新, conf_stable 用 EWMA 维护,
+      渲染时 conf_stable>=0.6 才注入.
+  表现层 (易变, 用户当下指令): alleys_attitude / alleys_response_preference
+    - 轻量轨道每轮更新 (update_instant_fields), 直接覆盖无置信度,
+      渲染时始终注入并排第一位.
 
 职责边界:
-  - 本表: "这个人什么样" (style 类) → 作为 system overlay 注入.
-  - Mem0: 零散事实回忆 (喜欢刘星 / 上次聊到 XX) → 作为 context 检索.
+  - 本表: "这个人什么样" (结构化画像) → 注入 user prompt.
+  - Mem0: 零散事实回忆 (喜欢刘星 / 上次聊到 XX) → context 检索.
   两者不重叠.
-
-不每轮写: 由 companion 累加 messages_since_update,
-达到 PROFILE_UPDATE_THRESHOLD 才增量更新 (见 profile_updater).
 """
 
 from __future__ import annotations
@@ -24,7 +28,7 @@ from src.core.logging import get_logger
 logger = get_logger()
 
 
-PROFILE_UPDATE_THRESHOLD = 2  # 每累计 2 条对话触发一次增量更新
+PROFILE_UPDATE_THRESHOLD = 5  # 完整轨道每累计 5 条对话触发一次 (内核层, 慢更新)
 
 
 def _conninfo() -> str:
@@ -53,7 +57,9 @@ def load_user_profile(user_id: str) -> dict[str, Any] | None:
             with conn.cursor() as cur:
                 cur.execute(
                     """SELECT interaction_style, spoiler_tolerance, humor_level,
-                              engagement_motivation, alleys_attitude, confidence,
+                              engagement_motivation, interaction_initiative,
+                              teasing_tolerance, pet_peeves, conf_stable,
+                              alleys_attitude, alleys_response_preference,
                               messages_since_update
                        FROM user_profiles WHERE user_id = %s""",
                     (user_id,),
@@ -66,42 +72,17 @@ def load_user_profile(user_id: str) -> dict[str, Any] | None:
                     "spoiler_tolerance": row[1],
                     "humor_level": row[2],
                     "engagement_motivation": row[3],
-                    "alleys_attitude": row[4],
-                    "confidence": float(row[5] or 0),
-                    "messages_since_update": int(row[6] or 0),
+                    "interaction_initiative": row[4],
+                    "teasing_tolerance": row[5],
+                    "pet_peeves": list(row[6] or []),
+                    "conf_stable": float(row[7] or 0),
+                    "alleys_attitude": row[8],
+                    "alleys_response_preference": row[9],
+                    "messages_since_update": int(row[10] or 0),
                 }
     except Exception as e:
         logger.warning(f"[profile_store] load 失败: {e}")
         return None
-
-
-def render_profile_overlay(profile: dict[str, Any] | None) -> str:
-    """把 L1 画像渲染成一行 system overlay. confidence 不够或没数据 → 空串.
-
-    只渲染 style 类字段 (人设调整), 不渲染事实 — 避免 system prompt 变肥.
-    """
-    if not profile:
-        return ""
-    parts = []
-    if profile.get("interaction_style"):
-        parts.append(f"聊法偏好: {profile['interaction_style']}")
-    if profile.get("spoiler_tolerance"):
-        parts.append(f"剧透接受度: {profile['spoiler_tolerance']}")
-    if profile.get("humor_level"):
-        parts.append(f"接梗浓度: {profile['humor_level']}")
-    if profile.get("engagement_motivation"):
-        parts.append(f"观看动力: {profile['engagement_motivation']}")
-    attitude = profile.get("alleys_attitude")
-    if attitude:
-        parts.append(f"用户对你的态度: {attitude}")
-    if not parts:
-        return ""
-    return (
-        "（这位用户的偏好只用来调整你的语气，"
-        "**不要因此多反问**（即使偏好写'提问型', 也是用户喜欢刨根问底, 不是你要多反问）"
-        "，同时请认真对待'用户对你的态度'——它直接告诉你用户希望你以什么方式回应: "
-        + "，".join(parts) + "）"
-    )
 
 
 def increment_message_counter(user_id: str) -> bool:
@@ -137,33 +118,73 @@ def save_profile(
     spoiler_tolerance: str | None,
     humor_level: str | None,
     engagement_motivation: str | None,
+    interaction_initiative: str | None = None,
+    teasing_tolerance: str | None = None,
+    pet_peeves: list[str] | None = None,
     alleys_attitude: str | None = None,
-    confidence: float,
+    alleys_response_preference: str | None = None,
+    conf_stable: float,
 ) -> None:
-    """保存 L1 画像 (UPSERT)."""
+    """保存 L1 画像 (完整轨道, UPSERT 全部字段)."""
     try:
         with _connect() as conn:
             with conn.cursor() as cur:
                 cur.execute(
                     """INSERT INTO user_profiles
                          (user_id, interaction_style, spoiler_tolerance, humor_level,
-                          engagement_motivation, alleys_attitude, confidence,
-                          messages_since_update, updated_at)
-                       VALUES (%s, %s, %s, %s, %s, %s, %s, 0, now())
+                          engagement_motivation, interaction_initiative,
+                          teasing_tolerance, pet_peeves,
+                          alleys_attitude, alleys_response_preference,
+                          conf_stable, messages_since_update, updated_at)
+                       VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 0, now())
                        ON CONFLICT (user_id) DO UPDATE
-                         SET interaction_style     = EXCLUDED.interaction_style,
-                             spoiler_tolerance     = EXCLUDED.spoiler_tolerance,
-                             humor_level           = EXCLUDED.humor_level,
-                             engagement_motivation = EXCLUDED.engagement_motivation,
-                             alleys_attitude       = EXCLUDED.alleys_attitude,
-                             confidence            = EXCLUDED.confidence,
-                             updated_at            = now()""",
+                         SET interaction_style          = EXCLUDED.interaction_style,
+                             spoiler_tolerance          = EXCLUDED.spoiler_tolerance,
+                             humor_level                = EXCLUDED.humor_level,
+                             engagement_motivation      = EXCLUDED.engagement_motivation,
+                             interaction_initiative     = EXCLUDED.interaction_initiative,
+                             teasing_tolerance          = EXCLUDED.teasing_tolerance,
+                             pet_peeves                 = EXCLUDED.pet_peeves,
+                             alleys_attitude            = EXCLUDED.alleys_attitude,
+                             alleys_response_preference = EXCLUDED.alleys_response_preference,
+                             conf_stable                = EXCLUDED.conf_stable,
+                             updated_at                 = now()""",
                     (user_id, interaction_style, spoiler_tolerance, humor_level,
-                     engagement_motivation, alleys_attitude, confidence),
+                     engagement_motivation, interaction_initiative,
+                     teasing_tolerance, list(pet_peeves or []),
+                     alleys_attitude, alleys_response_preference,
+                     conf_stable),
                 )
                 conn.commit()
     except Exception as e:
         logger.warning(f"[profile_store] save 失败: {e}")
+
+
+def update_instant_fields(
+    user_id: str,
+    alleys_attitude: str | None,
+    alleys_response_preference: str | None,
+) -> None:
+    """轻量轨道: 只写表现层两字段 (用户当下指令), 直接覆盖, 无置信度.
+
+    UPSERT 兼容首次无画像行 (冷启动首轮即建行, 其他字段用默认值).
+    """
+    try:
+        with _connect() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """INSERT INTO user_profiles
+                         (user_id, alleys_attitude, alleys_response_preference, updated_at)
+                       VALUES (%s, %s, %s, now())
+                       ON CONFLICT (user_id) DO UPDATE
+                         SET alleys_attitude            = EXCLUDED.alleys_attitude,
+                             alleys_response_preference = EXCLUDED.alleys_response_preference,
+                             updated_at                 = now()""",
+                    (user_id, alleys_attitude, alleys_response_preference),
+                )
+                conn.commit()
+    except Exception as e:
+        logger.warning(f"[profile_store] update_instant 失败: {e}")
 
 
 # ============================================================

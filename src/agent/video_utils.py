@@ -19,7 +19,11 @@ from src.core.helpers.json_utils import load_json
 from src.core.logging import get_logger
 from src.agent.mem0_client import add_conversation_memory
 from src.agent.profile_store import increment_message_counter
-from src.agent.profile_updater import maybe_update_user_profile, maybe_update_show_profile
+from src.agent.profile_updater import (
+    maybe_update_user_profile_instant,
+    maybe_update_user_profile,
+    maybe_update_show_profile,
+)
 
 logger = get_logger()
 
@@ -103,16 +107,22 @@ def async_add_memory(user_id: str, query: str, answer: str, video_id: str) -> No
 def async_maybe_update_profile(
     user_id: str, chat_history: list[dict], query: str, answer: str, show: str = "",
 ) -> None:
-    """达阈值同步更新 L1+L2 画像 (不阻塞回复)."""
+    """双轨更新画像 (不阻塞回复):
+    - 轻量轨道: 每轮更新表现层 (用户当下指令即时生效)
+    - 完整轨道: 达 PROFILE_UPDATE_THRESHOLD 更新内核层 + L2
+    """
     def _run():
         try:
             if not show:
                 return
+            hist = list(chat_history or []) + [
+                {"role": "user", "content": query},
+                {"role": "assistant", "content": answer},
+            ]
+            # 轻量轨道 (每轮): attitude/response_pref, qwen-turbo 便宜
+            maybe_update_user_profile_instant(user_id, hist)
+            # 完整轨道 (达阈值): 内核层 + L2
             if increment_message_counter(user_id):
-                hist = list(chat_history or []) + [
-                    {"role": "user", "content": query},
-                    {"role": "assistant", "content": answer},
-                ]
                 maybe_update_user_profile(user_id, hist)
                 maybe_update_show_profile(user_id, show, hist)
         except Exception as e:

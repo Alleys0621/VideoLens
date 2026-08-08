@@ -131,18 +131,15 @@ def _retrieve(
 # Prompt 构建 (核心: 对话为核心)
 # ============================================================
 
-def _build_system_prompt(profile_overlay: str) -> str:
+def _build_system_prompt() -> str:
     """读 yaml 的 Alleys 人设 (companion_prompts.system)."""
     cfg = get_config()
     prompts = cfg.prompts.get("companion_prompts", {}) or {}
-    system = (prompts.get("system") or "").strip()
-    if profile_overlay:
-        system = f"{system}\n\n{profile_overlay}"
-    return system
+    return (prompts.get("system") or "").strip()
 
 
-def _format_retrieval_hint(selected: list[dict]) -> str:
-    """格式化 KB 检索结果 (作为'参考', 不是必须用)."""
+def _format_video_kb(selected: list[dict]) -> str:
+    """格式化 video_kb 检索结果 (作为'参考', 不是必须用)."""
     if not selected:
         return "(本集知识库未检索到强相关内容, 你可以基于对话上下文自由回应)"
     parts = []
@@ -194,8 +191,8 @@ def _format_working_memory(video_time: float | None, events: list, actions: list
     return f"{title}\n{summary}\n（大概在 {start:.0f}~{end:.0f} 秒）"
 
 
-def _format_history(chat_history: list[dict], n: int = 10) -> str:
-    """最近 n 条消息 (一轮 = 一问一答 = 2 条, 默认 10 条 = 5 轮)."""
+def _format_short_term_memory(chat_history: list[dict], n: int = 10) -> str:
+    """short_term_memory: 最近 n 条消息 (一轮 = 一问一答 = 2 条, 默认 10 条 = 5 轮)."""
     if not chat_history:
         return "(刚开始聊)"
     lines = []
@@ -206,51 +203,95 @@ def _format_history(chat_history: list[dict], n: int = 10) -> str:
 
 
 def _format_l1_l2(user_profile: dict | None, show_profile: dict | None) -> str:
-    """L1 + L2 用户画像."""
-    parts = []
-    if user_profile:
-        l1_parts = []
-        for k, label in [
-            ("interaction_style", "聊法偏好"),
-            ("spoiler_tolerance", "剧透接受度"),
-            ("humor_level", "接梗浓度"),
-            ("engagement_motivation", "观看动力"),
-        ]:
-            v = user_profile.get(k)
-            if v:
-                l1_parts.append(f"{label}: {v}")
-        if l1_parts:
-            parts.append("L1 用户画像: " + " / ".join(l1_parts))
-    if show_profile:
-        conf = float(show_profile.get("confidence", 0) or 0)
-        if conf >= 0.4:
-            l2_parts = []
-            fav = [c for c in (show_profile.get("favorite_characters") or []) if c]
-            if fav:
-                l2_parts.append(f"喜欢: {'、'.join(fav[:5])}")
-            att = [c for c in (show_profile.get("attention_characters") or []) if c]
-            if att:
-                l2_parts.append(f"关注: {'、'.join(att[:5])}")
-            disliked = [d for d in (show_profile.get("disliked_elements") or []) if d]
-            if disliked:
-                l2_parts.append(f"不喜欢: {'、'.join(disliked[:5])}")
-            ops = show_profile.get("character_opinions") or []
-            if isinstance(ops, list) and ops:
-                op_lines = []
-                for o in ops[:3]:
-                    if isinstance(o, dict):
-                        ch = o.get("character", "")
-                        op = o.get("opinion", "")
-                        if ch and op:
-                            op_lines.append(f"  - {ch}: {op}")
-                if op_lines:
-                    l2_parts.append("角色评价:\n" + "\n".join(op_lines))
-            if l2_parts:
-                parts.append("L2 作品画像:\n" + "\n".join(f"  {p}" for p in l2_parts))
-    return "\n\n".join(parts) if parts else "(暂无足够画像数据)"
+    """L1/L2 画像 → 行为指令式文本. L1 决定"怎么回", L2 决定"回什么".
+
+    返回空串则 profile 块自动跳过 (companion.py 拼装逻辑会过滤空 content).
+    """
+    if not user_profile:
+        return ""
+
+    L: list[str] = ["[user_profile · 以下指令覆盖 persona 默认行为]"]
+
+    # ---- 表现层: 用户当下指令, 不门控, 排第一位 (跨会话即时生效) ----
+    attitude = (user_profile.get("alleys_attitude") or "").strip()
+    if attitude:
+        L.append(f"【即时·用户直接指令】{attitude}")
+
+    pref = user_profile.get("alleys_response_preference")
+    pref_map = {
+        "反问引导": "多反问推进(你觉得呢/猜下一步)",
+        "直接表态": "少反问,直接给观点",
+        "拱火加码": "用户吐槽时跟着加码,把感受说得更具体",
+        "冷静降温": "用户激动时拉回客观,不跟着嗨",
+    }
+    if pref in pref_map:
+        L.append(f"【即时·回应策略】{pref_map[pref]}")
+
+    # ---- 内核层: conf_stable>=0.6 才注入 (稳定人格, 宁慢勿噪) ----
+    conf_stable = float(user_profile.get("conf_stable", 0) or 0)
+    if conf_stable >= 0.6:
+        style = user_profile.get("interaction_style")
+        style_map = {
+            "吐槽型": "用户爱吐槽",
+            "分析型": "用户爱分析剧情逻辑",
+            "陪伴型": "用户重情绪交流",
+            "提问型": "用户靠提问推进",
+        }
+        if style in style_map:
+            L.append(style_map[style])
+
+        initiative = user_profile.get("interaction_initiative")
+        if initiative == "被动型":
+            L.append("用户被动,平淡段你主动起话题(预测/挑细节),用户在说时别打断")
+        elif initiative == "主动型":
+            L.append("用户主动起话题,你跟进即可,不必硬找话题")
+
+        humor = user_profile.get("humor_level")
+        teasing = user_profile.get("teasing_tolerance")
+        if humor == "高":
+            tag = {"能被吐槽": "可反吐槽用户",
+                   "只能吐槽剧情": "只吐槽剧情",
+                   "完全不能": "但别吐槽任何人"}.get(teasing or "", "只吐槽剧情")
+            L.append(f"接梗强,{tag}")
+        elif humor == "低":
+            L.append("接梗弱,少开玩笑正经聊")
+
+        peeves = [p for p in (user_profile.get("pet_peeves") or []) if p][:4]
+        if peeves:
+            L.append(f"雷区(遇到可主动吐槽):{'、'.join(peeves)}")
+
+        sp = user_profile.get("spoiler_tolerance")
+        if sp == "谨慎":
+            L.append("剧透谨慎,只聊已看过部分")
+        elif sp == "拒绝":
+            L.append("不剧透,只聊当前画面")
+
+    # 只有头标签没有内容 → 返回空, 让拼装跳过
+    if len(L) == 1:
+        return ""
+
+    # ---- L2: 回什么 ----
+    if show_profile and float(show_profile.get("confidence", 0) or 0) >= 0.5:
+        fav = [c for c in (show_profile.get("favorite_characters") or []) if c][:3]
+        if fav:
+            L.append(f"心头好(戏份相关可主动提):{'、'.join(fav)}")
+        disliked = [d for d in (show_profile.get("disliked_elements") or []) if d][:3]
+        if disliked:
+            L.append(f"本剧雷区:{'、'.join(disliked)}")
+        ops = show_profile.get("character_opinions") or []
+        if isinstance(ops, list):
+            for o in ops[:3]:
+                if isinstance(o, dict):
+                    ch = o.get("character", "")
+                    op = o.get("opinion", "")
+                    if ch and op:
+                        L.append(f"  · {ch}: {op}")
+
+    return "\n".join(L)
 
 
-def _format_long_term(memories: list[str]) -> str:
+def _format_episode_memory(memories: list[str]) -> str:
+    """episode_memory: Mem0 跨会话长期记忆."""
     if not memories:
         return "(暂无长期记忆)"
     return "\n".join(f"- {m}" for m in memories[:3])
@@ -281,11 +322,11 @@ def _build_user_prompt(
     # 各段内容 (key 对应 yaml user_blocks 的块名)
     contents: dict[str, str] = {
         "working_memory": working_memory,
-        "profile": _format_l1_l2(user_profile, show_profile),
-        "history": _format_history(chat_history, n=10),
-        "long_term": _format_long_term(long_term),
-        "kb": _format_retrieval_hint(selected),
-        "web": web_results_text,
+        "user_profile": _format_l1_l2(user_profile, show_profile),
+        "short_term_memory": _format_short_term_memory(chat_history, n=10),
+        "episode_memory": _format_episode_memory(long_term),
+        "video_kb": _format_video_kb(selected),
+        "web_search": web_results_text,
     }
 
     # 按 yaml 顺序拼接非空块
@@ -294,10 +335,15 @@ def _build_user_prompt(
         if not isinstance(block, dict):
             continue
         template = block.get("template", "")
-        content = contents.get(key, "")
-        if not template or not content:
+        if not template:
             continue
-        parts.append(template.replace("{content}", content))
+        content = contents.get(key, "")
+        if "{content}" in template:
+            if not content:
+                continue
+            parts.append(template.replace("{content}", content))
+        else:
+            parts.append(template)
     body = "\n\n".join(parts)
 
     if tail:
@@ -334,16 +380,13 @@ def companion_chat(
 
     # 2. L1 / L2 画像
     from src.agent.profile_store import (
-        load_user_profile, render_profile_overlay,
-        load_show_profile,
+        load_user_profile, load_show_profile,
     )
     from src.agent.video_utils import load_watching_state
     user_profile = None
-    profile_overlay = ""
     show_profile = None
     if user_id and user_id != "default":
         user_profile = load_user_profile(user_id)
-        profile_overlay = render_profile_overlay(user_profile)
         if show:
             show_profile = load_show_profile(user_id, show)
         # watching_state: 前端持续上报的最新坐标, 优先于 configurable 快照
@@ -384,7 +427,7 @@ def companion_chat(
 
     # 6. 构建 prompt
     working_memory = _format_working_memory(video_time, events, actions)
-    system = _build_system_prompt(profile_overlay)
+    system = _build_system_prompt()
     user_prompt = _build_user_prompt(
         query=query,
         video_label=video_label,
