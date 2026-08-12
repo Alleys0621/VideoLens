@@ -87,14 +87,14 @@ export function AssistantMessage({
         alt="Alleys"
         className="h-8 w-8 flex-shrink-0 rounded-lg object-cover shadow-sm"
       />
-      <div className="flex flex-1 flex-col gap-2">
+      <div className="flex min-w-0 flex-1 flex-col gap-2">
         {isToolResult ? (
           <ToolResult message={message} />
         ) : (
           <>
             {contentString.length > 0 && (
               /* ChatGPT 风格: 无气泡背景, Markdown 直接渲染 */
-              <div className="text-[15px] leading-relaxed text-zinc-800">
+              <div className="min-w-0 [overflow-wrap:anywhere] text-[15px] leading-relaxed text-zinc-800">
                 <MarkdownText>{contentString}</MarkdownText>
               </div>
             )}

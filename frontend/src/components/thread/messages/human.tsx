@@ -18,8 +18,8 @@ export function HumanMessage({
 
   return (
     <div className="group ml-auto flex w-full items-center gap-3">
-      <div className="flex flex-1 flex-col gap-2">
-        <div className="flex flex-col gap-2">
+      <div className="flex min-w-0 flex-1 flex-col gap-2">
+        <div className="flex min-w-0 flex-col gap-2">
           {/* 已上传文件预览 (base64 content blocks, 保留文件上传能力) */}
           {Array.isArray(message.content) && message.content.length > 0 && (
             <div className="flex flex-wrap items-end justify-end gap-2">
@@ -35,7 +35,7 @@ export function HumanMessage({
           )}
           {/* ChatGPT 风格用户气泡: 浅灰底, 大圆角, 右对齐, 无头像 */}
           {contentString ? (
-            <p className="ml-auto w-fit max-w-[85%] rounded-3xl bg-[#f4f4f4] px-5 py-2.5 text-[15px] leading-relaxed text-zinc-900 whitespace-pre-wrap">
+            <p className="ml-auto w-fit max-w-[85%] min-w-0 whitespace-pre-wrap [overflow-wrap:break-word] rounded-3xl bg-[#f4f4f4] px-4 py-2.5 text-[15px] leading-relaxed text-zinc-900">
               {contentString}
             </p>
           ) : null}
