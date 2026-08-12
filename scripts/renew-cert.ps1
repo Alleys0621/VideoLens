@@ -25,6 +25,7 @@ if ($wlan) {
 }
 
 $sans = @("localhost", "127.0.0.1", "::1", $env:COMPUTERNAME, "$($env:COMPUTERNAME).local")
+$sans += "218.19.14.198"  # 公网映射 IP, 非本机网卡, 必须硬编码
 if ($wlanIp) {
     $sans += $wlanIp
     Write-Host "[renew-cert] WLAN IP: $wlanIp"
