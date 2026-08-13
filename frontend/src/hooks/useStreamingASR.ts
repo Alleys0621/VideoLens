@@ -47,13 +47,13 @@ interface UseStreamingASRReturn {
   error: string | null;
 }
 
+import { resolveWsPort } from "@/lib/ws-ports";
+
 /**
  * ASR WebSocket 地址.
  *
- * 智能选择:
  *   - 显式 env NEXT_PUBLIC_ASR_WS_URL 优先
- *   - https 页面 → wss (mixed content 限制); 用当前 hostname + :9800 直连 ASR server (已启用 wss)
- *   - http 页面 → ws (本机/局域网); 同样用 hostname + :9800
+ *   - 否则用当前 hostname + 端口派生 (公网入口走 7070, 内网走 9800)
  */
 function getAsrWsUrl(): string {
   if (process.env.NEXT_PUBLIC_ASR_WS_URL) {
@@ -62,7 +62,7 @@ function getAsrWsUrl(): string {
   if (typeof window === "undefined") return "ws://localhost:9800/stream";
   const proto = window.location.protocol === "https:" ? "wss" : "ws";
   const hostname = window.location.hostname;
-  return `${proto}://${hostname}:9800/stream`;
+  return `${proto}://${hostname}:${resolveWsPort("asr")}/stream`;
 }
 
 export function useStreamingASR(

@@ -61,7 +61,9 @@ import { toast } from "sonner";
  *    new Audio(blobUrl).play() 秒播, 不再合成.
  */
 
-/** tts_server ws URL. http → ws://hostname:9801, https → wss://hostname:9801 (server 已启用 wss). */
+import { resolveWsPort } from "@/lib/ws-ports";
+
+/** tts_server ws URL. 端口走 hostname 派生 (公网入口走 7071, 内网走 9801). */
 function getTtsWsUrl(): string {
   if (process.env.NEXT_PUBLIC_TTS_WS_URL) {
     return process.env.NEXT_PUBLIC_TTS_WS_URL;
@@ -69,7 +71,7 @@ function getTtsWsUrl(): string {
   if (typeof window === "undefined") return "ws://localhost:9801/";
   const proto = window.location.protocol === "https:" ? "wss" : "ws";
   const hostname = window.location.hostname;
-  return `${proto}://${hostname}:9801/`;
+  return `${proto}://${hostname}:${resolveWsPort("tts")}/`;
 }
 
 /** message-level 缓存: 文本 → 已合成好的 Blob URL. 跨 hook 实例共享. */

@@ -5,6 +5,7 @@ import Artplayer from "artplayer";
 import { useKeyframeSeek, type KeyframeMeta } from "@/hooks/useKeyframeSeek";
 import { Sparkles, Play } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { resolveWsPort } from "@/lib/ws-ports";
 import { toast } from "sonner";
 
 /* -------------------------------------------------------------------------- */
@@ -115,12 +116,12 @@ export function VideoPlayer({
 
   const actualSrc = useMemo(() => {
     if (!videoDir) return "";
-    // http/https 都直连 9802 静态服务 (避开 next dev JIT 拖累视频流);
-    // 9802 已监听 0.0.0.0, 服务端根据 VIDEOLENS_TLS_* env 自动启用 ws/https.
+    // http/https 都直连视频静态服务 (避开 next dev JIT 拖累视频流);
+    // 端口走 hostname 派生: 公网入口走 7072, 内网走 9802.
     const videoDirEnc = encodeURIComponent(videoDir);
     if (typeof window === "undefined") return `/api/video/${videoDirEnc}`;
     const proto = window.location.protocol; // "http:" 或 "https:"
-    return `${proto}//${window.location.hostname}:9802/${videoDirEnc}`;
+    return `${proto}//${window.location.hostname}:${resolveWsPort("video")}/${videoDirEnc}`;
   }, [videoDir]);
 
   // === 推理数据解析 (保留原有) ===
