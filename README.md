@@ -376,8 +376,12 @@ Postgres 中的业务表：
 
 仓库自带知识库 JSON（`data/output/*/stage3_kb.json`）、全局角色 / 剧情弧（`data/output/_global/`）、声纹 / OCR / 场景数据，clone 后开箱即用。**不含**视频文件，需自行放入 `data/videos/`。
 
-## License
+## Demo
+https://github.com/user-attachments/assets/36f0dd96-21f1-4466-b3b8-602629ac7fd8
 
+
+## License
 MIT
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
