@@ -379,3 +379,5 @@ Postgres 中的业务表：
 ## License
 
 MIT
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
